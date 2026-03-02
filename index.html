@@ -362,9 +362,116 @@ body::before{
     </div>
   </div>
 
+  <!-- DONATION CARD -->
+  <div class="card fin" style="animation-delay:.28s;background:linear-gradient(135deg,rgba(16,16,22,0.95) 0%,rgba(22,18,12,0.95) 100%);border-color:rgba(247,147,26,0.18)">
+    <!-- Top glow accent -->
+    <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(247,147,26,0.4),transparent)"></div>
+
+    <div class="clabel" style="margin-bottom:14px">
+      Apoyar el proyecto
+      <span style="font-size:11px">💚</span>
+    </div>
+
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">
+      <!-- QR Code (via API) -->
+      <div style="flex-shrink:0;width:86px;height:86px;border-radius:14px;overflow:hidden;background:#fff;padding:5px;box-shadow:0 4px 20px rgba(247,147,26,0.25)">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS&color=000000&bgcolor=ffffff&margin=0"
+          alt="QR USDT TRC20"
+          width="76" height="76"
+          style="display:block;border-radius:8px;width:76px;height:76px;object-fit:cover"
+          loading="lazy"
+        />
+      </div>
+      <!-- Text info -->
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;color:var(--txt);margin-bottom:4px">USDT TRC-20</div>
+        <div style="font-size:9px;color:var(--txt2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Red TRON · Sin comisiones</div>
+        <div style="font-size:9px;color:var(--txt3);line-height:1.55">
+          Si este dashboard te es útil, considera apoyarlo con cualquier monto. ¡Gracias! 🙏
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallet address box -->
+    <div id="donateAddrBox" style="
+      background:rgba(247,147,26,0.07);
+      border:1px solid rgba(247,147,26,0.2);
+      border-radius:12px;padding:11px 14px;
+      display:flex;align-items:center;gap:10px;
+      cursor:pointer;transition:background 0.2s;
+      margin-bottom:10px;
+    " onclick="copyWallet()" title="Tap para copiar">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase;margin-bottom:4px">Dirección de wallet</div>
+        <div id="walletAddr" style="font-size:11px;color:var(--btc);word-break:break-all;line-height:1.4;font-weight:500">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+      </div>
+      <div id="copyIcon" style="font-size:18px;flex-shrink:0;transition:transform 0.2s">📋</div>
+    </div>
+
+    <!-- Copy button -->
+    <button onclick="copyWallet()" style="
+      width:100%;padding:13px;border-radius:13px;border:none;cursor:pointer;
+      background:var(--btc);color:#000;
+      font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.1em;
+      box-shadow:0 4px 20px rgba(247,147,26,0.35);
+      transition:transform 0.15s,box-shadow 0.15s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+    "
+    onmousedown="this.style.transform='scale(0.97)'"
+    onmouseup="this.style.transform='scale(1)'"
+    ontouchstart="this.style.transform='scale(0.97)'"
+    ontouchend="this.style.transform='scale(1)'"
+    id="copyBtn">
+      <span>📋</span> COPIAR DIRECCIÓN
+    </button>
+
+    <!-- Toast -->
+    <div id="copyToast" style="
+      display:none;margin-top:10px;
+      background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);
+      border-radius:10px;padding:9px 14px;
+      font-size:11px;color:var(--up);text-align:center;letter-spacing:0.08em;
+    ">✅ Dirección copiada al portapapeles</div>
+  </div>
+
 </div>
 
 <script>
+/* ══ DONATION COPY ══ */
+const WALLET = 'TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS';
+
+function copyWallet() {
+  navigator.clipboard.writeText(WALLET).then(() => {
+    showCopyFeedback();
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = WALLET;
+    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopyFeedback();
+  });
+}
+
+function showCopyFeedback() {
+  const btn   = document.getElementById('copyBtn');
+  const toast = document.getElementById('copyToast');
+  const icon  = document.getElementById('copyIcon');
+  btn.innerHTML = '<span>✅</span> ¡COPIADO!';
+  btn.style.background = 'var(--up)';
+  icon.textContent = '✅';
+  toast.style.display = 'block';
+  setTimeout(() => {
+    btn.innerHTML = '<span>📋</span> COPIAR DIRECCIÓN';
+    btn.style.background = 'var(--btc)';
+    icon.textContent = '📋';
+    toast.style.display = 'none';
+  }, 2500);
+}
+
 /* ══ STATE ══ */
 let priceHistory  = [];
 const REFRESH_S   = 600; // 10 min
