@@ -2,687 +2,644 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦣 MammothRun — Dodge & Multiply</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🦣 Mammoth Run</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0a;color:#fff;font-family:'Exo 2',sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-
-/* JURASSIC BG */
-#bg{position:fixed;inset:0;z-index:0;overflow:hidden}
-.volcano{position:absolute;bottom:0}
-#fog{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(20,8,0,.7) 100%);pointer-events:none}
-
-/* APP */
-#app{position:relative;z-index:10;width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center}
-
-/* HUD */
-#hud{width:100%;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 12px;gap:4px;background:rgba(0,0,0,.75);border-bottom:2px solid rgba(255,140,0,.3);backdrop-filter:blur(8px)}
-.hi{text-align:center;padding:2px}
-.hl{font-family:'Cinzel',serif;font-size:7px;color:#c8860a;letter-spacing:2px;text-transform:uppercase;opacity:.8}
-.hv{font-family:'Cinzel',serif;font-size:15px;font-weight:700}
-.gold{color:#ffd700;text-shadow:0 0 12px #ffd700cc,0 0 4px #ff8800}
-.green{color:#7fff00;text-shadow:0 0 10px #7fff0099}
-.red{color:#ff4400;text-shadow:0 0 8px #ff440099}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;touch-action:none}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;color:#fff}
+#wrap{position:relative;width:100vw;height:100vh;display:flex;flex-direction:column}
+#hud{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 10px;background:rgba(0,0,0,.8);border-bottom:2px solid rgba(255,140,0,.4);z-index:20}
+.hi{text-align:center}
+.hl{font-family:'Cinzel',serif;font-size:8px;color:#c8860a;letter-spacing:1px;text-transform:uppercase}
+.hv{font-family:'Cinzel',serif;font-size:14px;font-weight:700}
+.gold{color:#ffd700;text-shadow:0 0 8px #ffd700}
+.green{color:#7fff00;text-shadow:0 0 6px #7fff00}
+.red{color:#ff4400}
 .white{color:#fff}
+#cv-wrap{position:relative;flex:1;overflow:hidden}
+canvas#c{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
+#pb{flex-shrink:0;padding:5px 12px 7px;background:rgba(0,0,0,.8);border-top:2px solid rgba(255,140,0,.4);z-index:20}
+.ph{display:flex;justify-content:space-between;font-size:9px;color:#c8860a;font-family:'Cinzel',serif;margin-bottom:3px}
+.pt{height:8px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;border:1px solid rgba(255,140,0,.2)}
+.pf{height:100%;background:linear-gradient(90deg,#8b0000,#ff8800,#ffd700);box-shadow:0 0 8px #ff8800}
 
-/* CANVAS */
-#cw{position:relative;width:560px;height:480px}
-canvas{display:block;width:560px;height:480px}
-
-/* POOL */
-#pb{width:100%;padding:6px 14px 8px;background:rgba(0,0,0,.75);border-top:2px solid rgba(255,140,0,.3)}
-.ph{display:flex;justify-content:space-between;margin-bottom:3px;font-size:9px;color:#c8860a;font-family:'Cinzel',serif;letter-spacing:1px}
-.pt{height:10px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;border:1px solid rgba(255,140,0,.25);position:relative}
-.pf{height:100%;background:linear-gradient(90deg,#8b0000,#cc4400,#ff8800,#ffd700);border-radius:5px;box-shadow:0 0 12px #ff880099;transition:width .8s ease}
-.pt::after{content:'🔥';position:absolute;right:4px;top:-2px;font-size:11px}
-
-/* SCREENS */
-.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;padding:20px;text-align:center;overflow:hidden}
-.scr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,8,0,.97) 0%,rgba(0,0,0,.99) 100%);backdrop-filter:blur(12px)}
-.scr>*{position:relative;z-index:1}
+/* SCREENS — posicionadas sobre el canvas */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;z-index:100;background:rgba(0,0,0,.92);backdrop-filter:blur(8px)}
 .scr.h{display:none}
-
-/* dino border decoration */
-.scr-border{position:absolute;inset:0;border:2px solid transparent;background:linear-gradient(#000,#000) padding-box,linear-gradient(135deg,#8b0000,#cc6600,#ffd700,#cc6600,#8b0000) border-box;pointer-events:none;z-index:0}
-
-.st{font-family:'Cinzel',serif;font-size:22px;font-weight:900;letter-spacing:3px;margin-bottom:4px;background:linear-gradient(135deg,#cc4400,#ff8800,#ffd700,#ff8800,#cc4400);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;line-height:1.2}
-.ss{font-size:10px;color:#c8860a;letter-spacing:3px;margin-bottom:14px;font-family:'Cinzel',serif}
-
-.ib{background:rgba(139,69,0,.1);border:1px solid rgba(255,140,0,.25);border-radius:10px;padding:11px 15px;margin-bottom:10px;width:100%}
-.ir{display:flex;justify-content:space-between;padding:3px 0;font-size:12px;border-bottom:1px solid rgba(255,140,0,.08)}
+.scr-inner{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.st{font-family:'Cinzel',serif;font-size:20px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#cc4400,#ff8800,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.3}
+.ss{font-size:10px;color:#c8860a;letter-spacing:2px;font-family:'Cinzel',serif}
+.ib{background:rgba(139,69,0,.12);border:1px solid rgba(255,140,0,.25);border-radius:10px;padding:10px 14px;width:100%}
+.ir{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid rgba(255,140,0,.08)}
 .ir:last-child{border-bottom:none}
 .ir .l{color:#a0784a}
 .ir .v{font-weight:600}
-
-.wb{background:rgba(255,140,0,.06);border:1px solid rgba(255,140,0,.35);border-radius:8px;padding:9px 13px;margin-bottom:10px;width:100%}
+.wb{background:rgba(255,140,0,.06);border:1px solid rgba(255,140,0,.35);border-radius:8px;padding:8px 12px;width:100%}
 .wl{font-size:8px;color:#ffd700;letter-spacing:2px;font-family:'Cinzel',serif;margin-bottom:3px}
-.wa{font-size:10px;color:#fff;word-break:break-all;font-family:monospace;opacity:.9}
-
-.btn{padding:12px 28px;border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .15s;margin:3px;position:relative;overflow:hidden}
-.bp{background:linear-gradient(135deg,#8b0000,#cc4400,#ff6600);color:#fff;box-shadow:0 4px 20px rgba(255,80,0,.4),inset 0 1px 0 rgba(255,255,255,.15)}
-.bp:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(255,80,0,.6)}
-.bs{background:rgba(139,69,0,.15);border:1px solid rgba(255,140,0,.4);color:#ffa040}
-.bs:hover{background:rgba(139,69,0,.25)}
-
-.ch{display:flex;gap:12px;margin-bottom:14px}
-.kh{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:#7a5a30}
-.k{background:rgba(139,69,0,.2);border:1px solid rgba(255,140,0,.3);border-radius:5px;padding:5px 9px;font-size:13px;min-width:32px;text-align:center;color:#ffa040}
-
-/* COMBO FLASH */
-#combo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:32px;font-weight:900;pointer-events:none;opacity:0;transition:opacity .1s;text-shadow:0 0 20px currentColor;z-index:30}
+.wa{font-size:10px;color:#fff;word-break:break-all;font-family:monospace}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{padding:12px 24px;border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .15s;min-width:120px;position:relative;z-index:110}
+.bp{background:linear-gradient(135deg,#8b0000,#cc4400,#ff6600);color:#fff;box-shadow:0 4px 20px rgba(255,80,0,.5)}
+.bp:active{transform:scale(.96)}
+.bs{background:rgba(100,50,0,.3);border:1px solid rgba(255,140,0,.4);color:#ffa040}
+.bs:active{transform:scale(.96)}
+.ch{display:flex;gap:10px;justify-content:center}
+.kh{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#7a5a30}
+.k{background:rgba(139,69,0,.2);border:1px solid rgba(255,140,0,.3);border-radius:5px;padding:4px 8px;font-size:12px;min-width:30px;text-align:center;color:#ffa040}
+#combo{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:28px;font-weight:900;pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;text-align:center;width:100%}
 </style>
 </head>
 <body>
-<div id="bg">
-  <canvas id="bgc"></canvas>
-  <div id="fog"></div>
-</div>
-
-<div id="app">
+<div id="wrap">
   <div id="hud">
     <div class="hi"><div class="hl">Distancia</div><div class="hv white" id="hs">0m</div></div>
-    <div class="hi"><div class="hl">Multiplicador</div><div class="hv gold" id="hm">×1.0</div></div>
-    <div class="hi"><div class="hl">Donación</div><div class="hv green" id="hd">$3.00</div></div>
-    <div class="hi"><div class="hl">Vidas</div><div class="hv red" id="hl">🦴🦴🦴</div></div>
+    <div class="hi"><div class="hl">Multiplicador</div><div class="hv gold" id="hm">x1.0</div></div>
+    <div class="hi"><div class="hl">Donacion</div><div class="hv green" id="hd">$3.00</div></div>
+    <div class="hi"><div class="hl">Vidas</div><div class="hv red" id="hl">3</div></div>
   </div>
 
-  <div id="cw">
-    <canvas id="c" width="560" height="480"></canvas>
-    <div id="combo">COMBO!</div>
+  <div id="cv-wrap">
+    <canvas id="c"></canvas>
+    <div id="combo">ESQUIVADO!</div>
 
     <!-- START -->
     <div class="scr" id="s0">
-      <div class="scr-border"></div>
-      <div class="st">☄️ MAMMOTH RUN ☄️</div>
-      <div class="ss">SURVIVE · EVOLVE · MULTIPLY</div>
-      <div class="ib">
-        <div class="ir"><span class="l">🦣 Personaje</span><span class="v" style="color:#ffa040">Mamut Prehistórico</span></div>
-        <div class="ir"><span class="l">💸 Donación base</span><span class="v gold">$3 USD</span></div>
-        <div class="ir"><span class="l">📈 Distancia multiplica</span><span class="v green">tu donación</span></div>
-        <div class="ir"><span class="l">🏆 Pool para ganar</span><span class="v" style="color:#ff8800">100 USDT</span></div>
-        <div class="ir"><span class="l">🎁 Premio ganador</span><span class="v gold">10 USDT (10%)</span></div>
-      </div>
-      <div class="wb">
-        <div class="wl">🔗 Wallet donación — USDT TRC-20</div>
-        <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-      </div>
-      <div class="ch">
-        <div class="kh"><div class="k">↑ ↓</div><span>Mover</span></div>
-        <div class="kh"><div class="k">W S</div><span>Mover</span></div>
-        <div class="kh"><div class="k">🖱️</div><span>Click/Touch</span></div>
-      </div>
-      <div>
-        <button class="btn bp" onclick="startGame()">🦣 ¡CORRER!</button>
-        <button class="btn bs" onclick="showD()">💳 DONAR</button>
+      <div class="scr-inner">
+        <div class="st">MAMMOTH RUN</div>
+        <div class="ss">SURVIVE · EVOLVE · MULTIPLY</div>
+        <div class="ib">
+          <div class="ir"><span class="l">Personaje</span><span class="v" style="color:#ffa040">Mamut Prehistorico</span></div>
+          <div class="ir"><span class="l">Donacion base</span><span class="v gold">$3 USD</span></div>
+          <div class="ir"><span class="l">Distancia multiplica</span><span class="v green">tu donacion</span></div>
+          <div class="ir"><span class="l">Pool para ganar</span><span class="v" style="color:#ff8800">100 USDT</span></div>
+          <div class="ir"><span class="l">Premio ganador</span><span class="v gold">10 USDT (10%)</span></div>
+        </div>
+        <div class="wb">
+          <div class="wl">WALLET DONACION — USDT TRC-20</div>
+          <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+        </div>
+        <div class="ch">
+          <div class="kh"><div class="k">TAP ARRIBA</div><span>Saltar</span></div>
+          <div class="kh"><div class="k">TAP ABAJO</div><span>Agachar</span></div>
+        </div>
+        <div class="btns">
+          <button class="btn bp" id="btnStart">CORRER!</button>
+          <button class="btn bs" id="btnDonate">DONAR</button>
+        </div>
       </div>
     </div>
 
     <!-- GAME OVER -->
     <div class="scr h" id="s1">
-      <div class="scr-border"></div>
-      <div class="st">💀 EXTINCIÓN 💀</div>
-      <div class="ss">El meteorito ganó esta vez</div>
-      <div class="ib">
-        <div class="ir"><span class="l">Distancia recorrida</span><span class="v white" id="gos">0m</span></div>
-        <div class="ir"><span class="l">Multiplicador máx</span><span class="v gold" id="gom">×1.0</span></div>
-        <div class="ir"><span class="l">Donación generada</span><span class="v green" id="god">$3.00</span></div>
-        <div class="ir"><span class="l">Meteoritos esquivados</span><span class="v" style="color:#ff8800" id="goe">0</span></div>
-      </div>
-      <div class="wb">
-        <div class="wl">💰 Envía tu donación — USDT TRC-20</div>
-        <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-      </div>
-      <div>
-        <button class="btn bp" onclick="startGame()">🔄 RENACER</button>
-        <button class="btn bs" onclick="showS()">🏠 INICIO</button>
+      <div class="scr-inner">
+        <div class="st">EXTINCION</div>
+        <div class="ss">El meteorito gano esta vez</div>
+        <div class="ib">
+          <div class="ir"><span class="l">Distancia</span><span class="v white" id="gos">0m</span></div>
+          <div class="ir"><span class="l">Multiplicador max</span><span class="v gold" id="gom">x1.0</span></div>
+          <div class="ir"><span class="l">Donacion generada</span><span class="v green" id="god">$3.00</span></div>
+          <div class="ir"><span class="l">Meteoritos esquivados</span><span class="v" style="color:#ff8800" id="goe">0</span></div>
+        </div>
+        <div class="wb">
+          <div class="wl">WALLET DONACION — USDT TRC-20</div>
+          <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+        </div>
+        <div class="btns">
+          <button class="btn bp" id="btnRetry">RENACER</button>
+          <button class="btn bs" id="btnHome">INICIO</button>
+        </div>
       </div>
     </div>
 
     <!-- DONATE -->
     <div class="scr h" id="s2">
-      <div class="scr-border"></div>
-      <div class="st">💎 DONAR</div>
-      <div class="ss">Únete al pool · Gana 10 USDT</div>
-      <div class="ib">
-        <div class="ir"><span class="l">Red</span><span class="v" style="color:#0af">TRON (TRC-20)</span></div>
-        <div class="ir"><span class="l">Token</span><span class="v">USDT</span></div>
-        <div class="ir"><span class="l">Mínimo</span><span class="v gold">$3 USD</span></div>
-        <div class="ir"><span class="l">Pool objetivo</span><span class="v" style="color:#ff8800">100 USDT</span></div>
-        <div class="ir"><span class="l">Premio top scorer</span><span class="v gold">10 USDT</span></div>
-      </div>
-      <div class="wb">
-        <div class="wl">🔗 Wallet destino</div>
-        <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-      </div>
-      <div>
-        <button class="btn bp" onclick="hideAll();startGame()">▶ JUGAR</button>
-        <button class="btn bs" onclick="showS()">← VOLVER</button>
+      <div class="scr-inner">
+        <div class="st">DONAR</div>
+        <div class="ss">Unete al pool · Gana 10 USDT</div>
+        <div class="ib">
+          <div class="ir"><span class="l">Red</span><span class="v" style="color:#0af">TRON TRC-20</span></div>
+          <div class="ir"><span class="l">Token</span><span class="v">USDT</span></div>
+          <div class="ir"><span class="l">Minimo</span><span class="v gold">$3 USD</span></div>
+          <div class="ir"><span class="l">Pool objetivo</span><span class="v" style="color:#ff8800">100 USDT</span></div>
+          <div class="ir"><span class="l">Premio</span><span class="v gold">10 USDT al top scorer</span></div>
+        </div>
+        <div class="wb">
+          <div class="wl">WALLET DESTINO</div>
+          <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+        </div>
+        <div class="btns">
+          <button class="btn bp" id="btnPlayFromDonate">JUGAR</button>
+          <button class="btn bs" id="btnBack">VOLVER</button>
+        </div>
       </div>
     </div>
   </div>
 
   <div id="pb">
-    <div class="ph"><span>🦕 POOL ACUMULADO</span><span id="pt">~47.5 / 100 USDT</span></div>
-    <div class="pt"><div class="pf" id="pf" style="width:47.5%"></div></div>
+    <div class="ph"><span>POOL ACUMULADO</span><span>~47.5 / 100 USDT</span></div>
+    <div class="pt"><div class="pf" style="width:47.5%"></div></div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════
-// BG CANVAS — Jurassic landscape
-// ══════════════════════════════════════════════
-const bgc=document.getElementById('bgc');
-const bgx=bgc.getContext('2d');
-bgc.width=window.innerWidth;bgc.height=window.innerHeight;
+// ── Canvas resize ─────────────────────────────
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+let W, H, GROUND;
 
-function drawJurassicBG(){
-  const W=bgc.width,H=bgc.height;
-  // Sky gradient — volcanic dawn
-  const sky=bgx.createLinearGradient(0,0,0,H*.7);
-  sky.addColorStop(0,'#0d0305');sky.addColorStop(.3,'#1a0508');
-  sky.addColorStop(.6,'#2d0a08');sky.addColorStop(1,'#4a1200');
-  bgx.fillStyle=sky;bgx.fillRect(0,0,W,H);
-
-  // Stars
-  for(let i=0;i<200;i++){
-    const x=Math.random()*W,y=Math.random()*H*.5;
-    const r=Math.random()*1.2+.2,a=Math.random()*.7+.1;
-    bgx.beginPath();bgx.arc(x,y,r,0,Math.PI*2);
-    bgx.fillStyle=`rgba(255,220,180,${a})`;bgx.fill();
-  }
-
-  // Distant volcano
-  bgx.beginPath();
-  bgx.moveTo(W*.3,H*.6);bgx.lineTo(W*.5,H*.1);bgx.lineTo(W*.7,H*.6);bgx.closePath();
-  const vg=bgx.createLinearGradient(W*.5,H*.1,W*.5,H*.6);
-  vg.addColorStop(0,'#1a0505');vg.addColorStop(1,'#2d1008');
-  bgx.fillStyle=vg;bgx.fill();
-
-  // Lava glow at top
-  const lg=bgx.createRadialGradient(W*.5,H*.1,0,W*.5,H*.1,80);
-  lg.addColorStop(0,'rgba(255,80,0,.4)');lg.addColorStop(1,'transparent');
-  bgx.fillStyle=lg;bgx.fillRect(0,0,W,H);
-
-  // Lava river
-  bgx.beginPath();
-  bgx.moveTo(W*.44,H*.1);bgx.lineTo(W*.41,H*.35);bgx.lineTo(W*.43,H*.5);bgx.lineTo(W*.45,H*.6);
-  bgx.lineWidth=6;
-  const lrg=bgx.createLinearGradient(0,H*.1,0,H*.6);
-  lrg.addColorStop(0,'#ff6600');lrg.addColorStop(1,'#8b0000');
-  bgx.strokeStyle=lrg;bgx.stroke();
-
-  // Ground layers
-  // Back hills
-  bgx.beginPath();bgx.moveTo(0,H*.65);
-  for(let x=0;x<=W;x+=40){bgx.lineTo(x,H*.65+Math.sin(x*.02)*20-10)}
-  bgx.lineTo(W,H);bgx.lineTo(0,H);bgx.closePath();
-  bgx.fillStyle='#0d0a04';bgx.fill();
-
-  // Mid layer with ferns silhouettes
-  bgx.beginPath();bgx.moveTo(0,H*.75);
-  for(let x=0;x<=W;x+=20){bgx.lineTo(x,H*.75+Math.sin(x*.04+1)*12)}
-  bgx.lineTo(W,H);bgx.lineTo(0,H);bgx.closePath();
-  bgx.fillStyle='#080804';bgx.fill();
-
-  // Fern silhouettes
-  for(let i=0;i<12;i++){
-    const fx=Math.random()*W,fy=H*.72+Math.random()*20;
-    const fh=30+Math.random()*50;
-    bgx.beginPath();bgx.moveTo(fx,fy);
-    for(let j=0;j<8;j++){
-      const a=-Math.PI/2+(Math.random()-.5)*.6;
-      const len=fh*.3*(1-j/8);
-      bgx.lineTo(fx+Math.cos(a+(j%2*.4-.2))*len*(j+1)/4,fy-j*fh/8+Math.sin(a)*len*.5);
-    }
-    bgx.strokeStyle='rgba(20,40,5,.8)';bgx.lineWidth=2;bgx.stroke();
-  }
-
-  // Ground
-  const ground=bgx.createLinearGradient(0,H*.8,0,H);
-  ground.addColorStop(0,'#1a1005');ground.addColorStop(1,'#0a0802');
-  bgx.fillStyle=ground;bgx.fillRect(0,H*.8,W,H*.2);
-
-  // Cracks in ground
-  for(let i=0;i<8;i++){
-    const cx=Math.random()*W,cy=H*.82+Math.random()*H*.1;
-    bgx.beginPath();bgx.moveTo(cx,cy);
-    bgx.lineTo(cx+(Math.random()-.5)*40,cy+Math.random()*20);
-    bgx.strokeStyle='rgba(255,60,0,.15)';bgx.lineWidth=1;bgx.stroke();
-  }
+function resize() {
+  const wrap = document.getElementById('cv-wrap');
+  W = wrap.clientWidth;
+  H = wrap.clientHeight;
+  cv.width = W;
+  cv.height = H;
+  GROUND = H - 80;
 }
-drawJurassicBG();
+resize();
+window.addEventListener('resize', () => { resize(); });
 
-// ══════════════════════════════════════════════
-// GAME CANVAS
-// ══════════════════════════════════════════════
-const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-const W=560,H=480,GROUND=H-70;
+// ── Buttons (sin onclick, con addEventListener) ──
+document.getElementById('btnStart').addEventListener('click', startGame);
+document.getElementById('btnDonate').addEventListener('click', () => { hideAll(); document.getElementById('s2').classList.remove('h'); });
+document.getElementById('btnRetry').addEventListener('click', startGame);
+document.getElementById('btnHome').addEventListener('click', showStart);
+document.getElementById('btnPlayFromDonate').addEventListener('click', startGame);
+document.getElementById('btnBack').addEventListener('click', showStart);
 
-// ── State ────────────────────────────────────
-let state='menu',score=0,multi=1,lives=3,donation=3;
-let gTime=0,maxMulti=1,bestDon=3,dodged=0;
-let animId,lt=0,diff=1,gameSpeed=1;
-let meteors=[],parts=[],trees=[],dustPuffs=[];
-let spT=0,dfT=0;
-const keys={};
-let touchY=null;
+// ── State ─────────────────────────────────────
+let state = 'menu';
+let score = 0, multi = 1, lives = 3, donation = 3;
+let gTime = 0, maxMulti = 1, bestDon = 3, dodged = 0;
+let animId, lt = 0, diff = 1, gSpeed = 1;
+let meteors = [], parts = [], bgTrees = [], dustPuffs = [];
+let spT = 0, dfT = 0;
+const keys = {};
+let touchStartY = null, touchCurY = null;
 
-// ── Mammoth ───────────────────────────────────
-const M={
-  x:110,y:GROUND,
-  vy:0,onGround:true,
-  legAnim:0,trunkAnim:0,
-  inv:0,
-  frame:0,
-  shake:0,
-  w:70,h:65
-};
+// ── Mammoth ────────────────────────────────────
+let M = {};
+function resetM() {
+  M = { x: 0, y: 0, vy: 0, onGround: true, legAnim: 0, trunkAnim: 0, inv: 0, shake: 0 };
+}
+resetM();
 
-// ── Scrolling trees ───────────────────────────
-function initTrees(){
-  trees=[];
-  for(let i=0;i<6;i++){
-    trees.push({x:100+i*120,h:60+Math.random()*80,type:Math.floor(Math.random()*3),spd:1.2+Math.random()*.6});
-  }
+// ── Screens ────────────────────────────────────
+function hideAll() { ['s0','s1','s2'].forEach(id => document.getElementById(id).classList.add('h')); }
+function showStart() { state = 'menu'; cancelAnimationFrame(animId); hideAll(); document.getElementById('s0').classList.remove('h'); }
+
+function showGO() {
+  state = 'gameover';
+  document.getElementById('gos').textContent = Math.floor(score) + 'm';
+  document.getElementById('gom').textContent = 'x' + maxMulti.toFixed(1);
+  document.getElementById('god').textContent = '$' + bestDon.toFixed(2);
+  document.getElementById('goe').textContent = dodged;
+  hideAll();
+  document.getElementById('s1').classList.remove('h');
 }
 
-// ── Screens ───────────────────────────────────
-function hideAll(){['s0','s1','s2'].forEach(id=>document.getElementById(id).classList.add('h'))}
-function showS(){state='menu';cancelAnimationFrame(animId);hideAll();document.getElementById('s0').classList.remove('h')}
-function showD(){hideAll();document.getElementById('s2').classList.remove('h')}
-function showGO(){
-  state='gameover';
-  document.getElementById('gos').textContent=Math.floor(score)+'m';
-  document.getElementById('gom').textContent='×'+maxMulti.toFixed(1);
-  document.getElementById('god').textContent='$'+bestDon.toFixed(2);
-  document.getElementById('goe').textContent=dodged;
-  hideAll();document.getElementById('s1').classList.remove('h');
-}
-
-// ── Start ─────────────────────────────────────
-function startGame(){
-  hideAll();state='playing';
-  score=0;multi=1;lives=3;donation=3;gTime=0;maxMulti=1;bestDon=3;dodged=0;diff=1;gameSpeed=1;
-  M.y=GROUND;M.vy=0;M.onGround=true;M.legAnim=0;M.inv=0;M.shake=0;
-  meteors=[];parts=[];dustPuffs=[];spT=0;dfT=0;
-  initTrees();
-  updateHUD();lt=performance.now();cancelAnimationFrame(animId);loop(performance.now());
-}
-
-// ── Loop ──────────────────────────────────────
-function loop(ts){
-  if(state!=='playing')return;
-  const dt=Math.min((ts-lt)/1000,.05);lt=ts;
-  update(dt);render();animId=requestAnimationFrame(loop);
-}
-
-// ── Update ────────────────────────────────────
-function update(dt){
-  gTime+=dt;dfT+=dt;spT+=dt;
-  M.legAnim+=dt*8*gameSpeed;M.trunkAnim+=dt*3;M.frame++;
-  if(M.shake>0)M.shake-=dt*8;
-
-  // Difficulty
-  if(dfT>4){diff=1+gTime/12;gameSpeed=1+gTime/20;dfT=0}
-
-  // Score & multiplier
-  score+=dt*60*gameSpeed;
-  multi=Math.round((1+gTime*.07*diff)*10)/10;
-  if(multi>maxMulti)maxMulti=multi;
-  donation=Math.round(3*multi*100)/100;
-  if(donation>bestDon)bestDon=donation;
-
-  // Jump
-  if(M.inv<=0&&(keys['ArrowUp']||keys['w']||keys['W'])&&M.onGround){
-    M.vy=-520;M.onGround=false;
-    dustPuff(M.x,GROUND);
+// ── Start game ─────────────────────────────────
+function startGame() {
+  hideAll();
+  state = 'playing';
+  score = 0; multi = 1; lives = 3; donation = 3;
+  gTime = 0; maxMulti = 1; bestDon = 3; dodged = 0;
+  diff = 1; gSpeed = 1;
+  resetM();
+  M.x = W * 0.18;
+  M.y = GROUND;
+  meteors = []; parts = []; dustPuffs = []; spT = 0; dfT = 0;
+  // BG trees
+  bgTrees = [];
+  for (let i = 0; i < 8; i++) {
+    bgTrees.push({ x: (W / 7) * i + Math.random() * 60, h: H * 0.15 + Math.random() * H * 0.15, type: Math.floor(Math.random() * 3), spd: 0.6 + Math.random() * 0.5 });
   }
-  if(touchY!==null&&touchY<H*.5&&M.onGround&&M.inv<=0){
-    M.vy=-520;M.onGround=false;dustPuff(M.x,GROUND);
-  }
+  updateHUD();
+  lt = performance.now();
+  cancelAnimationFrame(animId);
+  loop(performance.now());
+}
 
-  // Duck
-  const duck=(keys['ArrowDown']||keys['s']||keys['S'])||(touchY!==null&&touchY>H*.6);
+// ── Loop ───────────────────────────────────────
+function loop(ts) {
+  if (state !== 'playing') return;
+  const dt = Math.min((ts - lt) / 1000, 0.05);
+  lt = ts;
+  update(dt);
+  render();
+  animId = requestAnimationFrame(loop);
+}
+
+// ── Update ─────────────────────────────────────
+function update(dt) {
+  gTime += dt; dfT += dt; spT += dt;
+  M.legAnim += dt * 7 * gSpeed;
+  M.trunkAnim += dt * 2.5;
+  if (M.shake > 0) M.shake -= dt * 10;
+
+  if (dfT > 4) { diff = 1 + gTime / 12; gSpeed = 1 + gTime / 22; dfT = 0; }
+
+  score += dt * 55 * gSpeed;
+  multi = Math.round((1 + gTime * 0.06 * diff) * 10) / 10;
+  if (multi > maxMulti) maxMulti = multi;
+  donation = Math.round(3 * multi * 100) / 100;
+  if (donation > bestDon) bestDon = donation;
+
+  // Jump input
+  const wantJump = keys['ArrowUp'] || keys['w'] || keys['W'] || keys[' '] ||
+    (touchCurY !== null && touchCurY < H * 0.5);
+  const wantDuck = keys['ArrowDown'] || keys['s'] || keys['S'] ||
+    (touchCurY !== null && touchCurY > H * 0.65);
+
+  if (wantJump && M.onGround && M.inv <= 0) {
+    M.vy = -H * 1.1;
+    M.onGround = false;
+    spawnDust(M.x, GROUND);
+  }
 
   // Gravity
-  if(!M.onGround){M.vy+=1400*dt;M.y+=M.vy*dt}
-  if(M.y>=GROUND){M.y=GROUND;M.vy=0;M.onGround=true}
+  M.vy += H * 2.8 * dt;
+  M.y += M.vy * dt;
+  if (M.y >= GROUND) { M.y = GROUND; M.vy = 0; M.onGround = true; }
+  if (M.inv > 0) M.inv -= dt;
 
-  if(M.inv>0)M.inv-=dt;
-
-  // Scroll trees
-  trees.forEach(t=>{
-    t.x-=t.spd*gameSpeed*120*dt;
-    if(t.x<-60)t.x=W+Math.random()*100;
+  // Trees scroll
+  bgTrees.forEach(t => {
+    t.x -= t.spd * gSpeed * W * 0.18 * dt;
+    if (t.x < -80) t.x = W + Math.random() * 100;
   });
 
   // Spawn meteors
-  const sr=Math.max(.4,1.8/diff);
-  if(spT>sr){spT=0;spawnMeteor()}
+  if (spT > Math.max(0.45, 1.7 / diff)) {
+    spT = 0;
+    spawnMeteor();
+  }
 
   // Update meteors
-  meteors=meteors.filter(m=>{
-    m.x+=m.vx*dt;m.y+=m.vy*dt;m.rot+=m.rs*dt;
-    // Tail
-    m.tail.unshift({x:m.x,y:m.y});if(m.tail.length>15)m.tail.pop();
-    if(m.y>H+50||m.x<-100){if(m.y>H-100&&!m.hit){dodged++;showCombo();}return false}
+  meteors = meteors.filter(m => {
+    m.x += m.vx * dt;
+    m.y += m.vy * dt;
+    m.rot += m.rs * dt;
+    m.tail.unshift({ x: m.x, y: m.y });
+    if (m.tail.length > 14) m.tail.pop();
+    if (m.y > H + 60 || m.x < -120) {
+      if (!m.hit) { dodged++; showCombo(); }
+      return false;
+    }
     return true;
   });
 
-  // Dust puffs
-  dustPuffs=dustPuffs.filter(d=>{d.x+=d.vx*dt;d.y+=d.vy*dt;d.life-=dt;d.r+=dt*10;return d.life>0});
-  parts=parts.filter(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=300*dt;p.life-=dt;p.r*=.95;return p.life>0});
+  // Particles
+  dustPuffs = dustPuffs.filter(d => { d.x += d.vx * dt; d.y += d.vy * dt; d.life -= dt; d.r += dt * 12; return d.life > 0; });
+  parts = parts.filter(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 350 * dt; p.life -= dt; p.r *= 0.95; return p.life > 0; });
 
-  // Collisions
-  if(M.inv<=0){
-    const mh=duck?M.h*.5:M.h,my=duck?M.y-mh*.5:M.y-mh;
-    for(const m of meteors){
-      if(!m.hit&&Math.abs(m.x-M.x)<35&&m.y>my&&m.y<M.y+10){
-        m.hit=true;hit(m.x,m.y);break;
+  // Collision
+  if (M.inv <= 0) {
+    const mw = W * 0.07, mh = wantDuck ? H * 0.1 : H * 0.14;
+    const mx1 = M.x - mw, mx2 = M.x + mw;
+    const my1 = M.y - mh * 2, my2 = M.y;
+    for (const m of meteors) {
+      if (!m.hit && m.x > mx1 && m.x < mx2 && m.y > my1 && m.y < my2) {
+        m.hit = true;
+        hitPlayer(m.x, m.y);
+        break;
       }
     }
   }
   updateHUD();
 }
 
-function hit(x,y){
-  lives--;M.inv=2;M.shake=1;
-  boom(x,y);boom(M.x,M.y-30);
-  if(lives<=0){lives=0;state='dying';updateHUD();setTimeout(showGO,800)}
+function hitPlayer(x, y) {
+  lives--;
+  M.inv = 2.2;
+  M.shake = 1;
+  spawnBoom(x, y);
+  spawnBoom(M.x, M.y - H * 0.08);
+  if (lives <= 0) { lives = 0; state = 'dying'; updateHUD(); setTimeout(showGO, 800); }
 }
 
-function spawnMeteor(){
-  // From top-right, diagonal
-  const startX=W+30+Math.random()*100;
-  const startY=-30+Math.random()*H*.3;
-  const speed=(300+Math.random()*200)*diff;
-  const angle=Math.PI*.65+Math.random()*.3;
-  const size=18+Math.random()*22;
+function spawnMeteor() {
+  const spd = (W * 0.55 + Math.random() * W * 0.35) * diff;
+  const angle = Math.PI * 0.62 + Math.random() * 0.28;
+  const size = W * 0.035 + Math.random() * W * 0.04;
   meteors.push({
-    x:startX,y:startY,
-    vx:-Math.cos(angle)*speed,
-    vy:Math.sin(angle)*speed,
-    rot:0,rs:(Math.random()-.5)*6,
-    r:size,tail:[],hit:false,
-    color:`hsl(${20+Math.random()*20},80%,${40+Math.random()*20}%)`
+    x: W + 40 + Math.random() * W * 0.2,
+    y: -40 + Math.random() * H * 0.35,
+    vx: -Math.cos(angle) * spd,
+    vy: Math.sin(angle) * spd,
+    rot: 0, rs: (Math.random() - 0.5) * 5,
+    r: size, tail: [], hit: false
   });
 }
 
-function boom(x,y){
-  for(let i=0;i<20;i++){
-    const a=Math.random()*Math.PI*2,sp=80+Math.random()*180;
-    const cols=['#ff4400','#ff8800','#ffcc00','#cc2200','#ff6600'];
-    parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-100,r:3+Math.random()*6,color:cols[Math.floor(Math.random()*cols.length)],life:.6+Math.random()*.5});
+function spawnBoom(x, y) {
+  const cols = ['#ff4400','#ff8800','#ffcc00','#cc2200','#ff6600'];
+  for (let i = 0; i < 22; i++) {
+    const a = Math.random() * Math.PI * 2, sp = W * 0.1 + Math.random() * W * 0.22;
+    parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - W * 0.1, r: W * 0.005 + Math.random() * W * 0.01, color: cols[Math.floor(Math.random() * cols.length)], life: 0.6 + Math.random() * 0.5 });
   }
 }
 
-function dustPuff(x,y){
-  for(let i=0;i<8;i++){
-    const a=Math.PI+Math.random()*Math.PI;
-    dustPuffs.push({x,y,vx:Math.cos(a)*60,vy:Math.sin(a)*40-40,r:4+Math.random()*6,life:.4+Math.random()*.2});
+function spawnDust(x, y) {
+  for (let i = 0; i < 8; i++) {
+    const a = Math.PI + Math.random() * Math.PI;
+    dustPuffs.push({ x, y, vx: Math.cos(a) * W * 0.06, vy: -H * 0.04, r: W * 0.008 + Math.random() * W * 0.01, life: 0.35 });
   }
 }
 
-let comboTimeout;
-function showCombo(){
-  const el=document.getElementById('combo');
-  const combos=['¡ESQUIVADO!','¡BRUTAL!','¡ÉPICO!','¡PREHISTORIC!','¡MAMUT POWER!'];
-  el.textContent=combos[Math.floor(Math.random()*combos.length)];
-  el.style.color=`hsl(${30+Math.random()*40},100%,60%)`;
-  el.style.opacity='1';
-  clearTimeout(comboTimeout);comboTimeout=setTimeout(()=>el.style.opacity='0',700);
+let comboTO;
+function showCombo() {
+  const el = document.getElementById('combo');
+  const msgs = ['ESQUIVADO!','BRUTAL!','EPICO!','PREHISTORIC!','MAMUT POWER!','IMPARABLE!'];
+  el.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  el.style.color = `hsl(${25 + Math.random() * 35},100%,60%)`;
+  el.style.textShadow = `0 0 20px ${el.style.color}`;
+  el.style.opacity = '1';
+  clearTimeout(comboTO);
+  comboTO = setTimeout(() => el.style.opacity = '0', 750);
 }
 
-// ══════════════════════════════════════════════
-// RENDER
-// ══════════════════════════════════════════════
-function render(){
-  ctx.clearRect(0,0,W,H);
+// ── Render ─────────────────────────────────────
+function render() {
+  ctx.clearRect(0, 0, W, H);
 
-  // Sky — dark jurassic
-  const sky=ctx.createLinearGradient(0,0,0,H);
-  sky.addColorStop(0,'#080210');sky.addColorStop(.5,'#150608');sky.addColorStop(1,'#1a0a02');
-  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+  // Sky
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#080112');
+  sky.addColorStop(0.4, '#160608');
+  sky.addColorStop(1, '#1f0a02');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
 
-  // Volcano glow far
-  const vg=ctx.createRadialGradient(W*.7,H*.2,0,W*.7,H*.2,180);
-  vg.addColorStop(0,'rgba(255,60,0,.18)');vg.addColorStop(1,'transparent');
-  ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
-
-  // Floating embers
-  for(let i=0;i<5;i++){
-    const ex=(gTime*30+i*137)%W,ey=H*.8-((gTime*20+i*79)%H*.7);
-    ctx.beginPath();ctx.arc(ex,ey,1,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,100,0,${.2+Math.sin(gTime+i)*.15})`;ctx.fill();
+  // Stars
+  for (let i = 0; i < 60; i++) {
+    const sx = (i * 137.5 + gTime * 3) % W;
+    const sy = (i * 97.3) % (H * 0.55);
+    const sa = 0.3 + Math.sin(gTime * 2 + i) * 0.2;
+    ctx.beginPath(); ctx.arc(sx, sy, 0.8, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,220,180,${sa})`; ctx.fill();
   }
 
-  // Trees (silhouettes)
-  trees.forEach(t=>{drawTree(t.x,GROUND,t.h,t.type)});
+  // Volcano glow
+  const vg = ctx.createRadialGradient(W * 0.75, H * 0.22, 0, W * 0.75, H * 0.22, H * 0.4);
+  vg.addColorStop(0, 'rgba(255,60,0,.2)'); vg.addColorStop(1, 'transparent');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+
+  // Volcano silhouette
+  ctx.beginPath();
+  ctx.moveTo(W * 0.5, H * 0.65);
+  ctx.lineTo(W * 0.72, H * 0.08);
+  ctx.lineTo(W * 0.94, H * 0.65);
+  ctx.closePath();
+  const volG = ctx.createLinearGradient(W * 0.72, H * 0.08, W * 0.72, H * 0.65);
+  volG.addColorStop(0, '#120303'); volG.addColorStop(1, '#1e0a04');
+  ctx.fillStyle = volG; ctx.fill();
+
+  // Lava stream
+  ctx.beginPath();
+  ctx.moveTo(W * 0.695, H * 0.1);
+  ctx.quadraticCurveTo(W * 0.67, H * 0.35, W * 0.68, H * 0.65);
+  ctx.strokeStyle = '#cc4400'; ctx.lineWidth = 4; ctx.stroke();
+
+  // Embers
+  for (let i = 0; i < 6; i++) {
+    const ex = W * 0.72 + Math.sin(gTime * 1.5 + i * 1.3) * W * 0.04;
+    const ey = H * 0.08 - ((gTime * 25 + i * 40) % (H * 0.3));
+    if (ey > 0) {
+      ctx.beginPath(); ctx.arc(ex, ey, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,${80 + i * 20},0,0.6)`; ctx.fill();
+    }
+  }
+
+  // BG Trees silhouettes
+  bgTrees.forEach(t => drawTree(t.x, GROUND, t.h, t.type));
 
   // Ground
-  const gr=ctx.createLinearGradient(0,GROUND,0,H);
-  gr.addColorStop(0,'#2a1a06');gr.addColorStop(.3,'#1a0f04');gr.addColorStop(1,'#0a0802');
-  ctx.fillStyle=gr;ctx.fillRect(0,GROUND,W,H-GROUND);
+  const gr = ctx.createLinearGradient(0, GROUND, 0, H);
+  gr.addColorStop(0, '#2a1a06'); gr.addColorStop(0.4, '#180e04'); gr.addColorStop(1, '#0a0802');
+  ctx.fillStyle = gr; ctx.fillRect(0, GROUND, W, H - GROUND);
 
-  // Ground cracks glow
-  for(let i=0;i<5;i++){
-    const cx=((i*137+gTime*15)%W);
-    ctx.beginPath();ctx.moveTo(cx,GROUND+2);ctx.lineTo(cx+20,GROUND+12);ctx.lineTo(cx+10,GROUND+18);
-    ctx.strokeStyle='rgba(255,50,0,.12)';ctx.lineWidth=1;ctx.stroke();
+  // Ground glow line
+  ctx.beginPath(); ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND);
+  ctx.strokeStyle = 'rgba(255,100,0,.35)'; ctx.lineWidth = 2; ctx.stroke();
+
+  // Ground cracks
+  for (let i = 0; i < 4; i++) {
+    const cx = ((i * W * 0.28 + gTime * 30) % W);
+    ctx.beginPath(); ctx.moveTo(cx, GROUND + 3); ctx.lineTo(cx + 20, GROUND + 14); ctx.lineTo(cx + 8, GROUND + 20);
+    ctx.strokeStyle = 'rgba(255,50,0,.1)'; ctx.lineWidth = 1; ctx.stroke();
   }
 
-  // Ground line
-  ctx.beginPath();ctx.moveTo(0,GROUND);ctx.lineTo(W,GROUND);
-  ctx.strokeStyle='rgba(255,100,0,.3)';ctx.lineWidth=2;ctx.stroke();
-
-  // Dust puffs
-  dustPuffs.forEach(d=>{
-    ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(180,120,60,${d.life*0.6})`;ctx.fill();
+  // Dust
+  dustPuffs.forEach(d => {
+    ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(180,120,60,${d.life * 0.5})`; ctx.fill();
   });
 
   // Particles
-  parts.forEach(p=>{
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=p.color+Math.floor(p.life*200).toString(16).padStart(2,'0');ctx.fill();
+  parts.forEach(p => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color + Math.floor(p.life * 200).toString(16).padStart(2, '0'); ctx.fill();
   });
 
   // Meteors
-  meteors.forEach(m=>{
-    // Tail / trail
-    m.tail.forEach((pt,i)=>{
-      const t=1-i/m.tail.length;
-      ctx.beginPath();ctx.arc(pt.x,pt.y,m.r*t*.7,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,${100+Math.floor(t*100)},0,${t*.5})`;ctx.fill();
+  meteors.forEach(m => {
+    m.tail.forEach((pt, i) => {
+      const t = 1 - i / m.tail.length;
+      ctx.beginPath(); ctx.arc(pt.x, pt.y, m.r * t * 0.65, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,${100 + Math.floor(t * 80)},0,${t * 0.55})`; ctx.fill();
     });
-    // Glow
-    const mg=ctx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*2.5);
-    mg.addColorStop(0,'rgba(255,150,0,.3)');mg.addColorStop(1,'transparent');
-    ctx.fillStyle=mg;ctx.fillRect(m.x-m.r*3,m.y-m.r*3,m.r*6,m.r*6);
-    // Rock
-    ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.rot);
+    const mg = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 2.5);
+    mg.addColorStop(0, 'rgba(255,120,0,.25)'); mg.addColorStop(1, 'transparent');
+    ctx.fillStyle = mg; ctx.fillRect(m.x - m.r * 3, m.y - m.r * 3, m.r * 6, m.r * 6);
+    ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.rot);
     ctx.beginPath();
-    const pts=8;
-    for(let i=0;i<pts;i++){
-      const a=i/pts*Math.PI*2,r=m.r*(.7+Math.sin(i*2.3)*.3);
-      i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+    for (let i = 0; i < 8; i++) {
+      const a = i / 8 * Math.PI * 2, r = m.r * (0.7 + Math.sin(i * 2.1) * 0.3);
+      i === 0 ? ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r) : ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
     }
     ctx.closePath();
-    const rg=ctx.createRadialGradient(0,0,0,0,0,m.r);
-    rg.addColorStop(0,'#cc8840');rg.addColorStop(.6,m.color);rg.addColorStop(1,'#1a0800');
-    ctx.fillStyle=rg;ctx.fill();
-    ctx.strokeStyle='rgba(255,150,50,.5)';ctx.lineWidth=1.5;ctx.stroke();
+    const rg = ctx.createRadialGradient(0, 0, 0, 0, 0, m.r);
+    rg.addColorStop(0, '#dd9940'); rg.addColorStop(0.6, '#994422'); rg.addColorStop(1, '#1a0800');
+    ctx.fillStyle = rg; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,140,50,.45)'; ctx.lineWidth = 1.5; ctx.stroke();
     ctx.restore();
   });
 
-  // ── MAMMOTH ──────────────────────────────────
-  const duck=(keys['ArrowDown']||keys['s']||keys['S'])||(touchY!==null&&touchY>H*.6);
-  const sx=M.shake>0?(Math.random()-.5)*6:0;
-  const mx=M.x+sx,my=M.y;
-  const blink=M.inv>0&&Math.floor(M.inv*8)%2===0;
-
-  if(!blink){
-    const scaleY=duck?.65:1;
-    ctx.save();ctx.translate(mx,my);ctx.scale(1,scaleY);
-    drawMammoth(duck);
+  // ── Mammoth ──────────────────────────────────
+  const wantDuck = keys['ArrowDown'] || keys['s'] || keys['S'] || (touchCurY !== null && touchCurY > H * 0.65);
+  const blink = M.inv > 0 && Math.floor(M.inv * 8) % 2 === 0;
+  if (!blink) {
+    const sx = M.shake > 0 ? (Math.random() - 0.5) * 8 : 0;
+    ctx.save();
+    ctx.translate(M.x + sx, M.y);
+    if (wantDuck) ctx.scale(1, 0.65);
+    drawMammoth();
     ctx.restore();
   }
 
-  // Multiplier overlay
-  if(multi>4){
-    ctx.save();ctx.globalAlpha=Math.min((multi-4)*.012,.1);
-    ctx.fillStyle='#ff4400';ctx.fillRect(0,0,W,H);ctx.restore();
+  // High multiplier overlay
+  if (multi > 5) {
+    ctx.save();
+    ctx.globalAlpha = Math.min((multi - 5) * 0.01, 0.1);
+    ctx.fillStyle = '#ff4400';
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
   }
 }
 
-function drawTree(x,y,h,type){
-  if(type===0){
-    // Palm-fern
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-h);
-    ctx.strokeStyle='rgba(10,20,5,.9)';ctx.lineWidth=5;ctx.stroke();
-    for(let i=0;i<6;i++){
-      const a=-Math.PI*.5+(i/6-.5)*1.4;
-      ctx.beginPath();ctx.moveTo(x,y-h);
-      ctx.quadraticCurveTo(x+Math.cos(a)*h*.4,y-h+Math.sin(a)*h*.2,x+Math.cos(a)*h*.7,y-h+Math.sin(a)*h*.4);
-      ctx.strokeStyle='rgba(8,25,3,.95)';ctx.lineWidth=3;ctx.stroke();
+function drawTree(x, y, h, type) {
+  ctx.save();
+  if (type === 0) {
+    ctx.strokeStyle = 'rgba(8,18,3,.92)'; ctx.lineWidth = W * 0.009; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - h); ctx.stroke();
+    for (let i = 0; i < 7; i++) {
+      const a = -Math.PI * 0.5 + (i / 6 - 0.5) * 1.5;
+      ctx.beginPath(); ctx.moveTo(x, y - h);
+      ctx.quadraticCurveTo(x + Math.cos(a) * h * 0.35, y - h + Math.sin(a) * h * 0.18, x + Math.cos(a) * h * 0.65, y - h + Math.sin(a) * h * 0.38);
+      ctx.strokeStyle = 'rgba(6,20,2,.95)'; ctx.lineWidth = W * 0.005; ctx.stroke();
     }
-  } else if(type===1){
-    // Dead tree
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-5,y-h);ctx.lineTo(x+3,y-h*.9);
-    ctx.strokeStyle='rgba(15,8,3,.9)';ctx.lineWidth=7;ctx.stroke();
-    ctx.beginPath();ctx.moveTo(x-2,y-h*.6);ctx.lineTo(x+h*.3,y-h*.8);
-    ctx.strokeStyle='rgba(15,8,3,.9)';ctx.lineWidth=4;ctx.stroke();
+  } else if (type === 1) {
+    ctx.strokeStyle = 'rgba(14,7,3,.92)'; ctx.lineWidth = W * 0.012; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 4, y - h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 2, y - h * 0.55); ctx.lineTo(x + h * 0.28, y - h * 0.75); ctx.lineWidth = W * 0.006; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 2, y - h * 0.75); ctx.lineTo(x - h * 0.22, y - h * 0.9); ctx.stroke();
   } else {
-    // Giant fern
-    for(let i=0;i<5;i++){
-      const a=-Math.PI*.6+i/4*Math.PI*.5;
-      ctx.beginPath();ctx.moveTo(x,y);
-      ctx.quadraticCurveTo(x+Math.cos(a)*h*.5,y-h*.5,x+Math.cos(a)*h*.8,y-h);
-      ctx.strokeStyle='rgba(5,18,2,.95)';ctx.lineWidth=4-i*.5;ctx.stroke();
+    for (let i = 0; i < 5; i++) {
+      const a = -Math.PI * 0.65 + i / 4 * Math.PI * 0.55;
+      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.quadraticCurveTo(x + Math.cos(a) * h * 0.45, y - h * 0.45, x + Math.cos(a) * h * 0.75, y - h);
+      ctx.strokeStyle = 'rgba(4,16,2,.95)'; ctx.lineWidth = W * 0.005 - i * 0.4; ctx.lineCap = 'round'; ctx.stroke();
     }
-  }
-}
-
-function drawMammoth(duck){
-  const t=M.legAnim,tr=M.trunkAnim;
-  const bodyH=duck?28:45,bodyW=60;
-  const bodyY=duck?-bodyH*1.1:-bodyH*1.4;
-
-  // Shadow
-  ctx.beginPath();ctx.ellipse(0,0,30,8,0,0,Math.PI*2);
-  ctx.fillStyle='rgba(0,0,0,.4)';ctx.fill();
-
-  // Legs (4)
-  if(!duck){
-    const legPairs=[[−18,0],[18,0],[−12,0],[12,0]];
-    const legSwings=[Math.sin(t),Math.sin(t+Math.PI),Math.sin(t+.5),Math.sin(t+Math.PI+.5)];
-    for(let i=0;i<4;i++){
-      const lx=i<2?-18+i*12:−8+i*4;
-      const swing=legSwings[i]*12;
-      ctx.beginPath();
-      ctx.moveTo(lx,bodyY+bodyH);
-      ctx.lineTo(lx+swing,bodyY+bodyH+25);
-      ctx.lineTo(lx+swing+5,bodyY+bodyH+38);
-      ctx.strokeStyle='#5a3a18';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke();
-      // Foot
-      ctx.beginPath();ctx.ellipse(lx+swing+5,bodyY+bodyH+38,8,4,0,0,Math.PI*2);
-      ctx.fillStyle='#3a2510';ctx.fill();
-    }
-  } else {
-    // Crouched legs
-    for(let i=0;i<4;i++){
-      const lx=-18+i*12;
-      ctx.beginPath();ctx.moveTo(lx,bodyY+bodyH);ctx.lineTo(lx+10,bodyY+bodyH+15);
-      ctx.strokeStyle='#5a3a18';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke();
-    }
-  }
-
-  // Body
-  ctx.beginPath();ctx.ellipse(0,bodyY+bodyH*.5,bodyW*.5,bodyH*.5,0,0,Math.PI*2);
-  const bg=ctx.createRadialGradient(-10,bodyY+bodyH*.3,5,-10,bodyY+bodyH*.3,55);
-  bg.addColorStop(0,'#8b6030');bg.addColorStop(.5,'#6b4820');bg.addColorStop(1,'#3a2510');
-  ctx.fillStyle=bg;ctx.fill();
-
-  // Fur texture lines
-  ctx.save();ctx.clip();
-  for(let i=0;i<12;i++){
-    const fx=-30+i*6,fy=bodyY+Math.random()*bodyH;
-    ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx+4,fy+8);
-    ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1.5;ctx.stroke();
   }
   ctx.restore();
+}
+
+function drawMammoth() {
+  const t = M.legAnim, tr = M.trunkAnim;
+  const sc = Math.min(W, H) / 500;
+  const s = sc * 1.1;
+
+  ctx.save(); ctx.scale(s, s);
+
+  const bH = 42, bW = 58, bY = -bH * 1.35;
+
+  // Shadow
+  ctx.beginPath(); ctx.ellipse(0, -2, 28, 7, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fill();
+
+  // Legs
+  const legX = [-16, -6, 6, 16];
+  const legSwing = [Math.sin(t), Math.sin(t + Math.PI), Math.sin(t + 0.5), Math.sin(t + Math.PI + 0.5)];
+  legX.forEach((lx, i) => {
+    const sw = legSwing[i] * 10;
+    ctx.beginPath();
+    ctx.moveTo(lx, bY + bH);
+    ctx.lineTo(lx + sw, bY + bH + 22);
+    ctx.lineTo(lx + sw + 4, bY + bH + 34);
+    ctx.strokeStyle = '#5a3a18'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(lx + sw + 4, bY + bH + 34, 7, 4, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#3a2510'; ctx.fill();
+  });
+
+  // Body
+  ctx.beginPath(); ctx.ellipse(0, bY + bH * 0.5, bW * 0.5, bH * 0.5, 0, 0, Math.PI * 2);
+  const bg = ctx.createRadialGradient(-10, bY + bH * 0.3, 4, -10, bY + bH * 0.3, 52);
+  bg.addColorStop(0, '#9b7040'); bg.addColorStop(0.5, '#7a5228'); bg.addColorStop(1, '#3a2510');
+  ctx.fillStyle = bg; ctx.fill();
+
+  // Fur details
+  for (let i = 0; i < 10; i++) {
+    ctx.beginPath();
+    ctx.moveTo(-26 + i * 6, bY + bH * 0.2 + Math.sin(i) * 8);
+    ctx.lineTo(-24 + i * 6, bY + bH * 0.2 + Math.sin(i) * 8 + 9);
+    ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = 2; ctx.stroke();
+  }
 
   // Head
-  const hx=-20,hy=bodyY-18;
-  ctx.beginPath();ctx.ellipse(hx,hy,22,20,-.2,0,Math.PI*2);
-  ctx.fillStyle='#7a5228';ctx.fill();
+  const hx = -18, hy = bY - 16;
+  ctx.beginPath(); ctx.ellipse(hx, hy, 20, 19, -0.15, 0, Math.PI * 2);
+  ctx.fillStyle = '#8a6030'; ctx.fill();
 
   // Ear
-  ctx.beginPath();ctx.ellipse(hx+8,hy-8,10,14,.3,0,Math.PI*2);
-  ctx.fillStyle='#6b4420';ctx.fill();
-  ctx.beginPath();ctx.ellipse(hx+8,hy-8,6,10,.3,0,Math.PI*2);
-  ctx.fillStyle='#8b5a30';ctx.fill();
+  ctx.beginPath(); ctx.ellipse(hx + 8, hy - 7, 9, 13, 0.25, 0, Math.PI * 2);
+  ctx.fillStyle = '#6b4420'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(hx + 8, hy - 7, 5, 9, 0.25, 0, Math.PI * 2);
+  ctx.fillStyle = '#9a6838'; ctx.fill();
 
   // Tusks
   ctx.beginPath();
-  ctx.moveTo(hx-12,hy+8);
-  ctx.quadraticCurveTo(hx-30,hy+18,hx-35,hy+6);
-  ctx.strokeStyle='#f0e0c0';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();
+  ctx.moveTo(hx - 11, hy + 7);
+  ctx.quadraticCurveTo(hx - 28, hy + 17, hx - 33, hy + 5);
+  ctx.strokeStyle = '#f0e0c0'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(hx-10,hy+10);
-  ctx.quadraticCurveTo(hx-26,hy+22,hx-30,hy+14);
-  ctx.strokeStyle='#e8d8b0';ctx.lineWidth=3.5;ctx.lineCap='round';ctx.stroke();
+  ctx.moveTo(hx - 9, hy + 9);
+  ctx.quadraticCurveTo(hx - 24, hy + 21, hx - 28, hy + 13);
+  ctx.strokeStyle = '#e0d0a8'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
 
   // Eye
-  ctx.beginPath();ctx.arc(hx-8,hy-5,4,0,Math.PI*2);ctx.fillStyle='#1a0f08';ctx.fill();
-  ctx.beginPath();ctx.arc(hx-7,hy-6,1.5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath(); ctx.arc(hx - 7, hy - 4, 4, 0, Math.PI * 2); ctx.fillStyle = '#1a0f08'; ctx.fill();
+  ctx.beginPath(); ctx.arc(hx - 6, hy - 5, 1.5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
 
-  // Trunk (animated)
-  const trunkDrop=Math.sin(tr)*8;
+  // Trunk
+  const td = Math.sin(tr) * 7;
   ctx.beginPath();
-  ctx.moveTo(hx-14,hy+5);
-  ctx.quadraticCurveTo(hx-30,hy+20+trunkDrop,hx-22,hy+32+trunkDrop);
-  ctx.quadraticCurveTo(hx-14,hy+38+trunkDrop,hx-8,hy+30+trunkDrop);
-  ctx.strokeStyle='#7a5228';ctx.lineWidth=10;ctx.lineCap='round';ctx.stroke();
-  ctx.strokeStyle='#6a4218';ctx.lineWidth=7;ctx.stroke();
+  ctx.moveTo(hx - 13, hy + 4);
+  ctx.quadraticCurveTo(hx - 28, hy + 18 + td, hx - 20, hy + 30 + td);
+  ctx.quadraticCurveTo(hx - 12, hy + 36 + td, hx - 6, hy + 28 + td);
+  ctx.strokeStyle = '#8a6030'; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
+  ctx.strokeStyle = '#6a4218'; ctx.lineWidth = 7; ctx.stroke();
 
-  // Fur on top of head (hair)
-  for(let i=0;i<6;i++){
-    ctx.beginPath();ctx.moveTo(hx-5+i*3,hy-16);
-    ctx.lineTo(hx-8+i*3+Math.sin(tr+i)*.3,hy-26-i*.5);
-    ctx.strokeStyle='#5a3818';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+  // Hair tufts
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.moveTo(hx - 4 + i * 3, hy - 15);
+    ctx.lineTo(hx - 7 + i * 3 + Math.sin(tr + i) * 2, hy - 24 - i * 0.5);
+    ctx.strokeStyle = '#5a3818'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
   }
 
   // Tail
-  ctx.beginPath();ctx.moveTo(25,bodyY+bodyH*.3);
-  ctx.quadraticCurveTo(38,bodyY+bodyH*.2+Math.sin(t)*5,40,bodyY+bodyH*.1);
-  ctx.strokeStyle='#6b4820';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();
-  // Tail tuft
-  ctx.beginPath();ctx.arc(40,bodyY+bodyH*.1,5,0,Math.PI*2);ctx.fillStyle='#4a3010';ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(24, bY + bH * 0.3);
+  ctx.quadraticCurveTo(36, bY + bH * 0.15 + Math.sin(t) * 5, 38, bY + bH * 0.05);
+  ctx.strokeStyle = '#6b4820'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(38, bY + bH * 0.05, 4, 0, Math.PI * 2); ctx.fillStyle = '#4a3010'; ctx.fill();
+
+  ctx.restore();
 }
 
 // ── HUD ───────────────────────────────────────
-function updateHUD(){
-  document.getElementById('hs').textContent=Math.floor(score)+'m';
-  document.getElementById('hm').textContent='×'+multi.toFixed(1);
-  document.getElementById('hd').textContent='$'+donation.toFixed(2);
-  const b='🦴'.repeat(Math.max(0,lives))+'💀'.repeat(Math.max(0,3-lives));
-  document.getElementById('hl').textContent=b;
+function updateHUD() {
+  document.getElementById('hs').textContent = Math.floor(score) + 'm';
+  document.getElementById('hm').textContent = 'x' + multi.toFixed(1);
+  document.getElementById('hd').textContent = '$' + donation.toFixed(2);
+  document.getElementById('hl').textContent = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, 3 - lives));
 }
 
 // ── Input ─────────────────────────────────────
-window.addEventListener('keydown',e=>{keys[e.key]=true;['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)&&e.preventDefault()});
-window.addEventListener('keyup',e=>keys[e.key]=false);
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+});
+window.addEventListener('keyup', e => keys[e.key] = false);
 
-cv.addEventListener('touchstart',e=>{e.preventDefault();const r=cv.getBoundingClientRect(),sy=480/r.height;touchY=(e.touches[0].clientY-r.top)*sy},{passive:false});
-cv.addEventListener('touchmove',e=>{e.preventDefault();const r=cv.getBoundingClientRect(),sy=480/r.height;touchY=(e.touches[0].clientY-r.top)*sy},{passive:false});
-cv.addEventListener('touchend',()=>touchY=null);
-cv.addEventListener('click',e=>{if(state==='playing'){const r=cv.getBoundingClientRect(),sy=480/r.height;const y=(e.clientY-r.top)*sy;if(y<H*.5&&M.onGround){M.vy=-520;M.onGround=false;dustPuff(M.x,GROUND)}}});
+const cvWrap = document.getElementById('cv-wrap');
+cvWrap.addEventListener('touchstart', e => {
+  if (state !== 'playing') return;
+  e.preventDefault();
+  const r = cv.getBoundingClientRect();
+  touchStartY = (e.touches[0].clientY - r.top) * (H / r.height);
+  touchCurY = touchStartY;
+}, { passive: false });
 
-// Fix negative number unicode issues
-function fixNeg(n){return n}
+cvWrap.addEventListener('touchmove', e => {
+  if (state !== 'playing') return;
+  e.preventDefault();
+  const r = cv.getBoundingClientRect();
+  touchCurY = (e.touches[0].clientY - r.top) * (H / r.height);
+}, { passive: false });
+
+cvWrap.addEventListener('touchend', () => { touchCurY = null; touchStartY = null; });
 </script>
 </body>
 </html>
