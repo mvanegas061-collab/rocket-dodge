@@ -8,252 +8,112 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #060608;
-  --bg2:      #0d0d12;
-  --surface:  rgba(16,16,22,0.9);
-  --surf2:    rgba(255,255,255,0.04);
-  --border:   rgba(255,255,255,0.06);
-  --btc:      #F7931A;
-  --btc-lo:   rgba(247,147,26,0.12);
-  --btc-glow: rgba(247,147,26,0.5);
-  --up:       #00E5A0;
-  --up-lo:    rgba(0,229,160,0.12);
-  --dn:       #FF3B5C;
-  --dn-lo:    rgba(255,59,92,0.12);
-  --txt:      #EEE9E0;
-  --txt2:     #6B6B7A;
-  --txt3:     #9999AA;
-  --r:        22px;
+  --bg:#060608;--surface:rgba(16,16,22,0.92);--surf2:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.07);--btc:#F7931A;--btc-lo:rgba(247,147,26,0.12);
+  --btc-glow:rgba(247,147,26,0.5);--up:#00E5A0;--up-lo:rgba(0,229,160,0.12);
+  --dn:#FF3B5C;--dn-lo:rgba(255,59,92,0.12);--txt:#EEE9E0;
+  --txt2:#6B6B7A;--txt3:#9999AA;--r:22px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--txt);
-  min-height:100vh;
-  overflow-x:hidden;
-}
-body::after{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(247,147,26,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at -10% 80%, rgba(0,229,160,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 40% at 110% 50%, rgba(255,59,92,0.04) 0%, transparent 50%);
-}
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.4;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-}
-#app{
-  position:relative;z-index:1;
-  max-width:430px;margin:0 auto;
-  padding:16px 14px 100px;
-  display:flex;flex-direction:column;gap:12px;
-}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(247,147,26,0.07) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 40% at -10% 80%,rgba(0,229,160,0.04) 0%,transparent 50%)}
+#app{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:16px 14px 100px;display:flex;flex-direction:column;gap:12px}
 
 /* HEADER */
 .hdr{display:flex;justify-content:space-between;align-items:center;padding:20px 2px 10px}
 .hdr-left{display:flex;align-items:center;gap:12px}
-.btc-icon{
-  width:44px;height:44px;border-radius:14px;
-  background:var(--btc);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;font-size:22px;color:#000;
-  box-shadow:0 0 28px var(--btc-glow),0 4px 12px rgba(0,0,0,0.5);
-  flex-shrink:0;
-}
-.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;color:var(--txt)}
+.btc-icon{width:44px;height:44px;border-radius:14px;background:var(--btc);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:#000;box-shadow:0 0 28px var(--btc-glow),0 4px 12px rgba(0,0,0,0.5);flex-shrink:0}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em}
 .hdr-sub{font-size:9px;color:var(--txt2);letter-spacing:0.2em;text-transform:uppercase;margin-top:1px}
-.live-pill{
-  display:flex;align-items:center;gap:5px;
-  background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);
-  border-radius:20px;padding:5px 10px;
-  font-size:9px;color:var(--up);letter-spacing:0.15em;
-}
-.live-dot{
-  width:5px;height:5px;border-radius:50%;background:var(--up);
-  animation:livepulse 2s ease-in-out infinite;
-}
-@keyframes livepulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(0,229,160,0.5)}
-  50%{box-shadow:0 0 0 5px rgba(0,229,160,0)}
-}
+.live-pill{display:flex;align-items:center;gap:5px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);border-radius:20px;padding:5px 10px;font-size:9px;color:var(--up);letter-spacing:0.15em}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--up);animation:livepulse 2s ease-in-out infinite}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(0,229,160,0.5)}50%{box-shadow:0 0 0 5px rgba(0,229,160,0)}}
 
 /* CARDS */
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:20px;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
-}
-.clabel{
-  font-size:9px;font-weight:600;letter-spacing:0.22em;
-  text-transform:uppercase;color:var(--txt2);
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:16px;
-}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+.clabel{font-size:9px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--txt2);display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .clabel-r{color:var(--btc);letter-spacing:0.1em}
 
 /* PRICE */
-.price-big{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:54px;letter-spacing:-0.01em;line-height:1;
-  color:var(--txt);margin-bottom:8px;
-}
+.price-big{font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:-0.01em;line-height:1;color:var(--txt);margin-bottom:8px}
 .price-row{display:flex;align-items:center;gap:8px;margin-bottom:18px}
-.badge{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:4px 11px;border-radius:8px;font-size:12px;font-weight:600;
-}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:8px;font-size:12px;font-weight:600}
 .badge-up{background:var(--up-lo);color:var(--up);border:1px solid rgba(0,229,160,0.25)}
 .badge-dn{background:var(--dn-lo);color:var(--dn);border:1px solid rgba(255,59,92,0.25)}
 .price-time{font-size:10px;color:var(--txt2)}
 
 .stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.sbox{
-  background:var(--surf2);border:1px solid var(--border);
-  border-radius:14px;padding:12px 8px;text-align:center;
-}
+.sbox{background:var(--surf2);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
 .sbox-v{font-size:11px;font-weight:600;color:var(--txt);margin-bottom:3px}
 .sbox-l{font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase}
 
-/* Volume */
 .vol-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .vol-lbl{font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase;min-width:26px}
 .vol-track{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden}
 #volFill{height:100%;width:0;background:linear-gradient(90deg,var(--btc),#FFD580);border-radius:4px;transition:width 1s ease}
 .vol-val{font-size:9px;color:var(--txt3);min-width:50px;text-align:right}
 
-/* Chart */
 #chartWrap{height:115px;position:relative;margin:0 -4px}
 #priceChart{width:100%!important;height:100%!important;display:block}
 
-/* Refresh bar */
-.refresh-bar-wrap{
-  display:flex;align-items:center;gap:8px;padding:10px 0 2px;
-}
+.refresh-bar-wrap{display:flex;align-items:center;gap:8px;padding:10px 0 2px}
 .refresh-bar-lbl{font-size:9px;color:var(--txt2);letter-spacing:0.1em;min-width:90px;text-transform:uppercase}
 .refresh-bar-track{flex:1;height:3px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
 #refreshBarFill{height:100%;width:100%;background:var(--btc);border-radius:3px;transition:width 1s linear}
 .refresh-bar-time{font-size:9px;color:var(--btc);min-width:32px;text-align:right;font-weight:600}
 
-/* Divider */
-.div{height:1px;background:var(--border);margin:14px 0}
-
-/* ── CONTRARIAN CLOCK ── */
+/* CONTRARIAN */
 .clock-outer{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0 4px}
 .gauge-wrap{position:relative;width:100%;max-width:280px;margin:0 auto}
 #gaugeSvg{width:100%;overflow:visible;display:block}
+.gauge-center-val{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;white-space:nowrap}
+.gauge-score{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1;display:block}
+.gauge-mkt-lbl{font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;display:block;margin-top:1px;opacity:0.7}
+.gauge-labels{display:flex;justify-content:space-between;width:100%;max-width:280px;margin:6px auto 0;font-size:8px;letter-spacing:0.12em;color:var(--txt2);text-transform:uppercase}
 
-.gauge-center-val{
-  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
-  text-align:center;pointer-events:none;white-space:nowrap;
-}
-.gauge-score{
-  font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1;display:block;
-}
-.gauge-mkt-lbl{
-  font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
-  display:block;margin-top:1px;opacity:0.7;
-}
-
-.gauge-labels{
-  display:flex;justify-content:space-between;
-  width:100%;max-width:280px;margin:6px auto 0;
-  font-size:8px;letter-spacing:0.12em;color:var(--txt2);text-transform:uppercase;
-}
-
-/* Contrarian box */
-.contrarian-box{
-  background:var(--surf2);border:1px solid var(--border);
-  border-radius:16px;padding:16px;width:100%;margin-top:16px;
-}
-.contrarian-header{
-  display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;
-}
-.contrarian-tag{
-  font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--txt2);
-  background:rgba(255,255,255,0.04);border-radius:4px;padding:3px 7px;
-}
+.contrarian-box{background:var(--surf2);border:1px solid var(--border);border-radius:16px;padding:16px;width:100%;margin-top:16px}
+.contrarian-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.contrarian-tag{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--txt2);background:rgba(255,255,255,0.04);border-radius:4px;padding:3px 7px}
 .contrarian-icon{font-size:18px}
-.contrarian-signal{
-  font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:0.05em;
-  line-height:1;margin-bottom:8px;
-}
-.contrarian-desc{
-  font-size:11px;color:var(--txt3);line-height:1.6;
-}
+.contrarian-signal{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:0.05em;line-height:1;margin-bottom:8px}
+.contrarian-desc{font-size:11px;color:var(--txt3);line-height:1.6}
 .contrarian-divider{height:1px;background:var(--border);margin:10px 0}
-.contrarian-logic{
-  font-size:9px;color:var(--txt2);letter-spacing:0.08em;line-height:1.5;
-}
+.contrarian-logic{font-size:9px;color:var(--txt2);letter-spacing:0.08em;line-height:1.5}
 
 /* NEWS */
-.news-item{
-  padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);
-  cursor:pointer;transition:all 0.2s;position:relative;
-}
+.news-item{padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:all 0.2s;position:relative}
 .news-item:last-child{border-bottom:none}
 .news-item:hover{padding-left:12px}
-.news-item::before{
-  content:'';position:absolute;left:0;top:50%;
-  transform:translateY(-50%) scaleY(0);
-  width:2px;height:55%;background:var(--btc);border-radius:2px;
-  transition:transform 0.2s;
-}
+.news-item::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%) scaleY(0);width:2px;height:55%;background:var(--btc);border-radius:2px;transition:transform 0.2s}
 .news-item:hover::before{transform:translateY(-50%) scaleY(1)}
-.news-tag-pill{
-  display:inline-block;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--btc);background:var(--btc-lo);border-radius:4px;
-  padding:2px 6px;margin-bottom:6px;
-}
+.news-tag-pill{display:inline-block;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--btc);background:var(--btc-lo);border-radius:4px;padding:2px 6px;margin-bottom:6px}
 .news-title{font-size:13px;font-weight:500;line-height:1.45;color:var(--txt);margin-bottom:5px}
 .news-foot{display:flex;align-items:center;gap:6px}
-.news-src{font-size:9px;color:var(--txt2);letter-spacing:0.05em}
+.news-src{font-size:9px;color:var(--txt2)}
 .news-dot{width:3px;height:3px;border-radius:50%;background:var(--txt2);flex-shrink:0}
 .news-time{font-size:9px;color:var(--txt2)}
 
 /* FAB */
 .fab-ring{position:fixed;bottom:22px;right:14px;z-index:998;width:62px;height:62px;pointer-events:none}
-#ringCircle{
-  fill:none;stroke:rgba(247,147,26,0.3);stroke-width:2.2;
-  stroke-dasharray:176;stroke-dashoffset:0;
-  stroke-linecap:round;
-  transform:rotate(-90deg);transform-origin:center;
-  transition:stroke-dashoffset 1s linear;
-}
-.fab{
-  position:fixed;bottom:26px;right:18px;z-index:999;
-  width:54px;height:54px;border-radius:17px;border:none;cursor:pointer;
-  background:var(--btc);color:#000;font-size:20px;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 28px rgba(247,147,26,0.55),0 2px 8px rgba(0,0,0,0.4);
-  transition:transform 0.15s,box-shadow 0.15s;
-}
+#ringCircle{fill:none;stroke:rgba(247,147,26,0.3);stroke-width:2.2;stroke-dasharray:176;stroke-dashoffset:0;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s linear}
+.fab{position:fixed;bottom:26px;right:18px;z-index:999;width:54px;height:54px;border-radius:17px;border:none;cursor:pointer;background:var(--btc);color:#000;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 28px rgba(247,147,26,0.55);transition:transform 0.15s}
 .fab:active{transform:scale(0.9)}
 .spinning{animation:spin 0.7s ease-in-out}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Fade in */
 .fin{animation:fadeup 0.45s ease both}
 @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.div{height:1px;background:var(--border);margin:14px 0}
 </style>
 </head>
 <body>
 
-<svg class="fab-ring" viewBox="0 0 62 62">
-  <circle id="ringCircle" cx="31" cy="31" r="28"/>
-</svg>
-<button class="fab" id="fab" onclick="manualRefresh()" title="Actualizar">⚡</button>
+<svg class="fab-ring" viewBox="0 0 62 62"><circle id="ringCircle" cx="31" cy="31" r="28"/></svg>
+<button class="fab" id="fab" onclick="manualRefresh()">⚡</button>
 
 <div id="app">
-
-  <!-- HEADER -->
   <header class="hdr">
     <div class="hdr-left">
       <div class="btc-icon">₿</div>
@@ -262,13 +122,10 @@ body::before{
         <div class="hdr-sub">Intelligence · Contrarian</div>
       </div>
     </div>
-    <div class="live-pill">
-      <div class="live-dot"></div>
-      <span id="liveTime">LIVE</span>
-    </div>
+    <div class="live-pill"><div class="live-dot"></div><span id="liveTime">LIVE</span></div>
   </header>
 
-  <!-- PRICE CARD -->
+  <!-- PRICE -->
   <div class="card fin" style="animation-delay:.05s">
     <div class="clabel">Precio BTC / USD <span class="clabel-r" id="hdrChange">—</span></div>
     <div class="price-big" id="btcPrice">$ —</div>
@@ -294,191 +151,89 @@ body::before{
     </div>
   </div>
 
-  <!-- CONTRARIAN CLOCK CARD -->
+  <!-- CONTRARIAN -->
   <div class="card fin" style="animation-delay:.12s">
     <div class="clabel">Reloj Contrarian <span class="clabel-r" id="fngRaw">F&amp;G: —</span></div>
-
     <div class="clock-outer">
-      <!-- Semicircle SVG gauge -->
       <div class="gauge-wrap">
         <svg id="gaugeSvg" viewBox="0 0 280 155">
-          <!-- Background track -->
-          <path id="gaugeTrack" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="20" stroke-linecap="round"/>
-          <!-- Fear zone (red) -->
+          <path id="gaugeTrack"   fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="20" stroke-linecap="round"/>
           <path id="gaugeFear"    fill="none" stroke="#FF3B5C" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
-          <!-- Neutral zone (orange) -->
           <path id="gaugeNeutral" fill="none" stroke="#F7931A" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
-          <!-- Greed zone (green) -->
           <path id="gaugeGreed"   fill="none" stroke="#00E5A0" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
-          <!-- Active fill arc -->
-          <path id="gaugeActive"  fill="none" stroke="#F7931A" stroke-width="20" stroke-linecap="round" opacity="0"/>
-          <!-- Tick marks -->
           <g id="ticks" opacity="0.4"></g>
-          <!-- Needle -->
-          <line id="gaugeNeedle" x1="140" y1="140" x2="140" y2="46"
-            stroke="white" stroke-width="2.5" stroke-linecap="round"
-            style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
-          <!-- Needle glow -->
-          <line id="gaugeNeedleGlow" x1="140" y1="140" x2="140" y2="60"
-            stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round"
-            style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
-          <!-- Center hub -->
-          <circle cx="140" cy="140" r="8"  fill="rgba(255,255,255,0.1)"/>
-          <circle cx="140" cy="140" r="5"  fill="white"/>
+          <line id="gaugeNeedleGlow" x1="140" y1="140" x2="140" y2="60" stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round" style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
+          <line id="gaugeNeedle" x1="140" y1="140" x2="140" y2="46" stroke="white" stroke-width="2.5" stroke-linecap="round" style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
+          <circle cx="140" cy="140" r="8" fill="rgba(255,255,255,0.1)"/>
+          <circle cx="140" cy="140" r="5" fill="white"/>
           <circle cx="140" cy="140" r="2.5" fill="var(--bg)"/>
-          <!-- Labels on arc -->
-          <text x="22"  y="138" fill="rgba(255,59,92,0.7)"  font-size="7" font-family="Outfit,sans-serif" letter-spacing="0.5" text-anchor="middle">MIEDO</text>
-          <text x="140" y="24"  fill="rgba(247,147,26,0.7)" font-size="7" font-family="Outfit,sans-serif" letter-spacing="0.5" text-anchor="middle">NEUTRAL</text>
-          <text x="258" y="138" fill="rgba(0,229,160,0.7)"  font-size="7" font-family="Outfit,sans-serif" letter-spacing="0.5" text-anchor="middle">CODICIA</text>
+          <text x="22"  y="138" fill="rgba(255,59,92,0.7)"  font-size="7" font-family="Outfit,sans-serif" text-anchor="middle">MIEDO</text>
+          <text x="140" y="24"  fill="rgba(247,147,26,0.7)" font-size="7" font-family="Outfit,sans-serif" text-anchor="middle">NEUTRAL</text>
+          <text x="258" y="138" fill="rgba(0,229,160,0.7)"  font-size="7" font-family="Outfit,sans-serif" text-anchor="middle">CODICIA</text>
         </svg>
-        <!-- Center values overlaid -->
         <div class="gauge-center-val">
           <span class="gauge-score" id="gaugeScore" style="color:var(--btc)">—</span>
           <span class="gauge-mkt-lbl" id="gaugeMktLbl" style="color:var(--btc)">CARGANDO</span>
         </div>
       </div>
-
-      <!-- CONTRARIAN SIGNAL BOX -->
+      <div class="gauge-labels">
+        <span>MIEDO EXT.</span><span style="text-align:center">NEUTRAL</span><span style="text-align:right">CODICIA EXT.</span>
+      </div>
       <div class="contrarian-box">
         <div class="contrarian-header">
           <div class="contrarian-tag">⚡ Señal Contrarian</div>
           <div class="contrarian-icon" id="contrarianIcon">—</div>
         </div>
         <div class="contrarian-signal" id="contrarianSignal" style="color:var(--up)">CARGANDO</div>
-        <div class="contrarian-desc" id="contrarianDesc">Analizando sentimiento del mercado…</div>
+        <div class="contrarian-desc" id="contrarianDesc">Analizando sentimiento…</div>
         <div class="contrarian-divider"></div>
-        <div class="contrarian-logic">
-          💡 La estrategia contrarian invierte la señal del rebaño — cuando todos temen, compran. Cuando todos codician, venden.
-        </div>
+        <div class="contrarian-logic">💡 La estrategia contrarian invierte la señal del rebaño — cuando todos temen, compran. Cuando todos codician, venden.</div>
       </div>
     </div>
   </div>
 
-  <!-- NEWS CARD -->
+  <!-- NEWS -->
   <div class="card fin" style="animation-delay:.2s">
     <div class="clabel">Noticias Bitcoin <span class="clabel-r" style="font-size:8px">Español</span></div>
-    <div id="newsList">
-      <div style="padding:8px;color:var(--txt2);font-size:11px;text-align:center">Cargando noticias…</div>
-    </div>
+    <div id="newsList"><div style="padding:8px;color:var(--txt2);font-size:11px;text-align:center">Cargando noticias…</div></div>
   </div>
 
-  <!-- DONATION CARD -->
-  <div class="card fin" style="animation-delay:.28s;background:linear-gradient(135deg,rgba(16,16,22,0.95) 0%,rgba(22,18,12,0.95) 100%);border-color:rgba(247,147,26,0.18)">
-    <!-- Top glow accent -->
+  <!-- DONACIÓN -->
+  <div class="card fin" style="animation-delay:.28s;background:linear-gradient(135deg,rgba(16,16,22,0.95),rgba(22,18,12,0.95));border-color:rgba(247,147,26,0.18)">
     <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(247,147,26,0.4),transparent)"></div>
-
-    <div class="clabel" style="margin-bottom:14px">
-      Apoyar el proyecto
-      <span style="font-size:11px">💚</span>
-    </div>
-
+    <div class="clabel" style="margin-bottom:14px">Apoyar el proyecto <span style="font-size:11px">💚</span></div>
     <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">
-      <!-- QR Code (via API) -->
       <div style="flex-shrink:0;width:86px;height:86px;border-radius:14px;overflow:hidden;background:#fff;padding:5px;box-shadow:0 4px 20px rgba(247,147,26,0.25)">
-        <img
-          src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS&color=000000&bgcolor=ffffff&margin=0"
-          alt="QR USDT TRC20"
-          width="76" height="76"
-          style="display:block;border-radius:8px;width:76px;height:76px;object-fit:cover"
-          loading="lazy"
-        />
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS&color=000000&bgcolor=ffffff&margin=0" alt="QR USDT TRC20" width="76" height="76" style="display:block;border-radius:8px;width:76px;height:76px;object-fit:cover" loading="lazy"/>
       </div>
-      <!-- Text info -->
       <div style="flex:1;min-width:0">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;color:var(--txt);margin-bottom:4px">USDT TRC-20</div>
         <div style="font-size:9px;color:var(--txt2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Red TRON · Sin comisiones</div>
-        <div style="font-size:9px;color:var(--txt3);line-height:1.55">
-          Si este dashboard te es útil, considera apoyarlo con cualquier monto. ¡Gracias! 🙏
-        </div>
+        <div style="font-size:9px;color:var(--txt3);line-height:1.55">Si este dashboard te es útil, considera apoyarlo con cualquier monto. ¡Gracias! 🙏</div>
       </div>
     </div>
-
-    <!-- Wallet address box -->
-    <div id="donateAddrBox" style="
-      background:rgba(247,147,26,0.07);
-      border:1px solid rgba(247,147,26,0.2);
-      border-radius:12px;padding:11px 14px;
-      display:flex;align-items:center;gap:10px;
-      cursor:pointer;transition:background 0.2s;
-      margin-bottom:10px;
-    " onclick="copyWallet()" title="Tap para copiar">
+    <div onclick="copyWallet()" style="background:rgba(247,147,26,0.07);border:1px solid rgba(247,147,26,0.2);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px">
       <div style="flex:1;min-width:0">
         <div style="font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase;margin-bottom:4px">Dirección de wallet</div>
-        <div id="walletAddr" style="font-size:11px;color:var(--btc);word-break:break-all;line-height:1.4;font-weight:500">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+        <div style="font-size:11px;color:var(--btc);word-break:break-all;line-height:1.4;font-weight:500">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
       </div>
-      <div id="copyIcon" style="font-size:18px;flex-shrink:0;transition:transform 0.2s">📋</div>
+      <div id="copyIcon" style="font-size:18px;flex-shrink:0">📋</div>
     </div>
-
-    <!-- Copy button -->
-    <button onclick="copyWallet()" style="
-      width:100%;padding:13px;border-radius:13px;border:none;cursor:pointer;
-      background:var(--btc);color:#000;
-      font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.1em;
-      box-shadow:0 4px 20px rgba(247,147,26,0.35);
-      transition:transform 0.15s,box-shadow 0.15s;
-      display:flex;align-items:center;justify-content:center;gap:8px;
-    "
-    onmousedown="this.style.transform='scale(0.97)'"
-    onmouseup="this.style.transform='scale(1)'"
-    ontouchstart="this.style.transform='scale(0.97)'"
-    ontouchend="this.style.transform='scale(1)'"
-    id="copyBtn">
+    <button onclick="copyWallet()" id="copyBtn" style="width:100%;padding:13px;border-radius:13px;border:none;cursor:pointer;background:var(--btc);color:#000;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.1em;box-shadow:0 4px 20px rgba(247,147,26,0.35);display:flex;align-items:center;justify-content:center;gap:8px">
       <span>📋</span> COPIAR DIRECCIÓN
     </button>
-
-    <!-- Toast -->
-    <div id="copyToast" style="
-      display:none;margin-top:10px;
-      background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);
-      border-radius:10px;padding:9px 14px;
-      font-size:11px;color:var(--up);text-align:center;letter-spacing:0.08em;
-    ">✅ Dirección copiada al portapapeles</div>
+    <div id="copyToast" style="display:none;margin-top:10px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);border-radius:10px;padding:9px 14px;font-size:11px;color:var(--up);text-align:center">✅ Dirección copiada al portapapeles</div>
   </div>
-
 </div>
 
 <script>
-/* ══ DONATION COPY ══ */
-const WALLET = 'TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS';
+/* ── STATE ── */
+let priceHistory = [];
+const REFRESH_S  = 600;
+let secsLeft     = REFRESH_S;
+let cInterval    = null;
 
-function copyWallet() {
-  navigator.clipboard.writeText(WALLET).then(() => {
-    showCopyFeedback();
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = WALLET;
-    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showCopyFeedback();
-  });
-}
-
-function showCopyFeedback() {
-  const btn   = document.getElementById('copyBtn');
-  const toast = document.getElementById('copyToast');
-  const icon  = document.getElementById('copyIcon');
-  btn.innerHTML = '<span>✅</span> ¡COPIADO!';
-  btn.style.background = 'var(--up)';
-  icon.textContent = '✅';
-  toast.style.display = 'block';
-  setTimeout(() => {
-    btn.innerHTML = '<span>📋</span> COPIAR DIRECCIÓN';
-    btn.style.background = 'var(--btc)';
-    icon.textContent = '📋';
-    toast.style.display = 'none';
-  }, 2500);
-}
-
-/* ══ STATE ══ */
-let priceHistory  = [];
-const REFRESH_S   = 600; // 10 min
-let secsLeft      = REFRESH_S;
-let cInterval     = null;
-
-/* ══ FORMAT ══ */
+/* ── FORMAT ── */
 const fmtUSD  = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtK    = n => n >= 100000 ? '$'+(n/1000).toFixed(1)+'K' : fmtUSD(n);
 const fmtShrt = n => {
@@ -488,48 +243,55 @@ const fmtShrt = n => {
   return '$'+n.toLocaleString('en-US',{maximumFractionDigits:0});
 };
 
-/* ══ FETCH PRICE ══ */
+/* ── FETCH PRICE — Binance (CORS libre) + CryptoCompare historial ── */
 async function fetchPrice() {
   try {
-    const [pRes, cRes] = await Promise.all([
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true'),
-      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly')
+    const [tickerRes, histRes] = await Promise.all([
+      fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'),
+      fetch('https://min-api.cryptocompare.com/data/v2/histohour?fsym=BTC&tsym=USD&limit=23')
     ]);
-    const pd = await pRes.json();
-    const cd = await cRes.json();
-    const btc = pd.bitcoin;
-    const ch  = btc.usd_24h_change;
-    const up  = ch >= 0;
+    const ticker = await tickerRes.json();
+    const hist   = await histRes.json();
+
+    const price = parseFloat(ticker.lastPrice);
+    const ch    = parseFloat(ticker.priceChangePercent);
+    const high  = parseFloat(ticker.highPrice);
+    const low   = parseFloat(ticker.lowPrice);
+    const vol   = parseFloat(ticker.quoteVolume);
+    const up    = ch >= 0;
     const chStr = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '%';
 
-    document.getElementById('btcPrice').textContent = fmtUSD(btc.usd);
-
+    document.getElementById('btcPrice').textContent  = fmtUSD(price);
     const hch = document.getElementById('hdrChange');
-    hch.textContent = chStr;
-    hch.style.color = up ? 'var(--up)' : 'var(--dn)';
-
+    hch.textContent = chStr; hch.style.color = up ? 'var(--up)' : 'var(--dn)';
     const bd = document.getElementById('changeBadge');
-    bd.textContent  = chStr;
-    bd.className    = 'badge ' + (up ? 'badge-up' : 'badge-dn');
+    bd.textContent = chStr; bd.className = 'badge '+(up?'badge-up':'badge-dn');
 
-    document.getElementById('mktCap').textContent = fmtShrt(btc.usd_market_cap);
-    document.getElementById('vol24').textContent  = fmtShrt(btc.usd_24h_vol);
-    document.getElementById('volFill').style.width = Math.min((btc.usd_24h_vol/60e9)*100, 100) + '%';
+    document.getElementById('mktCap').textContent  = fmtShrt(price * 19_700_000);
+    document.getElementById('high24').textContent  = fmtK(high);
+    document.getElementById('low24').textContent   = fmtK(low);
+    document.getElementById('vol24').textContent   = fmtShrt(vol);
+    document.getElementById('volFill').style.width = Math.min((vol/60e9)*100,100)+'%';
 
-    priceHistory = cd.prices.map(p => p[1]);
-    document.getElementById('high24').textContent = fmtK(Math.max(...priceHistory));
-    document.getElementById('low24').textContent  = fmtK(Math.min(...priceHistory));
-
+    if(hist.Response === 'Success') {
+      priceHistory = hist.Data.Data.map(d => d.close);
+      priceHistory[priceHistory.length-1] = price;
+    } else {
+      priceHistory = Array(24).fill(price);
+    }
     drawChart();
 
     const now = new Date();
     const t = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('liveTime').textContent = t;
-    document.getElementById('priceTime').textContent = 'Act. ' + t;
-  } catch(e){ console.error('price', e); }
+    document.getElementById('liveTime').textContent  = t;
+    document.getElementById('priceTime').textContent = 'Act. '+t;
+  } catch(e) {
+    console.error('price error:',e);
+    document.getElementById('priceTime').textContent = 'Error al cargar';
+  }
 }
 
-/* ══ DRAW CHART ══ */
+/* ── DRAW CHART ── */
 function drawChart() {
   if(priceHistory.length < 2) return;
   const cv = document.getElementById('priceChart');
@@ -538,258 +300,160 @@ function drawChart() {
   const dp = window.devicePixelRatio || 1;
   cv.width  = wr.clientWidth * dp;
   cv.height = wr.clientHeight * dp;
-  cx.scale(dp, dp);
+  cx.scale(dp,dp);
 
-  const W = wr.clientWidth, H = wr.clientHeight;
-  const pad = {t:12, b:8, l:4, r:70};
-  const w = W - pad.l - pad.r;
-  const h = H - pad.t - pad.b;
-  const mn = Math.min(...priceHistory);
-  const mx = Math.max(...priceHistory);
-  const rng = (mx - mn) || 1;
-
+  const W=wr.clientWidth, H=wr.clientHeight;
+  const pad={t:12,b:8,l:4,r:70};
+  const w=W-pad.l-pad.r, h=H-pad.t-pad.b;
+  const mn=Math.min(...priceHistory), mx=Math.max(...priceHistory), rng=(mx-mn)||1;
   const pts = priceHistory.map((p,i)=>({
-    x: pad.l + (i/(priceHistory.length-1)) * w,
-    y: pad.t + h - ((p-mn)/rng) * h
+    x: pad.l+(i/(priceHistory.length-1))*w,
+    y: pad.t+h-((p-mn)/rng)*h
   }));
 
   cx.clearRect(0,0,W,H);
 
-  // Gradient fill
-  const grd = cx.createLinearGradient(0, pad.t, 0, H);
+  // Fill gradient
+  const grd = cx.createLinearGradient(0,pad.t,0,H);
   grd.addColorStop(0,'rgba(247,147,26,0.2)');
   grd.addColorStop(0.65,'rgba(247,147,26,0.03)');
   grd.addColorStop(1,'transparent');
   cx.beginPath();
-  pts.forEach((p,i) => i===0 ? cx.moveTo(p.x,p.y) : cx.lineTo(p.x,p.y));
-  cx.lineTo(pts[pts.length-1].x, H);
-  cx.lineTo(pts[0].x, H);
-  cx.closePath();
-  cx.fillStyle = grd;
-  cx.fill();
+  pts.forEach((p,i)=>i===0?cx.moveTo(p.x,p.y):cx.lineTo(p.x,p.y));
+  cx.lineTo(pts[pts.length-1].x,H); cx.lineTo(pts[0].x,H); cx.closePath();
+  cx.fillStyle=grd; cx.fill();
 
-  // Price line
+  // Line
   cx.beginPath();
-  pts.forEach((p,i) => i===0 ? cx.moveTo(p.x,p.y) : cx.lineTo(p.x,p.y));
-  cx.strokeStyle = '#F7931A';
-  cx.lineWidth   = 2.5;
-  cx.lineJoin    = 'round';
-  cx.lineCap     = 'round';
-  cx.stroke();
+  pts.forEach((p,i)=>i===0?cx.moveTo(p.x,p.y):cx.lineTo(p.x,p.y));
+  cx.strokeStyle='#F7931A'; cx.lineWidth=2.5; cx.lineJoin='round'; cx.lineCap='round'; cx.stroke();
 
-  const last = pts[pts.length-1];
+  const last=pts[pts.length-1];
 
-  // Dashed horizontal line at current price
-  cx.setLineDash([3,5]);
-  cx.strokeStyle = 'rgba(247,147,26,0.35)';
-  cx.lineWidth = 1;
-  cx.beginPath();
-  cx.moveTo(pad.l, last.y);
-  cx.lineTo(W - 4, last.y);
-  cx.stroke();
+  // Dashed price line
+  cx.setLineDash([3,5]); cx.strokeStyle='rgba(247,147,26,0.35)'; cx.lineWidth=1;
+  cx.beginPath(); cx.moveTo(pad.l,last.y); cx.lineTo(W-4,last.y); cx.stroke();
   cx.setLineDash([]);
 
-  // Price label box on right
+  // Price label
   const priceTxt = fmtUSD(priceHistory[priceHistory.length-1]);
-  cx.font = '600 9px Outfit';
-  const tw = cx.measureText(priceTxt).width;
-  const bx = W - pad.r + 6;
-  const by = last.y - 9;
-  const bw = tw + 10;
-  const bh = 16;
-  cx.fillStyle = 'rgba(247,147,26,0.18)';
-  cx.beginPath();
-  cx.roundRect(bx, by, bw, bh, 4);
-  cx.fill();
-  cx.strokeStyle = 'rgba(247,147,26,0.45)';
-  cx.lineWidth = 0.8;
-  cx.stroke();
-  cx.fillStyle = '#F7931A';
-  cx.textAlign = 'left';
-  cx.fillText(priceTxt, bx + 5, by + 11);
+  cx.font='600 9px Outfit';
+  const tw=cx.measureText(priceTxt).width;
+  const bx=W-pad.r+6, by=last.y-9, bw=tw+10, bh=16;
+  cx.fillStyle='rgba(247,147,26,0.18)';
+  cx.beginPath(); cx.roundRect(bx,by,bw,bh,4); cx.fill();
+  cx.strokeStyle='rgba(247,147,26,0.45)'; cx.lineWidth=0.8; cx.stroke();
+  cx.fillStyle='#F7931A'; cx.textAlign='left'; cx.fillText(priceTxt,bx+5,by+11);
 
-  // Glow dot at last point
-  cx.beginPath();
-  cx.arc(last.x, last.y, 7, 0, Math.PI*2);
-  cx.fillStyle = 'rgba(247,147,26,0.2)';
-  cx.fill();
-  cx.beginPath();
-  cx.arc(last.x, last.y, 4, 0, Math.PI*2);
-  cx.fillStyle = '#F7931A';
-  cx.fill();
-  cx.beginPath();
-  cx.arc(last.x, last.y, 1.8, 0, Math.PI*2);
-  cx.fillStyle = '#fff';
-  cx.fill();
+  // Dot
+  cx.beginPath(); cx.arc(last.x,last.y,7,0,Math.PI*2); cx.fillStyle='rgba(247,147,26,0.2)'; cx.fill();
+  cx.beginPath(); cx.arc(last.x,last.y,4,0,Math.PI*2); cx.fillStyle='#F7931A'; cx.fill();
+  cx.beginPath(); cx.arc(last.x,last.y,1.8,0,Math.PI*2); cx.fillStyle='#fff'; cx.fill();
 }
 
-/* ══ GAUGE SETUP ══ */
-const CX = 140, CY = 140, R = 100;
-
-function polar(deg, radius) {
-  const r = deg * Math.PI / 180;
-  return { x: CX + radius * Math.cos(r), y: CY + radius * Math.sin(r) };
+/* ── GAUGE ── */
+const CX=140, CY=140, R=100;
+function polar(deg,r2){const r=deg*Math.PI/180;return{x:CX+r2*Math.cos(r),y:CY+r2*Math.sin(r)}}
+function arcPath(sD,eD){
+  const s=polar(sD,R),e=polar(eD,R),lg=Math.abs(eD-sD)>180?1:0;
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${R} ${R} 0 ${lg} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
 }
-
-function arc(startD, endD, r2) {
-  r2 = r2 || R;
-  const s = polar(startD, r2);
-  const e = polar(endD,   r2);
-  const lg = Math.abs(endD - startD) > 180 ? 1 : 0;
-  // sweep = 1 for counter-clockwise visually (since 180→0 goes right)
-  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r2} ${r2} 0 ${lg} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
-}
-
-function setupGauge() {
-  // Full track 180→0 (semicircle from left to right)
-  document.getElementById('gaugeTrack').setAttribute('d', arc(180, 0));
-  // Zones: fear=180→108, neutral=108→72, greed=72→0
-  document.getElementById('gaugeFear').setAttribute('d',    arc(180, 108));
-  document.getElementById('gaugeNeutral').setAttribute('d', arc(108,  72));
-  document.getElementById('gaugeGreed').setAttribute('d',   arc(72,    0));
-
-  // Tick marks
-  const ticks = document.getElementById('ticks');
-  [0,25,50,75,100].forEach(v => {
-    const deg = 180 - v * 1.8;
-    const i = polar(deg, R - 14);
-    const o = polar(deg, R + 14);
-    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1', i.x); line.setAttribute('y1', i.y);
-    line.setAttribute('x2', o.x); line.setAttribute('y2', o.y);
-    line.setAttribute('stroke','rgba(255,255,255,0.5)');
-    line.setAttribute('stroke-width','1.5');
-    ticks.appendChild(line);
+function setupGauge(){
+  document.getElementById('gaugeTrack').setAttribute('d',arcPath(180,0));
+  document.getElementById('gaugeFear').setAttribute('d',arcPath(180,108));
+  document.getElementById('gaugeNeutral').setAttribute('d',arcPath(108,72));
+  document.getElementById('gaugeGreed').setAttribute('d',arcPath(72,0));
+  const tg=document.getElementById('ticks');
+  [0,25,50,75,100].forEach(v=>{
+    const deg=180-v*1.8;
+    const i=polar(deg,R-14),o=polar(deg,R+14);
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',i.x);l.setAttribute('y1',i.y);l.setAttribute('x2',o.x);l.setAttribute('y2',o.y);
+    l.setAttribute('stroke','rgba(255,255,255,0.5)');l.setAttribute('stroke-width','1.5');
+    tg.appendChild(l);
   });
 }
-
-function setNeedle(val) {
-  const deg = 180 - val * 1.8; // 0→180deg (left), 100→0deg (right)
-  const rotation = deg - 90;   // needle points up at 0deg rotation
-  document.getElementById('gaugeNeedle').style.transform = `rotate(${rotation}deg)`;
-  document.getElementById('gaugeNeedleGlow').style.transform = `rotate(${rotation}deg)`;
+function setNeedle(val){
+  const rot=180-val*1.8-90;
+  document.getElementById('gaugeNeedle').style.transform=`rotate(${rot}deg)`;
+  document.getElementById('gaugeNeedleGlow').style.transform=`rotate(${rot}deg)`;
 }
 
-/* ══ CONTRARIAN LOGIC ══ */
-function getContrarian(val) {
-  const v = parseInt(val);
-  if(v <= 15) return {
-    signal: 'COMPRAR FUERTE',
-    color:  'var(--up)',
-    icon:   '🟢',
-    desc:   'Miedo Extremo. El pánico del mercado está en máximos. Los contrarian ven esto como una oportunidad de acumulación de alta convicción.'
-  };
-  if(v <= 35) return {
-    signal: 'CONSIDERAR COMPRA',
-    color:  '#5CF0BC',
-    icon:   '🟩',
-    desc:   'El miedo domina el sentimiento. Históricamente, estas zonas han precedido a recuperaciones significativas. Evalúa entrar gradualmente.'
-  };
-  if(v <= 45) return {
-    signal: 'VIGILAR — LIGERO SESGO COMPRADOR',
-    color:  '#A0D4B0',
-    icon:   '🔵',
-    desc:   'Sentimiento negativo leve. Sin señal contundente. El contrarian mantiene posición o acumula pequeño si tiene liquidez disponible.'
-  };
-  if(v <= 55) return {
-    signal: 'NEUTRAL — SIN SEÑAL CLARA',
-    color:  'var(--btc)',
-    icon:   '⚪',
-    desc:   'El mercado está equilibrado. No hay extremo aprovechable. El contrarian espera pacientemente a que el sentimiento llegue a un extremo.'
-  };
-  if(v <= 65) return {
-    signal: 'VIGILAR — LIGERO SESGO VENDEDOR',
-    color:  '#FFB86C',
-    icon:   '🟡',
-    desc:   'El optimismo crece. No es momento de comprar, pero tampoco de vender agresivamente. Reduce exposición nueva y ajusta stops.'
-  };
-  if(v <= 80) return {
-    signal: 'CONSIDERAR VENTA / TOMAR GANANCIAS',
-    color:  '#FF8C42',
-    icon:   '🟠',
-    desc:   'Codicia creciente. El mercado sobreestima el rally. El contrarian empieza a reducir posiciones y registrar ganancias parciales.'
-  };
-  return {
-    signal: 'VENDER / REDUCIR EXPOSICIÓN',
-    color:  'var(--dn)',
-    icon:   '🔴',
-    desc:   'Codicia Extrema. Todos quieren comprar. La euforia está en máximos — el riesgo de corrección severa es alto. Los contrarian salen o se ponen cortos.'
-  };
+/* ── CONTRARIAN ── */
+function getContrarian(val){
+  const v=parseInt(val);
+  if(v<=15) return{signal:'COMPRAR FUERTE',color:'var(--up)',icon:'🟢',desc:'Miedo Extremo. El pánico está en máximos. Zona histórica de acumulación para inversores contrarian de alta convicción.'};
+  if(v<=35) return{signal:'CONSIDERAR COMPRA',color:'#5CF0BC',icon:'🟩',desc:'El miedo domina el sentimiento. Históricamente estas zonas han precedido recuperaciones significativas. Evalúa entrar gradualmente.'};
+  if(v<=45) return{signal:'LIGERO SESGO COMPRADOR',color:'#A0D4B0',icon:'🔵',desc:'Sentimiento negativo leve. Sin señal contundente. El contrarian puede acumular pequeñas posiciones.'};
+  if(v<=55) return{signal:'NEUTRAL — OBSERVAR',color:'var(--btc)',icon:'⚪',desc:'El mercado está equilibrado. No hay extremo aprovechable. Espera a que el sentimiento llegue a un extremo para actuar.'};
+  if(v<=65) return{signal:'LIGERO SESGO VENDEDOR',color:'#FFB86C',icon:'🟡',desc:'El optimismo crece. No es momento de comprar. Reduce exposición nueva y ajusta stops de protección.'};
+  if(v<=80) return{signal:'CONSIDERAR VENTA',color:'#FF8C42',icon:'🟠',desc:'Codicia creciente. El mercado sobreestima el rally. El contrarian empieza a reducir posiciones y tomar ganancias.'};
+  return{signal:'VENDER / REDUCIR EXPOSICIÓN',color:'var(--dn)',icon:'🔴',desc:'Codicia Extrema. Todos quieren comprar. Euforia en máximos — riesgo de corrección severa. Los contrarian salen o se ponen cortos.'};
 }
 
-/* ══ FETCH SENTIMENT ══ */
-async function fetchSentiment() {
-  try {
-    const res  = await fetch('https://api.alternative.me/fng/?limit=1');
-    const data = await res.json();
-    const item = data.data[0];
-    const val  = parseInt(item.value);
+/* ── FETCH SENTIMENT ── */
+async function fetchSentiment(){
+  try{
+    const res=await fetch('https://api.alternative.me/fng/?limit=1');
+    const data=await res.json();
+    const item=data.data[0];
+    const val=parseInt(item.value);
 
-    document.getElementById('fngRaw').textContent = 'F&G: ' + val;
-    document.getElementById('gaugeScore').textContent = val;
+    document.getElementById('fngRaw').textContent='F&G: '+val;
+    document.getElementById('gaugeScore').textContent=val;
 
-    const esLabels = {
-      'Extreme Fear':  'MIEDO EXTREMO',
-      'Fear':          'MIEDO',
-      'Neutral':       'NEUTRAL',
-      'Greed':         'CODICIA',
-      'Extreme Greed': 'CODICIA EXTREMA'
-    };
-    const lbl = esLabels[item.value_classification] || item.value_classification.toUpperCase();
-    document.getElementById('gaugeMktLbl').textContent = lbl;
+    const esLabels={'Extreme Fear':'MIEDO EXTREMO','Fear':'MIEDO','Neutral':'NEUTRAL','Greed':'CODICIA','Extreme Greed':'CODICIA EXTREMA'};
+    const lbl=esLabels[item.value_classification]||item.value_classification.toUpperCase();
+    document.getElementById('gaugeMktLbl').textContent=lbl;
 
-    // Zone color for score display
-    let zc = 'var(--btc)';
-    if(val <= 40)      zc = 'var(--dn)';
-    else if(val <= 60) zc = 'var(--btc)';
-    else               zc = 'var(--up)';
-    document.getElementById('gaugeScore').style.color   = zc;
-    document.getElementById('gaugeMktLbl').style.color  = zc;
-
+    let zc='var(--btc)';
+    if(val<=40) zc='var(--dn)'; else if(val>60) zc='var(--up)';
+    document.getElementById('gaugeScore').style.color=zc;
+    document.getElementById('gaugeMktLbl').style.color=zc;
     setNeedle(val);
 
-    // Contrarian (INVERTED signal)
-    const c = getContrarian(val);
-    document.getElementById('contrarianSignal').textContent = c.signal;
-    document.getElementById('contrarianSignal').style.color = c.color;
-    document.getElementById('contrarianIcon').textContent   = c.icon;
-    document.getElementById('contrarianDesc').textContent   = c.desc;
-  } catch(e) { console.error('sentiment', e); }
+    const c=getContrarian(val);
+    document.getElementById('contrarianSignal').textContent=c.signal;
+    document.getElementById('contrarianSignal').style.color=c.color;
+    document.getElementById('contrarianIcon').textContent=c.icon;
+    document.getElementById('contrarianDesc').textContent=c.desc;
+  }catch(e){console.error('sentiment error:',e);}
 }
 
-/* ══ FETCH NEWS — Spanish sources ══ */
-async function fetchNews() {
-  const list = document.getElementById('newsList');
-  const feeds = [
-    { url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fes.cointelegraph.com%2Frss%2Ftag%2Fbitcoin&count=6', name: 'Cointelegraph ES' },
-    { url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.criptonoticias.com%2Ffeed%2F&count=6',            name: 'CriptoNoticias'  },
-    { url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fambcrypto.com%2Ffeed%2F&count=6',                      name: 'AMBCrypto'       }
+/* ── FETCH NEWS — múltiples fuentes en español con fallbacks ── */
+async function fetchNews(){
+  const list=document.getElementById('newsList');
+  const feeds=[
+    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fes.cointelegraph.com%2Frss&count=6',name:'Cointelegraph ES'},
+    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fes.cointelegraph.com%2Frss%2Ftag%2Fbitcoin&count=6',name:'Cointelegraph ES'},
+    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.criptonoticias.com%2Ffeed%2F&count=6',name:'CriptoNoticias'},
+    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitcoin.de%2Fes%2Fblog%2Frss%2F&count=6',name:'Bitcoin.de ES'}
   ];
 
-  let items = null, sourceName = '';
-  for(const f of feeds) {
-    try {
-      const r = await fetch(f.url);
-      const d = await r.json();
-      if(d.items && d.items.length) { items = d.items; sourceName = f.name; break; }
-    } catch(e){ /* next */ }
+  let items=null, sourceName='';
+  for(const f of feeds){
+    try{
+      const r=await fetch(f.url,{signal:AbortSignal.timeout(6000)});
+      const d=await r.json();
+      if(d.items&&d.items.length>0){items=d.items;sourceName=f.name;break;}
+    }catch(e){/* try next */}
   }
 
-  if(!items) {
-    list.innerHTML = '<div style="padding:10px;color:var(--txt2);font-size:11px;text-align:center">No se pudieron cargar las noticias.</div>';
+  if(!items){
+    list.innerHTML='<div style="padding:16px;color:var(--txt2);font-size:11px;text-align:center;line-height:1.6">No se pudieron cargar las noticias en este momento.<br>Toca ⚡ para reintentar.</div>';
     return;
   }
 
-  list.innerHTML = items.slice(0,5).map(item => {
-    const d = new Date(item.pubDate);
-    const ts = isNaN(d) ? '' : d.toLocaleString('es-MX',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
-    const title = (item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const src   = (item.author||sourceName||'Fuente').replace(/<[^>]*>/g,'').trim().slice(0,28);
+  list.innerHTML=items.slice(0,5).map(item=>{
+    const d=new Date(item.pubDate);
+    const ts=isNaN(d)?'':d.toLocaleString('es-MX',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
+    const title=(item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const src=(item.author||sourceName||'Fuente').replace(/<[^>]*>/g,'').trim().slice(0,30)||sourceName;
     return `<div class="news-item" onclick="window.open('${encodeURI(item.link)}','_blank','noopener')">
       <div class="news-tag-pill">Bitcoin</div>
       <div class="news-title">${title}</div>
       <div class="news-foot">
-        <span class="news-src">${src || sourceName}</span>
+        <span class="news-src">${src}</span>
         <div class="news-dot"></div>
         <span class="news-time">${ts}</span>
       </div>
@@ -797,48 +461,65 @@ async function fetchNews() {
   }).join('');
 }
 
-/* ══ REFRESH ══ */
-async function refreshAll() {
-  const btn = document.getElementById('fab');
+/* ── DONATION ── */
+const WALLET='TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS';
+function copyWallet(){
+  const doFeedback=()=>{
+    const btn=document.getElementById('copyBtn');
+    const toast=document.getElementById('copyToast');
+    const icon=document.getElementById('copyIcon');
+    btn.innerHTML='<span>✅</span> ¡COPIADO!';
+    btn.style.background='var(--up)';
+    icon.textContent='✅';
+    toast.style.display='block';
+    setTimeout(()=>{
+      btn.innerHTML='<span>📋</span> COPIAR DIRECCIÓN';
+      btn.style.background='var(--btc)';
+      icon.textContent='📋';
+      toast.style.display='none';
+    },2500);
+  };
+  navigator.clipboard.writeText(WALLET).then(doFeedback).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=WALLET; ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    doFeedback();
+  });
+}
+
+/* ── REFRESH ── */
+async function refreshAll(){
+  const btn=document.getElementById('fab');
   btn.classList.add('spinning');
-  await Promise.allSettled([fetchPrice(), fetchSentiment(), fetchNews()]);
-  setTimeout(() => btn.classList.remove('spinning'), 650);
-  secsLeft = REFRESH_S;
+  await Promise.allSettled([fetchPrice(),fetchSentiment(),fetchNews()]);
+  setTimeout(()=>btn.classList.remove('spinning'),650);
+  secsLeft=REFRESH_S;
   renderCountdown();
 }
+function manualRefresh(){clearInterval(cInterval);refreshAll();startCountdown();}
 
-function manualRefresh() {
-  clearInterval(cInterval);
-  refreshAll();
-  startCountdown();
+/* ── COUNTDOWN ── */
+function renderCountdown(){
+  const pct=(secsLeft/REFRESH_S)*100;
+  document.getElementById('refreshBarFill').style.width=pct+'%';
+  const m=Math.floor(secsLeft/60), s=secsLeft%60;
+  document.getElementById('refreshCountdown').textContent=m+':'+String(s).padStart(2,'0');
+  document.getElementById('ringCircle').style.strokeDashoffset=176-(pct/100)*176;
 }
-
-/* ══ COUNTDOWN ══ */
-function renderCountdown() {
-  const pct = (secsLeft / REFRESH_S) * 100;
-  document.getElementById('refreshBarFill').style.width = pct + '%';
-  const m = Math.floor(secsLeft/60);
-  const s = secsLeft % 60;
-  document.getElementById('refreshCountdown').textContent = m + ':' + String(s).padStart(2,'0');
-  // Ring
-  const offset = 176 - (pct/100)*176;
-  document.getElementById('ringCircle').style.strokeDashoffset = offset;
-}
-
-function startCountdown() {
-  cInterval = setInterval(() => {
+function startCountdown(){
+  cInterval=setInterval(()=>{
     secsLeft--;
-    if(secsLeft <= 0) refreshAll();
-    else renderCountdown();
-  }, 1000);
+    if(secsLeft<=0) refreshAll(); else renderCountdown();
+  },1000);
 }
 
-/* ══ INIT ══ */
-window.addEventListener('load', () => {
+/* ── INIT ── */
+window.addEventListener('load',()=>{
   setupGauge();
   refreshAll();
   startCountdown();
-  window.addEventListener('resize', () => { if(priceHistory.length) drawChart(); });
+  window.addEventListener('resize',()=>{if(priceHistory.length)drawChart();});
 });
 </script>
 </body>
