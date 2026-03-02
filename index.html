@@ -3,617 +3,627 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>₿ PredictionPool — Predice BTC · Gana USDT</title>
+<title>₿ BTC Live Dashboard</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;min-height:100%;background:#020008;color:#fff;font-family:'Exo 2',sans-serif;overflow-x:hidden}
 
-/* BG */
 #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
-.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,100,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,100,.03) 1px,transparent 1px);background-size:40px 40px}
-.bg-glow1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,100,.06),transparent 70%);top:-200px;left:-200px}
-.bg-glow2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,140,0,.05),transparent 70%);bottom:-100px;right:-100px}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,165,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,165,0,.025) 1px,transparent 1px);background-size:44px 44px}
+.bg-glow1{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,140,0,.07),transparent 70%);top:-150px;right:-150px}
+.bg-glow2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,100,255,.05),transparent 70%);bottom:-100px;left:-100px}
 
-/* LAYOUT */
-#app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px;min-height:100vh;display:flex;flex-direction:column;gap:14px}
+#app{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:14px;padding-bottom:30px}
 
 /* HEADER */
-#header{text-align:center;padding:8px 0}
-.logo{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#00ff88,#00ccff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.logo-sub{font-size:10px;color:#666;letter-spacing:4px;margin-top:2px}
+.header{text-align:center;padding:6px 0 2px}
+.logo{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#ff8800,#ffd700,#ff8800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:9px;color:#555;letter-spacing:4px;margin-top:3px}
+.live-dot{display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;margin-right:5px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* CARDS */
-.card{background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
-.card::before{content:'';position:absolute;inset:0;border-radius:16px;padding:1px;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent,rgba(255,255,255,.05));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-.card-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:3px;color:#666;text-transform:uppercase;margin-bottom:10px}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;position:relative;overflow:hidden}
+.card-lbl{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.card-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.06),transparent)}
 
-/* BTC PRICE CARD */
-#priceCard{border-color:rgba(255,215,0,.15);background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(255,140,0,.03))}
-.price-main{display:flex;align-items:flex-end;gap:12px;margin-bottom:8px}
-.price-value{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,.4);line-height:1}
-.price-change{font-size:14px;font-weight:700;padding:3px 10px;border-radius:20px;align-self:center}
-.price-change.up{background:rgba(0,255,100,.12);color:#00ff88;border:1px solid rgba(0,255,100,.2)}
-.price-change.down{background:rgba(255,60,0,.12);color:#ff4444;border:1px solid rgba(255,60,0,.2)}
-.price-meta{display:flex;gap:16px;font-size:11px;color:#666}
-.price-meta span{display:flex;align-items:center;gap:4px}
+/* PRICE CARD */
+#priceCard{border-color:rgba(255,180,0,.12);background:linear-gradient(145deg,rgba(255,140,0,.06),rgba(0,0,0,.4))}
+.price-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.price-val{font-family:'Orbitron',monospace;font-size:36px;font-weight:900;color:#ffd700;text-shadow:0 0 30px rgba(255,215,0,.35);line-height:1}
+.price-badge{padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;align-self:center}
+.badge-up{background:rgba(0,255,100,.1);color:#00ff88;border:1px solid rgba(0,255,100,.2)}
+.badge-dn{background:rgba(255,60,0,.1);color:#ff4444;border:1px solid rgba(255,60,0,.2)}
+.price-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.pstat{background:rgba(0,0,0,.25);border-radius:8px;padding:7px 8px;text-align:center;border:1px solid rgba(255,255,255,.04)}
+.pstat-val{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#ddd}
+.pstat-lbl{font-size:8px;color:#444;letter-spacing:1px;margin-top:2px}
+#chartWrap{height:65px;position:relative;margin-top:4px}
+#priceChart{width:100%;height:100%}
+.last-update{font-size:9px;color:#333;text-align:right;margin-top:4px;font-family:'Orbitron',monospace}
 
-/* MINI CHART */
-#chartWrap{height:60px;margin:10px 0;position:relative}
-#miniChart{width:100%;height:100%}
+/* GAUGE / SENTIMENT */
+#sentCard{border-color:rgba(255,255,255,.08);text-align:center}
+#gaugeWrap{position:relative;width:220px;height:120px;margin:0 auto 8px}
+#gaugeCanvas{width:220px;height:120px}
+.gauge-value{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:'Orbitron',monospace;font-size:28px;font-weight:900;line-height:1}
+.gauge-label{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:2px;margin-bottom:4px}
+.gauge-desc{font-size:11px;color:#666;max-width:280px;margin:0 auto;line-height:1.6}
+.sent-tags{display:flex;justify-content:space-between;font-size:8px;color:#333;font-family:'Orbitron',monospace;letter-spacing:1px;margin-top:10px;padding:0 4px}
+.sent-bar{height:4px;border-radius:2px;margin:6px 0;background:linear-gradient(90deg,#ff2200,#ff6600,#ffaa00,#ffee00,#aaff00,#00ff88);position:relative}
+.sent-needle{position:absolute;top:-4px;width:2px;height:12px;background:#fff;border-radius:1px;box-shadow:0 0 6px #fff;transition:left .8s ease}
 
-/* TIMER CARD */
-#timerCard{border-color:rgba(0,200,255,.15);background:linear-gradient(135deg,rgba(0,200,255,.05),rgba(0,100,200,.03));text-align:center}
-.round-badge{display:inline-block;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:20px;padding:3px 14px;font-size:10px;color:#0af;font-family:'Orbitron',monospace;letter-spacing:2px;margin-bottom:10px}
-.timer-display{display:flex;justify-content:center;gap:8px;margin:8px 0}
-.timer-unit{display:flex;flex-direction:column;align-items:center;gap:2px}
-.timer-num{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fff;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:8px;padding:6px 12px;min-width:52px;text-align:center;line-height:1}
-.timer-label{font-size:8px;color:#555;letter-spacing:2px}
-.timer-sep{font-family:'Orbitron',monospace;font-size:24px;color:#333;align-self:center;margin-top:-8px}
-.round-info{font-size:11px;color:#555;margin-top:8px}
+/* NEWS */
+#newsCard{border-color:rgba(255,255,255,.06)}
+.news-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.news-tab{padding:4px 12px;border-radius:20px;font-size:10px;font-family:'Orbitron',monospace;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#555;transition:all .15s;letter-spacing:1px}
+.news-tab.active{background:rgba(255,140,0,.12);border-color:rgba(255,140,0,.3);color:#ffaa40}
+.news-list{display:flex;flex-direction:column;gap:1px}
+.news-item{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
+.news-item:last-child{border-bottom:none}
+.news-item:active{background:rgba(255,255,255,.02)}
+.news-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.news-source{font-size:8px;font-family:'Orbitron',monospace;letter-spacing:1px;padding:2px 8px;border-radius:10px}
+.src-cd{background:rgba(255,140,0,.1);color:#ffaa40;border:1px solid rgba(255,140,0,.2)}
+.src-ct{background:rgba(0,200,255,.08);color:#0af;border:1px solid rgba(0,200,255,.15)}
+.src-dc{background:rgba(150,0,255,.1);color:#aa66ff;border:1px solid rgba(150,0,255,.2)}
+.src-bn{background:rgba(255,200,0,.08);color:#ffcc44;border:1px solid rgba(255,200,0,.15)}
+.news-time{font-size:9px;color:#333;margin-left:auto;font-family:'Orbitron',monospace}
+.news-sentiment{font-size:9px;padding:1px 7px;border-radius:8px}
+.sent-bull{background:rgba(0,255,100,.08);color:#00cc66;border:1px solid rgba(0,255,100,.15)}
+.sent-bear{background:rgba(255,60,0,.08);color:#ff6644;border:1px solid rgba(255,60,0,.15)}
+.sent-neut{background:rgba(255,255,255,.04);color:#666;border:1px solid rgba(255,255,255,.08)}
+.news-title{font-size:13px;color:#ccc;line-height:1.45;font-weight:600}
+.news-title:hover{color:#fff}
+.news-excerpt{font-size:11px;color:#555;margin-top:3px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* PREDICTION CARD */
-#predCard{border-color:rgba(255,255,255,.1)}
-.pred-title{text-align:center;font-size:14px;color:#aaa;margin-bottom:14px}
-.pred-title strong{color:#fff}
-.pred-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.pred-btn{padding:18px 10px;border:none;border-radius:12px;font-family:'Orbitron',monospace;font-size:13px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden}
-.pred-btn .pred-icon{font-size:28px;line-height:1}
-.pred-btn .pred-text{font-size:11px;letter-spacing:2px}
-.pred-btn .pred-pct{font-size:10px;opacity:.7;font-weight:400;font-family:'Exo 2',sans-serif}
-.btn-up{background:linear-gradient(135deg,rgba(0,255,100,.12),rgba(0,200,80,.06));border:1px solid rgba(0,255,100,.25);color:#00ff88}
-.btn-up:hover,.btn-up.selected{background:linear-gradient(135deg,rgba(0,255,100,.25),rgba(0,200,80,.15));border-color:rgba(0,255,100,.5);box-shadow:0 0 20px rgba(0,255,100,.2),inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(-2px)}
-.btn-down{background:linear-gradient(135deg,rgba(255,60,0,.12),rgba(200,0,0,.06));border:1px solid rgba(255,60,60,.25);color:#ff4444}
-.btn-down:hover,.btn-down.selected{background:linear-gradient(135deg,rgba(255,60,0,.25),rgba(200,0,0,.15));border-color:rgba(255,60,60,.5);box-shadow:0 0 20px rgba(255,60,0,.2),inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(-2px)}
-.pred-btn.selected::after{content:'✓ SELECCIONADO';position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.1);font-size:8px;letter-spacing:2px;padding:3px;text-align:center;color:inherit;font-family:'Orbitron',monospace}
+.load-more{width:100%;padding:11px;background:rgba(255,140,0,.06);border:1px solid rgba(255,140,0,.15);border-radius:10px;color:#ffaa40;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;margin-top:10px;transition:all .15s}
+.load-more:active{background:rgba(255,140,0,.12)}
 
-/* DONATE STEP */
-#donateStep{display:none;margin-top:4px}
-.donate-amount{display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.amt-btn{padding:8px 16px;border-radius:8px;border:1px solid rgba(255,215,0,.2);background:rgba(255,215,0,.05);color:#ffd700;font-family:'Orbitron',monospace;font-size:11px;cursor:pointer;transition:all .15s}
-.amt-btn.active,.amt-btn:hover{background:rgba(255,215,0,.15);border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.15)}
-.wallet-display{background:rgba(0,0,0,.3);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:12px;margin-bottom:12px}
-.wallet-lbl{font-size:8px;color:#ffd700;letter-spacing:2px;font-family:'Orbitron',monospace;margin-bottom:6px;opacity:.8}
-.wallet-addr{font-family:monospace;font-size:11px;color:#ffe0a0;word-break:break-all;line-height:1.5}
-.copy-btn{display:block;width:100%;margin-top:8px;padding:7px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:6px;color:#ffd700;font-size:10px;letter-spacing:2px;cursor:pointer;font-family:'Orbitron',monospace;transition:all .15s}
-.copy-btn:active{background:rgba(255,215,0,.2)}
-.confirm-btn{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#00cc66,#00aa44);color:#fff;font-family:'Orbitron',monospace;font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 20px rgba(0,200,100,.3);transition:all .15s}
-.confirm-btn:active{transform:scale(.97)}
-.confirm-note{font-size:9px;color:#555;text-align:center;margin-top:6px;line-height:1.5}
-
-/* CONFIRMED STATE */
-#confirmedState{display:none;text-align:center;padding:10px 0}
-.confirmed-icon{font-size:48px;margin-bottom:8px}
-.confirmed-title{font-family:'Orbitron',monospace;font-size:14px;color:#00ff88;letter-spacing:2px;margin-bottom:6px}
-.confirmed-detail{font-size:12px;color:#666;line-height:1.7}
-.confirmed-pred{display:inline-block;padding:4px 16px;border-radius:20px;font-weight:700;margin:8px 0;font-size:13px}
-.confirmed-pred.up{background:rgba(0,255,100,.12);color:#00ff88;border:1px solid rgba(0,255,100,.2)}
-.confirmed-pred.down{background:rgba(255,60,0,.12);color:#ff4444;border:1px solid rgba(255,60,0,.2)}
-
-/* POOL CARD */
-#poolCard{border-color:rgba(255,140,0,.15);background:linear-gradient(135deg,rgba(255,140,0,.05),rgba(255,60,0,.02))}
-.pool-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.pool-stat{text-align:center;background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;border:1px solid rgba(255,255,255,.05)}
-.pool-stat-val{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;margin-bottom:2px}
-.pool-stat-lbl{font-size:9px;color:#555;letter-spacing:1px}
-.pool-bar-wrap{margin-bottom:6px}
-.pool-bar-header{display:flex;justify-content:space-between;font-size:10px;color:#666;margin-bottom:5px;font-family:'Orbitron',monospace}
-.pool-bar-track{height:10px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;border:1px solid rgba(255,140,0,.15);position:relative}
-.pool-bar-fill{height:100%;background:linear-gradient(90deg,#cc2200,#ff6600,#ffaa00,#ffd700);border-radius:5px;box-shadow:0 0 10px rgba(255,140,0,.4);transition:width 1s ease;position:relative}
-.pool-bar-fill::after{content:'🔥';position:absolute;right:-2px;top:-6px;font-size:14px}
-.pool-votes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.vote-bar{border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
-.vote-bar.up-bar{background:rgba(0,255,100,.07);border:1px solid rgba(0,255,100,.15)}
-.vote-bar.down-bar{background:rgba(255,60,0,.07);border:1px solid rgba(255,60,0,.15)}
-.vote-count{font-family:'Orbitron',monospace;font-size:16px;font-weight:700}
-.vote-count.up{color:#00ff88}.vote-count.down{color:#ff4444}
-.vote-pct{font-size:10px;color:#555}
-
-/* HISTORY CARD */
-#histCard{border-color:rgba(255,255,255,.06)}
-.hist-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.hist-item:last-child{border-bottom:none}
-.hist-round{font-family:'Orbitron',monospace;font-size:9px;color:#444;min-width:48px}
-.hist-result{padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;font-family:'Orbitron',monospace}
-.hist-result.up{background:rgba(0,255,100,.1);color:#00ff88}
-.hist-result.down{background:rgba(255,60,0,.1);color:#ff4444}
-.hist-info{flex:1;font-size:10px;color:#555}
-.hist-prize{font-size:10px;color:#ffd700;font-family:'Orbitron',monospace}
-
-/* HOW IT WORKS */
-#howCard{border-color:rgba(255,255,255,.06)}
-.step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
-.step:last-child{margin-bottom:0}
-.step-num{font-family:'Orbitron',monospace;font-size:11px;font-weight:900;color:#0af;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.step-text{font-size:12px;color:#888;line-height:1.6}
-.step-text strong{color:#ccc}
-
-/* FOOTER */
-#footer{text-align:center;padding:8px;font-size:10px;color:#333;font-family:'Orbitron',monospace;letter-spacing:2px}
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.03) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* TOAST */
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);border:1px solid rgba(0,255,100,.3);color:#00ff88;padding:10px 20px;border-radius:8px;font-size:12px;font-family:'Orbitron',monospace;letter-spacing:1px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(10,10,20,.95);border:1px solid rgba(255,140,0,.3);color:#ffaa40;padding:10px 20px;border-radius:10px;font-size:11px;font-family:'Orbitron',monospace;letter-spacing:1px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1}
 
-/* LIVE DOT */
-.live-dot{display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;margin-right:4px;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+/* REFRESH BTN */
+.refresh-btn{position:fixed;bottom:20px;right:16px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(255,60,0,.15));border:1px solid rgba(255,140,0,.3);color:#ffaa40;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(255,100,0,.2);transition:all .2s;z-index:50}
+.refresh-btn:active{transform:scale(.9) rotate(180deg)}
+.refresh-btn.spinning{animation:spin .6s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* RESPONSIVE */
-@media(max-width:380px){.price-value{font-size:26px}.timer-num{font-size:22px;min-width:44px}.pred-btn{padding:14px 8px}}
+footer{text-align:center;font-size:9px;color:#222;font-family:'Orbitron',monospace;letter-spacing:2px;padding:4px}
 </style>
 </head>
 <body>
-<div id="bg">
-  <div class="bg-grid"></div>
-  <div class="bg-glow1"></div>
-  <div class="bg-glow2"></div>
-</div>
-
+<div id="bg"><div class="bg-grid"></div><div class="bg-glow1"></div><div class="bg-glow2"></div></div>
 <div id="toast"></div>
+<button class="refresh-btn" id="refreshBtn" onclick="refreshAll()" title="Actualizar">🔄</button>
 
 <div id="app">
 
   <!-- HEADER -->
-  <div id="header">
-    <div class="logo">₿ PREDICTION POOL</div>
-    <div class="logo-sub"><span class="live-dot"></span>PREDICE BTC · DONA · GANA USDT</div>
+  <div class="header">
+    <div class="logo">₿ BTC LIVE</div>
+    <div class="logo-sub"><span class="live-dot"></span>PRECIO · SENTIMIENTO · NOTICIAS</div>
   </div>
 
-  <!-- BTC PRICE -->
+  <!-- PRICE CARD -->
   <div class="card" id="priceCard">
-    <div class="card-label">₿ Bitcoin precio en vivo</div>
-    <div class="price-main">
-      <div class="price-value" id="btcPrice">$--,---</div>
-      <div class="price-change up" id="priceChange">+0.00%</div>
+    <div class="card-lbl">₿ Bitcoin precio en vivo</div>
+    <div class="price-row">
+      <div class="price-val" id="btcPrice">
+        <span class="skeleton" style="display:inline-block;width:180px;height:36px"></span>
+      </div>
+      <div class="price-badge badge-up" id="priceChange">...</div>
     </div>
-    <div class="price-meta">
-      <span>📊 24h High: <strong id="high24">--</strong></span>
-      <span>📉 24h Low: <strong id="low24">--</strong></span>
-      <span>🔄 Vol: <strong id="vol24">--</strong></span>
+    <div class="price-stats">
+      <div class="pstat"><div class="pstat-val" id="high24">--</div><div class="pstat-lbl">24H MAX</div></div>
+      <div class="pstat"><div class="pstat-val" id="low24">--</div><div class="pstat-lbl">24H MIN</div></div>
+      <div class="pstat"><div class="pstat-val" id="mktCap">--</div><div class="pstat-lbl">MARKET CAP</div></div>
     </div>
-    <div id="chartWrap">
-      <canvas id="miniChart"></canvas>
-    </div>
+    <div id="chartWrap"><canvas id="priceChart"></canvas></div>
+    <div class="last-update" id="lastUpdate">Actualizando...</div>
   </div>
 
-  <!-- TIMER -->
-  <div class="card" id="timerCard">
-    <div class="round-badge">RONDA #<span id="roundNum">14</span></div>
-    <div class="card-label">⏱ Cierre de predicciones en</div>
-    <div class="timer-display">
-      <div class="timer-unit">
-        <div class="timer-num" id="tH">--</div>
-        <div class="timer-label">HORAS</div>
-      </div>
-      <div class="timer-sep">:</div>
-      <div class="timer-unit">
-        <div class="timer-num" id="tM">--</div>
-        <div class="timer-label">MIN</div>
-      </div>
-      <div class="timer-sep">:</div>
-      <div class="timer-unit">
-        <div class="timer-num" id="tS">--</div>
-        <div class="timer-label">SEG</div>
-      </div>
+  <!-- SENTIMENT GAUGE -->
+  <div class="card" id="sentCard">
+    <div class="card-lbl">🧠 Sentimiento del mercado</div>
+    <div id="gaugeWrap">
+      <canvas id="gaugeCanvas" width="220" height="120"></canvas>
+      <div class="gauge-value" id="gaugeVal">--</div>
     </div>
-    <div class="round-info" id="roundInfo">Resultado se revela al completar 24h</div>
+    <div class="gauge-label" id="gaugeLabel">Cargando...</div>
+    <div class="sent-bar"><div class="sent-needle" id="sentNeedle" style="left:50%"></div></div>
+    <div class="sent-tags">
+      <span>😱 MIEDO</span>
+      <span>😰</span>
+      <span>😐 NEUTRAL</span>
+      <span>😊</span>
+      <span>🤑 CODICIA</span>
+    </div>
+    <div class="gauge-desc" id="gaugeDesc" style="margin-top:10px">Analizando el sentimiento del mercado crypto...</div>
   </div>
 
-  <!-- PREDICTION -->
-  <div class="card" id="predCard">
-    <div class="card-label">🎯 Tu predicción</div>
-    <div class="pred-title">¿Dónde estará BTC en <strong>24 horas</strong>?</div>
-    <div class="pred-btns">
-      <button class="pred-btn btn-up" id="btnUp" onclick="selectPred('up')">
-        <span class="pred-icon">📈</span>
-        <span class="pred-text">SUBE</span>
-        <span class="pred-pct" id="upPct">62% predicen esto</span>
-      </button>
-      <button class="pred-btn btn-down" id="btnDown" onclick="selectPred('down')">
-        <span class="pred-icon">📉</span>
-        <span class="pred-text">BAJA</span>
-        <span class="pred-pct" id="downPct">38% predicen esto</span>
-      </button>
+  <!-- NEWS -->
+  <div class="card" id="newsCard">
+    <div class="card-lbl">📰 Noticias Bitcoin — Actualización cada hora</div>
+    <div class="news-tabs">
+      <div class="news-tab active" onclick="filterNews('all',this)">TODAS</div>
+      <div class="news-tab" onclick="filterNews('bull',this)">📈 BULLISH</div>
+      <div class="news-tab" onclick="filterNews('bear',this)">📉 BEARISH</div>
+      <div class="news-tab" onclick="filterNews('neut',this)">😐 NEUTRAL</div>
     </div>
-
-    <!-- DONATE STEP -->
-    <div id="donateStep">
-      <div class="card-label" style="margin-bottom:8px">💳 Selecciona tu donación</div>
-      <div class="donate-amount">
-        <button class="amt-btn active" onclick="selectAmt(this,3)">$3 USDT</button>
-        <button class="amt-btn" onclick="selectAmt(this,5)">$5 USDT</button>
-        <button class="amt-btn" onclick="selectAmt(this,10)">$10 USDT</button>
-        <button class="amt-btn" onclick="selectAmt(this,20)">$20 USDT</button>
+    <div class="news-list" id="newsList">
+      <!-- Skeleton loaders -->
+      <div class="news-item" id="skelNews">
+        <div class="skeleton" style="height:12px;width:60%;margin-bottom:8px"></div>
+        <div class="skeleton" style="height:14px;width:90%;margin-bottom:4px"></div>
+        <div class="skeleton" style="height:10px;width:75%"></div>
       </div>
-      <div class="wallet-display">
-        <div class="wallet-lbl">🔗 Envía USDT TRC-20 a esta wallet</div>
-        <div class="wallet-addr" id="walletAddr">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-        <button class="copy-btn" onclick="copyWallet()">📋 COPIAR WALLET</button>
-      </div>
-      <button class="confirm-btn" onclick="confirmParticipation()">✅ YA ENVIÉ MI DONACIÓN</button>
-      <div class="confirm-note">⚠️ Tu predicción queda registrada al confirmar.<br>El resultado se anuncia al cierre de la ronda.</div>
     </div>
-
-    <!-- CONFIRMED -->
-    <div id="confirmedState">
-      <div class="confirmed-icon">🎉</div>
-      <div class="confirmed-title">¡PARTICIPANDO!</div>
-      <div class="confirmed-detail">Tu predicción:</div>
-      <div class="confirmed-pred up" id="confirmedPred">📈 SUBE</div>
-      <div class="confirmed-detail" id="confirmedAmt">Donación: $3 USDT</div>
-      <div class="confirmed-detail" style="margin-top:8px;font-size:11px">Espera el resultado al cierre de la ronda.<br>Si aciertas, recibirás tu parte del premio.</div>
-    </div>
+    <button class="load-more" id="loadMoreBtn" onclick="loadMore()">↓ CARGAR MÁS NOTICIAS</button>
   </div>
 
-  <!-- POOL -->
-  <div class="card" id="poolCard">
-    <div class="card-label">💰 Pool acumulado — Ronda actual</div>
-    <div class="pool-stats">
-      <div class="pool-stat">
-        <div class="pool-stat-val" style="color:#ffd700" id="poolTotal">$87</div>
-        <div class="pool-stat-lbl">POOL USDT</div>
-      </div>
-      <div class="pool-stat">
-        <div class="pool-stat-val" style="color:#0af" id="poolParticipants">29</div>
-        <div class="pool-stat-lbl">JUGADORES</div>
-      </div>
-      <div class="pool-stat">
-        <div class="pool-stat-val" style="color:#00ff88" id="poolPrize">$8.7</div>
-        <div class="pool-stat-lbl">PREMIO EST.</div>
-      </div>
-    </div>
-    <div class="pool-bar-wrap">
-      <div class="pool-bar-header">
-        <span>Progreso al objetivo</span>
-        <span id="poolPct">87 / 100 USDT</span>
-      </div>
-      <div class="pool-bar-track">
-        <div class="pool-bar-fill" id="poolBarFill" style="width:87%"></div>
-      </div>
-    </div>
-    <div class="pool-votes">
-      <div class="vote-bar up-bar">
-        <div>
-          <div class="vote-count up" id="upVotes">18</div>
-          <div class="vote-pct" id="upVotePct">62% SUBE</div>
-        </div>
-        <div style="font-size:22px">📈</div>
-      </div>
-      <div class="vote-bar down-bar">
-        <div>
-          <div class="vote-count down" id="downVotes">11</div>
-          <div class="vote-pct" id="downVotePct">38% BAJA</div>
-        </div>
-        <div style="font-size:22px">📉</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="card" id="histCard">
-    <div class="card-label">📋 Historial de rondas</div>
-    <div id="histList">
-      <div class="hist-item">
-        <div class="hist-round">Ronda #13</div>
-        <div class="hist-result up">📈 SUBIÓ</div>
-        <div class="hist-info">31 jugadores · $93 pool</div>
-        <div class="hist-prize">+$0.48</div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-round">Ronda #12</div>
-        <div class="hist-result down">📉 BAJÓ</div>
-        <div class="hist-info">24 jugadores · $72 pool</div>
-        <div class="hist-prize">+$0.75</div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-round">Ronda #11</div>
-        <div class="hist-result up">📈 SUBIÓ</div>
-        <div class="hist-info">38 jugadores · $114 pool</div>
-        <div class="hist-prize">+$0.42</div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-round">Ronda #10</div>
-        <div class="hist-result down">📉 BAJÓ</div>
-        <div class="hist-info">19 jugadores · $57 pool</div>
-        <div class="hist-prize">+$0.95</div>
-      </div>
-      <div class="hist-item">
-        <div class="hist-round">Ronda #9</div>
-        <div class="hist-result up">📈 SUBIÓ</div>
-        <div class="hist-info">44 jugadores · $132 pool</div>
-        <div class="hist-prize">+$0.38</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HOW IT WORKS -->
-  <div class="card" id="howCard">
-    <div class="card-label">❓ Cómo funciona</div>
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-text"><strong>Predice</strong> si BTC sube o baja en las próximas 24 horas</div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-text"><strong>Dona mínimo $3 USDT</strong> (TRC-20) a la wallet del pool para participar</div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-text"><strong>Si aciertas</strong>, ganas tu parte del 10% del pool acumulado</div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-text"><strong>El resultado</strong> se anuncia al cerrar cada ronda de 24h. Los ganadores reciben USDT directamente a su wallet</div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-text"><strong>El 90% del pool</strong> se acumula para la siguiente ronda, haciendo el premio cada vez mayor</div>
-    </div>
-  </div>
-
-  <div id="footer">© PREDICTION POOL · USDT TRC-20 · POWERED BY BTC</div>
+  <footer>₿ BTC LIVE DASHBOARD · DATOS EN TIEMPO REAL</footer>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────
-const WALLET = 'TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS';
-const POOL_TARGET = 100;
-let selectedPred = null;
-let selectedAmt = 3;
-let hasConfirmed = false;
-let btcPrice = 0;
+// ════════════════════════════════════════════
+// CONFIG & STATE
+// ════════════════════════════════════════════
 let priceHistory = [];
-let upVotes = 18, downVotes = 11;
+let allNews = [];
+let shownNews = 8;
+let currentFilter = 'all';
+let sentimentValue = 50;
+let gaugeAnimFrame;
 
-// ── FETCH BTC PRICE ───────────────────────────
-async function fetchBTCPrice() {
+// ════════════════════════════════════════════
+// PRICE — CoinGecko (free, no key)
+// ════════════════════════════════════════════
+async function fetchPrice() {
   try {
-    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_high_low_24h=true');
-    const data = await res.json();
-    const btc = data.bitcoin;
-    btcPrice = btc.usd;
-    const change = btc.usd_24h_change;
+    const [priceRes, chartRes] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&community_data=false&developer_data=false'),
+      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly')
+    ]);
 
-    document.getElementById('btcPrice').textContent = '$' + btcPrice.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    const coin = await priceRes.json();
+    const chart = await chartRes.json();
 
-    const changeEl = document.getElementById('priceChange');
-    changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-    changeEl.className = 'price-change ' + (change >= 0 ? 'up' : 'down');
+    const price = coin.market_data.current_price.usd;
+    const change24 = coin.market_data.price_change_percentage_24h;
+    const high = coin.market_data.high_24h.usd;
+    const low = coin.market_data.low_24h.usd;
+    const cap = coin.market_data.market_cap.usd;
 
-    if (btc.usd_24h_high) document.getElementById('high24').textContent = '$' + btc.usd_24h_high.toLocaleString('en-US', {maximumFractionDigits:0});
-    if (btc.usd_24h_low) document.getElementById('low24').textContent = '$' + btc.usd_24h_low.toLocaleString('en-US', {maximumFractionDigits:0});
-    if (btc.usd_24h_vol) document.getElementById('vol24').textContent = '$' + (btc.usd_24h_vol/1e9).toFixed(1) + 'B';
+    // Price display
+    document.getElementById('btcPrice').innerHTML =
+      '$' + price.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-    // Add to history for chart
-    priceHistory.push(btcPrice);
-    if (priceHistory.length > 48) priceHistory.shift();
-    drawChart();
+    const chEl = document.getElementById('priceChange');
+    chEl.textContent = (change24 >= 0 ? '▲ +' : '▼ ') + change24.toFixed(2) + '%';
+    chEl.className = 'price-badge ' + (change24 >= 0 ? 'badge-up' : 'badge-dn');
+
+    document.getElementById('high24').textContent = '$' + high.toLocaleString('en-US', {maximumFractionDigits:0});
+    document.getElementById('low24').textContent = '$' + low.toLocaleString('en-US', {maximumFractionDigits:0});
+    document.getElementById('mktCap').textContent = '$' + (cap / 1e12).toFixed(2) + 'T';
+
+    // Chart data
+    if (chart.prices) {
+      priceHistory = chart.prices.map(p => p[1]);
+      drawPriceChart();
+    }
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      'Actualizado: ' + now.toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 
   } catch(e) {
-    document.getElementById('btcPrice').textContent = '$---';
-    // Fallback demo data
+    console.warn('Price fetch error:', e);
+    // Demo fallback
+    document.getElementById('btcPrice').textContent = '$67,842.30';
+    document.getElementById('priceChange').textContent = '▲ +2.14%';
+    document.getElementById('high24').textContent = '$68,900';
+    document.getElementById('low24').textContent = '$65,200';
+    document.getElementById('mktCap').textContent = '$1.33T';
     if (priceHistory.length === 0) {
-      let base = 67000;
-      for (let i = 0; i < 24; i++) {
-        base += (Math.random() - 0.48) * 400;
-        priceHistory.push(base);
-      }
-      drawChart();
+      let b = 67000;
+      for (let i = 0; i < 24; i++) { b += (Math.random()-.46)*500; priceHistory.push(Math.max(60000,b)); }
+      drawPriceChart();
     }
+    document.getElementById('lastUpdate').textContent = 'Demo mode — sin conexión';
   }
 }
 
-// Fetch chart history
-async function fetchChartHistory() {
-  try {
-    const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly');
-    const data = await res.json();
-    priceHistory = data.prices.map(p => p[1]);
-    drawChart();
-  } catch(e) {
-    // Demo data
-    let base = 67000;
-    priceHistory = [];
-    for (let i = 0; i < 24; i++) {
-      base += (Math.random() - 0.48) * 500;
-      priceHistory.push(Math.max(60000, base));
-    }
-    drawChart();
-  }
-}
-
-// ── MINI CHART ────────────────────────────────
-function drawChart() {
-  const canvas = document.getElementById('miniChart');
+// ════════════════════════════════════════════
+// PRICE CHART
+// ════════════════════════════════════════════
+function drawPriceChart() {
+  const canvas = document.getElementById('priceChart');
   const wrap = document.getElementById('chartWrap');
-  canvas.width = wrap.clientWidth;
-  canvas.height = wrap.clientHeight;
+  canvas.width = wrap.clientWidth * window.devicePixelRatio;
+  canvas.height = wrap.clientHeight * window.devicePixelRatio;
+  canvas.style.width = wrap.clientWidth + 'px';
+  canvas.style.height = wrap.clientHeight + 'px';
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
+  const W = wrap.clientWidth, H = wrap.clientHeight;
   if (priceHistory.length < 2) return;
 
-  const W = canvas.width, H = canvas.height;
-  const min = Math.min(...priceHistory) * 0.9995;
-  const max = Math.max(...priceHistory) * 1.0005;
+  const min = Math.min(...priceHistory) * 0.9996;
+  const max = Math.max(...priceHistory) * 1.0004;
   const range = max - min;
+  const isUp = priceHistory[priceHistory.length-1] >= priceHistory[0];
+  const color = isUp ? '#00ff88' : '#ff4444';
+  const colorAlpha = isUp ? 'rgba(0,255,100,' : 'rgba(255,60,0,';
 
-  const points = priceHistory.map((p, i) => ({
-    x: (i / (priceHistory.length - 1)) * W,
-    y: H - ((p - min) / range) * H * 0.85 - H * 0.07
+  const pts = priceHistory.map((p,i) => ({
+    x: (i/(priceHistory.length-1)) * W,
+    y: H*0.9 - ((p-min)/range) * H*0.82
   }));
 
-  const isUp = priceHistory[priceHistory.length - 1] >= priceHistory[0];
-  const lineColor = isUp ? '#00ff88' : '#ff4444';
-  const glowColor = isUp ? 'rgba(0,255,100,' : 'rgba(255,60,0,';
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,.03)';
+  ctx.lineWidth = 1;
+  for (let i = 1; i < 4; i++) {
+    ctx.beginPath(); ctx.moveTo(0, H*i/4); ctx.lineTo(W, H*i/4); ctx.stroke();
+  }
 
-  // Gradient fill
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, glowColor + '0.15)');
-  grad.addColorStop(1, glowColor + '0.01)');
+  // Fill
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0, colorAlpha+'0.18)');
+  grad.addColorStop(1, colorAlpha+'0.01)');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H);
+  ctx.lineTo(pts[0].x, pts[0].y);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, H);
+  ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.strokeStyle = color; ctx.lineWidth = 2;
+  ctx.shadowColor = color; ctx.shadowBlur = 8;
+  ctx.stroke(); ctx.shadowBlur = 0;
+
+  // Dot at end
+  const last = pts[pts.length-1];
+  ctx.beginPath(); ctx.arc(last.x, last.y, 4, 0, Math.PI*2);
+  ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 12;
+  ctx.fill(); ctx.shadowBlur = 0;
+}
+
+// ════════════════════════════════════════════
+// SENTIMENT — Fear & Greed Index (free, no key)
+// ════════════════════════════════════════════
+async function fetchSentiment() {
+  try {
+    const res = await fetch('https://api.alternative.me/fng/?limit=1');
+    const data = await res.json();
+    const val = parseInt(data.data[0].value);
+    const classification = data.data[0].value_classification;
+    sentimentValue = val;
+    updateGauge(val, classification);
+  } catch(e) {
+    console.warn('Sentiment fetch error:', e);
+    updateGauge(72, 'Greed');
+  }
+}
+
+function updateGauge(val, classification) {
+  // Translate classification
+  const labels = {
+    'Extreme Fear': '😱 MIEDO EXTREMO',
+    'Fear': '😰 MIEDO',
+    'Neutral': '😐 NEUTRAL',
+    'Greed': '😊 CODICIA',
+    'Extreme Greed': '🤑 CODICIA EXTREMA'
+  };
+  const colors = {
+    'Extreme Fear': '#ff2200',
+    'Fear': '#ff6600',
+    'Neutral': '#ffcc00',
+    'Greed': '#aaff00',
+    'Extreme Greed': '#00ff88'
+  };
+  const descs = {
+    'Extreme Fear': 'Los inversores tienen miedo extremo. Históricamente una señal de posible oportunidad de compra.',
+    'Fear': 'El mercado muestra señales de miedo. Los inversores están vendiendo o dudando.',
+    'Neutral': 'El mercado está equilibrado entre compradores y vendedores. Sin tendencia clara.',
+    'Greed': 'El mercado muestra codicia. Los inversores están comprando activamente.',
+    'Extreme Greed': 'Codicia extrema en el mercado. Cuidado: puede indicar una corrección próxima.'
+  };
+
+  const label = labels[classification] || classification;
+  const color = colors[classification] || '#ffcc00';
+  const desc = descs[classification] || '';
+
+  document.getElementById('gaugeVal').textContent = val;
+  document.getElementById('gaugeVal').style.color = color;
+  document.getElementById('gaugeLabel').textContent = label;
+  document.getElementById('gaugeLabel').style.color = color;
+  document.getElementById('gaugeDesc').textContent = desc;
+
+  // Needle position
+  const pct = val / 100 * 100;
+  document.getElementById('sentNeedle').style.left = pct + '%';
+
+  // Draw gauge
+  drawGauge(val, color);
+}
+
+function drawGauge(val, color) {
+  const canvas = document.getElementById('gaugeCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 220, H = 120;
+  ctx.clearRect(0, 0, W, H);
+
+  const cx = W/2, cy = H - 10;
+  const r = 90, rInner = 62;
+  const startAngle = Math.PI;
+  const endAngle = 2 * Math.PI;
+
+  // Background arc sections
+  const sections = [
+    {from:0, to:.25, color:'#ff2200'},
+    {from:.25, to:.45, color:'#ff6600'},
+    {from:.45, to:.55, color:'#ffcc00'},
+    {from:.55, to:.75, color:'#aaff00'},
+    {from:.75, to:1, color:'#00ff88'}
+  ];
+
+  sections.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle + s.from*Math.PI, startAngle + s.to*Math.PI);
+    ctx.arc(cx, cy, rInner, startAngle + s.to*Math.PI, startAngle + s.from*Math.PI, true);
+    ctx.closePath();
+    ctx.fillStyle = s.color + '33';
+    ctx.fill();
+    ctx.strokeStyle = s.color + '66';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Active fill
+  const progress = val / 100;
+  const activeEnd = startAngle + progress * Math.PI;
+  const grad = ctx.createLinearGradient(cx-r, cy, cx+r, cy);
+  grad.addColorStop(0, '#ff2200');
+  grad.addColorStop(.25, '#ff6600');
+  grad.addColorStop(.5, '#ffcc00');
+  grad.addColorStop(.75, '#aaff00');
+  grad.addColorStop(1, '#00ff88');
 
   ctx.beginPath();
-  ctx.moveTo(points[0].x, H);
-  ctx.lineTo(points[0].x, points[0].y);
-  points.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.lineTo(points[points.length - 1].x, H);
+  ctx.arc(cx, cy, r, startAngle, activeEnd);
+  ctx.arc(cx, cy, rInner, activeEnd, startAngle, true);
   ctx.closePath();
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Line
+  // Glow on active edge
   ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  points.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.strokeStyle = lineColor;
-  ctx.lineWidth = 2;
-  ctx.shadowColor = lineColor;
-  ctx.shadowBlur = 6;
+  ctx.arc(cx, cy, (r+rInner)/2, activeEnd-0.05, activeEnd+0.05);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = r - rInner;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 15;
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Last point dot
-  const last = points[points.length - 1];
-  ctx.beginPath();
-  ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
-  ctx.fillStyle = lineColor;
-  ctx.shadowColor = lineColor;
-  ctx.shadowBlur = 10;
-  ctx.fill();
-  ctx.shadowBlur = 0;
-}
-
-// ── COUNTDOWN TIMER ───────────────────────────
-function updateTimer() {
-  // Target: next midnight UTC
-  const now = new Date();
-  const tomorrow = new Date(now);
-  tomorrow.setUTCHours(24, 0, 0, 0);
-  const diff = tomorrow - now;
-
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-
-  document.getElementById('tH').textContent = String(h).padStart(2, '0');
-  document.getElementById('tM').textContent = String(m).padStart(2, '0');
-  document.getElementById('tS').textContent = String(s).padStart(2, '0');
-
-  // Color warning when < 1 hour
-  const timerNums = document.querySelectorAll('.timer-num');
-  timerNums.forEach(el => {
-    el.style.color = h < 1 ? '#ff4444' : '#fff';
-    el.style.borderColor = h < 1 ? 'rgba(255,60,0,.3)' : 'rgba(0,200,255,.15)';
-  });
-}
-
-// ── POOL SIMULATION ───────────────────────────
-let poolAmount = 87;
-function simulatePool() {
-  // Slowly grow pool to simulate activity
-  if (Math.random() < 0.15 && poolAmount < 99) {
-    poolAmount += Math.random() < 0.7 ? 3 : (Math.random() < 0.5 ? 5 : 10);
-    poolAmount = Math.min(poolAmount, 99);
-
-    // Add random vote
-    if (Math.random() > 0.5) upVotes++;
-    else downVotes++;
-
-    updatePoolUI();
+  // Tick marks
+  for (let i = 0; i <= 10; i++) {
+    const angle = startAngle + (i/10) * Math.PI;
+    const x1 = cx + Math.cos(angle) * (r+4);
+    const y1 = cy + Math.sin(angle) * (r+4);
+    const x2 = cx + Math.cos(angle) * (r+10);
+    const y2 = cy + Math.sin(angle) * (r+10);
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+    ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.lineWidth = i%5===0?2:1; ctx.stroke();
   }
+
+  // Needle
+  const needleAngle = startAngle + progress * Math.PI;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(needleAngle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-(r-5), 0);
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#fff';
+  ctx.shadowBlur = 8;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  // Needle center
+  ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI*2);
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.restore();
 }
 
-function updatePoolUI() {
-  const total = upVotes + downVotes;
-  const upPct = Math.round(upVotes / total * 100);
-  const downPct = 100 - upPct;
+// ════════════════════════════════════════════
+// NEWS — RSS via rss2json (free proxy)
+// ════════════════════════════════════════════
+const RSS_FEEDS = [
+  { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk', cls: 'src-cd' },
+  { url: 'https://cointelegraph.com/rss/tag/bitcoin', source: 'CoinTelegraph', cls: 'src-ct' },
+  { url: 'https://decrypt.co/feed', source: 'Decrypt', cls: 'src-dc' },
+  { url: 'https://www.bitcoin.com/feed/', source: 'Bitcoin.com', cls: 'src-bn' }
+];
 
-  document.getElementById('poolTotal').textContent = '$' + Math.floor(poolAmount);
-  document.getElementById('poolParticipants').textContent = upVotes + downVotes;
-  document.getElementById('poolPrize').textContent = '$' + (poolAmount * 0.1).toFixed(1);
-  document.getElementById('poolPct').textContent = Math.floor(poolAmount) + ' / 100 USDT';
-  document.getElementById('poolBarFill').style.width = Math.min(poolAmount, 100) + '%';
-  document.getElementById('upVotes').textContent = upVotes;
-  document.getElementById('downVotes').textContent = downVotes;
-  document.getElementById('upVotePct').textContent = upPct + '% SUBE';
-  document.getElementById('downVotePct').textContent = downPct + '% BAJA';
-  document.getElementById('upPct').textContent = upPct + '% predicen esto';
-  document.getElementById('downPct').textContent = downPct + '% predicen esto';
-}
+async function fetchNews() {
+  const allItems = [];
 
-// ── PREDICTION SELECTION ──────────────────────
-function selectPred(dir) {
-  if (hasConfirmed) return;
-  selectedPred = dir;
-
-  document.getElementById('btnUp').classList.toggle('selected', dir === 'up');
-  document.getElementById('btnDown').classList.toggle('selected', dir === 'down');
-  document.getElementById('donateStep').style.display = 'block';
-
-  // Smooth scroll to donate step
-  setTimeout(() => {
-    document.getElementById('donateStep').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 100);
-}
-
-function selectAmt(btn, amt) {
-  selectedAmt = amt;
-  document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function copyWallet() {
-  navigator.clipboard.writeText(WALLET).then(() => {
-    showToast('✅ Wallet copiada!');
-  }).catch(() => {
-    showToast('📋 ' + WALLET.slice(0, 20) + '...');
+  const fetches = RSS_FEEDS.map(async feed => {
+    try {
+      const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&api_key=public&count=15`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.items) {
+        data.items.forEach(item => {
+          allItems.push({
+            title: item.title,
+            excerpt: item.description ? item.description.replace(/<[^>]*>/g,'').slice(0,120) : '',
+            link: item.link,
+            source: feed.source,
+            cls: feed.cls,
+            pubDate: new Date(item.pubDate),
+            sentiment: analyzeSentiment(item.title + ' ' + (item.description||''))
+          });
+        });
+      }
+    } catch(e) {
+      console.warn('RSS error for', feed.source);
+    }
   });
+
+  await Promise.all(fetches);
+
+  if (allItems.length === 0) {
+    // Fallback demo news
+    allNews = getDemoNews();
+  } else {
+    // Sort by date, newest first
+    allNews = allItems.sort((a,b) => b.pubDate - a.pubDate);
+  }
+
+  renderNews();
 }
 
-function confirmParticipation() {
-  if (!selectedPred) { showToast('⚠️ Selecciona SUBE o BAJA primero'); return; }
-  hasConfirmed = true;
-
-  // Update pool
-  poolAmount += selectedAmt;
-  if (selectedPred === 'up') upVotes++;
-  else downVotes++;
-  updatePoolUI();
-
-  // Show confirmed state
-  document.getElementById('donateStep').style.display = 'none';
-  const confState = document.getElementById('confirmedState');
-  confState.style.display = 'block';
-
-  const predEl = document.getElementById('confirmedPred');
-  predEl.textContent = selectedPred === 'up' ? '📈 SUBE' : '📉 BAJA';
-  predEl.className = 'confirmed-pred ' + selectedPred;
-  document.getElementById('confirmedAmt').textContent = 'Donación: $' + selectedAmt + ' USDT';
-
-  showToast('🎉 ¡Predicción registrada!');
+function analyzeSentiment(text) {
+  const t = text.toLowerCase();
+  const bullWords = ['surge','rally','bull','gain','rise','high','record','pump','soar','growth','adoption','institutional','etf','approval','milestone','breakthrough','moon'];
+  const bearWords = ['crash','fall','drop','bear','loss','decline','dump','sell','fear','hack','ban','regulation','lawsuit','warning','risk','plunge','tumble'];
+  let score = 0;
+  bullWords.forEach(w => { if(t.includes(w)) score++; });
+  bearWords.forEach(w => { if(t.includes(w)) score--; });
+  if (score > 0) return 'bull';
+  if (score < 0) return 'bear';
+  return 'neut';
 }
 
-// ── TOAST ─────────────────────────────────────
+function timeAgo(date) {
+  const diff = (new Date() - date) / 1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return Math.floor(diff/60) + 'm';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h';
+  return Math.floor(diff/86400) + 'd';
+}
+
+function renderNews() {
+  const list = document.getElementById('newsList');
+  const filtered = currentFilter === 'all' ? allNews : allNews.filter(n => n.sentiment === currentFilter);
+  const toShow = filtered.slice(0, shownNews);
+
+  if (toShow.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:#444;font-size:12px">No hay noticias en esta categoría</div>';
+    return;
+  }
+
+  const sentMap = {
+    bull: '<span class="news-sentiment sent-bull">📈 BULLISH</span>',
+    bear: '<span class="news-sentiment sent-bear">📉 BEARISH</span>',
+    neut: '<span class="news-sentiment sent-neut">😐 NEUTRAL</span>'
+  };
+
+  list.innerHTML = toShow.map(n => `
+    <div class="news-item" onclick="window.open('${n.link}','_blank')">
+      <div class="news-top">
+        <span class="news-source ${n.cls}">${n.source}</span>
+        ${sentMap[n.sentiment] || ''}
+        <span class="news-time">${timeAgo(n.pubDate)}</span>
+      </div>
+      <div class="news-title">${n.title}</div>
+      ${n.excerpt ? `<div class="news-excerpt">${n.excerpt}</div>` : ''}
+    </div>
+  `).join('');
+
+  document.getElementById('loadMoreBtn').style.display =
+    filtered.length > shownNews ? 'block' : 'none';
+}
+
+function filterNews(type, btn) {
+  currentFilter = type;
+  shownNews = 8;
+  document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderNews();
+}
+
+function loadMore() {
+  shownNews += 8;
+  renderNews();
+}
+
+// ════════════════════════════════════════════
+// DEMO NEWS FALLBACK
+// ════════════════════════════════════════════
+function getDemoNews() {
+  const now = new Date();
+  return [
+    {title:'Bitcoin Surges Past $68,000 as Institutional Demand Accelerates',excerpt:'Major financial institutions continue to accumulate Bitcoin as ETF inflows hit record levels this week.',link:'#',source:'CoinDesk',cls:'src-cd',pubDate:new Date(now-3600000*0.3),sentiment:'bull'},
+    {title:'Federal Reserve Policy Uncertainty Creates Volatility in Crypto Markets',excerpt:'Traders are watching closely as the Fed hints at potential rate adjustments that could impact risk assets.',link:'#',source:'CoinTelegraph',cls:'src-ct',pubDate:new Date(now-3600000*1.2),sentiment:'bear'},
+    {title:'Bitcoin Lightning Network Hits 10,000 BTC Capacity Milestone',excerpt:'The Layer 2 payment solution continues growing as adoption increases among merchants worldwide.',link:'#',source:'Decrypt',cls:'src-dc',pubDate:new Date(now-3600000*2.1),sentiment:'bull'},
+    {title:'Whale Alert: 5,000 BTC Moved From Exchanges to Cold Wallets',excerpt:'Large holders continue to withdraw Bitcoin from exchanges, signaling long-term holding strategy.',link:'#',source:'Bitcoin.com',cls:'src-bn',pubDate:new Date(now-3600000*3.5),sentiment:'bull'},
+    {title:'SEC Approves New Bitcoin ETF Products From Major Asset Managers',excerpt:'Regulatory approval signals growing mainstream acceptance of Bitcoin as a legitimate asset class.',link:'#',source:'CoinDesk',cls:'src-cd',pubDate:new Date(now-3600000*5),sentiment:'bull'},
+    {title:'Bitcoin Dominance Rises to 54% as Altcoins Face Selling Pressure',excerpt:'Market share data shows investors rotating back into Bitcoin from smaller cryptocurrencies.',link:'#',source:'CoinTelegraph',cls:'src-ct',pubDate:new Date(now-3600000*6.5),sentiment:'neut'},
+    {title:'MicroStrategy Adds 1,000 More Bitcoin to Corporate Treasury',excerpt:'The business intelligence firm continues its aggressive Bitcoin acquisition strategy.',link:'#',source:'Decrypt',cls:'src-dc',pubDate:new Date(now-3600000*8),sentiment:'bull'},
+    {title:'China Considers Easing Crypto Trading Restrictions, Sources Say',excerpt:'Anonymous government sources suggest a potential policy shift regarding cryptocurrency trading.',link:'#',source:'Bitcoin.com',cls:'src-bn',pubDate:new Date(now-3600000*10),sentiment:'bull'},
+    {title:'Bitcoin Mining Difficulty Reaches All-Time High After Halving',excerpt:'Network hashrate continues climbing as miners upgrade equipment following the recent halving event.',link:'#',source:'CoinDesk',cls:'src-cd',pubDate:new Date(now-3600000*12),sentiment:'neut'},
+    {title:'Crypto Exchange Faces Regulatory Scrutiny Over AML Compliance',excerpt:'Regulators have launched an investigation into trading practices at one of the largest crypto platforms.',link:'#',source:'CoinTelegraph',cls:'src-ct',pubDate:new Date(now-3600000*14),sentiment:'bear'},
+    {title:'El Salvador Bitcoin Adoption Study Shows Mixed Economic Results',excerpt:'A new IMF report examines the impact of Bitcoin as legal tender after three years of implementation.',link:'#',source:'Decrypt',cls:'src-dc',pubDate:new Date(now-3600000*16),sentiment:'neut'},
+    {title:'Bitcoin Options Market Shows Bullish Bias Heading Into Q4',excerpt:'Derivatives data indicates traders are positioning for continued upside in the final quarter.',link:'#',source:'Bitcoin.com',cls:'src-bn',pubDate:new Date(now-3600000*18),sentiment:'bull'},
+    {title:'Russia Considers Using Bitcoin for International Oil Trade Settlements',excerpt:'Government officials discuss potential use of cryptocurrencies to bypass Western sanctions.',link:'#',source:'CoinDesk',cls:'src-cd',pubDate:new Date(now-3600000*20),sentiment:'bull'},
+    {title:'Bitcoin Network Processes Record $50 Billion in Daily Transactions',excerpt:'On-chain activity metrics reach new highs as both retail and institutional usage grows.',link:'#',source:'CoinTelegraph',cls:'src-ct',pubDate:new Date(now-3600000*22),sentiment:'bull'},
+    {title:'Analysts Warn of Short-Term Correction Risk After Rapid BTC Rally',excerpt:'Technical indicators suggest Bitcoin may be overbought in the near term after a 15% weekly gain.',link:'#',source:'Decrypt',cls:'src-dc',pubDate:new Date(now-3600000*24),sentiment:'bear'},
+  ];
+}
+
+// ════════════════════════════════════════════
+// REFRESH
+// ════════════════════════════════════════════
+function refreshAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  setTimeout(() => btn.classList.remove('spinning'), 600);
+  fetchPrice();
+  fetchSentiment();
+  fetchNews();
+  showToast('🔄 Actualizando datos...');
+}
+
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── INIT ──────────────────────────────────────
-fetchChartHistory();
-fetchBTCPrice();
-updateTimer();
-updatePoolUI();
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+window.addEventListener('load', () => {
+  fetchPrice();
+  fetchSentiment();
+  fetchNews();
 
-setInterval(fetchBTCPrice, 30000);   // Update price every 30s
-setInterval(updateTimer, 1000);       // Timer every second
-setInterval(simulatePool, 8000);      // Simulate pool activity
+  // Auto-refresh
+  setInterval(fetchPrice, 30000);       // price every 30s
+  setInterval(fetchSentiment, 300000);  // sentiment every 5min
+  setInterval(fetchNews, 3600000);      // news every hour
 
-window.addEventListener('resize', () => {
-  setTimeout(drawChart, 100);
+  window.addEventListener('resize', () => {
+    setTimeout(drawPriceChart, 100);
+  });
 });
 </script>
 </body>
