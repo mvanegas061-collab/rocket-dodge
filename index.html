@@ -1,742 +1,738 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>₿ BTC Quantum Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --accent: #F7931A;
-            --accent-dim: rgba(247, 147, 26, 0.15);
-            --accent-glow: rgba(247, 147, 26, 0.4);
-            --bg: #080808;
-            --surface: rgba(18, 18, 18, 0.85);
-            --surface-2: rgba(30, 30, 30, 0.6);
-            --border: rgba(255, 255, 255, 0.07);
-            --border-accent: rgba(247, 147, 26, 0.3);
-            --text: #F0EDE8;
-            --text-muted: #5a5a5a;
-            --text-dim: #888;
-            --up: #00E676;
-            --down: #FF3D57;
-            --radius: 20px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>₿ BTC Quantum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #060608;
+  --bg2:      #0d0d12;
+  --surface:  rgba(16,16,22,0.9);
+  --surf2:    rgba(255,255,255,0.04);
+  --border:   rgba(255,255,255,0.06);
+  --btc:      #F7931A;
+  --btc-lo:   rgba(247,147,26,0.12);
+  --btc-glow: rgba(247,147,26,0.5);
+  --up:       #00E5A0;
+  --up-lo:    rgba(0,229,160,0.12);
+  --dn:       #FF3B5C;
+  --dn-lo:    rgba(255,59,92,0.12);
+  --txt:      #EEE9E0;
+  --txt2:     #6B6B7A;
+  --txt3:     #9999AA;
+  --r:        22px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(247,147,26,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at -10% 80%, rgba(0,229,160,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 110% 50%, rgba(255,59,92,0.04) 0%, transparent 50%);
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.4;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+#app{
+  position:relative;z-index:1;
+  max-width:430px;margin:0 auto;
+  padding:16px 14px 100px;
+  display:flex;flex-direction:column;gap:12px;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* HEADER */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:20px 2px 10px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.btc-icon{
+  width:44px;height:44px;border-radius:14px;
+  background:var(--btc);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:22px;color:#000;
+  box-shadow:0 0 28px var(--btc-glow),0 4px 12px rgba(0,0,0,0.5);
+  flex-shrink:0;
+}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;color:var(--txt)}
+.hdr-sub{font-size:9px;color:var(--txt2);letter-spacing:0.2em;text-transform:uppercase;margin-top:1px}
+.live-pill{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);
+  border-radius:20px;padding:5px 10px;
+  font-size:9px;color:var(--up);letter-spacing:0.15em;
+}
+.live-dot{
+  width:5px;height:5px;border-radius:50%;background:var(--up);
+  animation:livepulse 2s ease-in-out infinite;
+}
+@keyframes livepulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(0,229,160,0.5)}
+  50%{box-shadow:0 0 0 5px rgba(0,229,160,0)}
+}
 
-        body {
-            background-color: var(--bg);
-            background-image:
-                radial-gradient(ellipse 60% 50% at 100% 0%, rgba(247,147,26,0.08) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 40% at 0% 100%, rgba(247,147,26,0.04) 0%, transparent 60%);
-            color: var(--text);
-            font-family: 'DM Mono', monospace;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+/* CARDS */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+}
+.clabel{
+  font-size:9px;font-weight:600;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--txt2);
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:16px;
+}
+.clabel-r{color:var(--btc);letter-spacing:0.1em}
 
-        /* Noise overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.5;
-        }
+/* PRICE */
+.price-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:54px;letter-spacing:-0.01em;line-height:1;
+  color:var(--txt);margin-bottom:8px;
+}
+.price-row{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 11px;border-radius:8px;font-size:12px;font-weight:600;
+}
+.badge-up{background:var(--up-lo);color:var(--up);border:1px solid rgba(0,229,160,0.25)}
+.badge-dn{background:var(--dn-lo);color:var(--dn);border:1px solid rgba(255,59,92,0.25)}
+.price-time{font-size:10px;color:var(--txt2)}
 
-        #app {
-            position: relative;
-            z-index: 1;
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 20px 16px 100px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.sbox{
+  background:var(--surf2);border:1px solid var(--border);
+  border-radius:14px;padding:12px 8px;text-align:center;
+}
+.sbox-v{font-size:11px;font-weight:600;color:var(--txt);margin-bottom:3px}
+.sbox-l{font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase}
 
-        /* ── HEADER ── */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 24px 0 8px;
-        }
+/* Volume */
+.vol-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.vol-lbl{font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase;min-width:26px}
+.vol-track{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden}
+#volFill{height:100%;width:0;background:linear-gradient(90deg,var(--btc),#FFD580);border-radius:4px;transition:width 1s ease}
+.vol-val{font-size:9px;color:var(--txt3);min-width:50px;text-align:right}
 
-        .logo-mark {
-            width: 42px;
-            height: 42px;
-            background: var(--accent);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 20px;
-            color: #000;
-            box-shadow: 0 0 30px var(--accent-glow);
-            flex-shrink: 0;
-        }
+/* Chart */
+#chartWrap{height:115px;position:relative;margin:0 -4px}
+#priceChart{width:100%!important;height:100%!important;display:block}
 
-        .logo-text { display: flex; flex-direction: column; gap: 2px; }
-        .logo-name {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 0.05em;
-            color: var(--text);
-        }
-        .logo-sub {
-            font-size: 9px;
-            letter-spacing: 0.2em;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
+/* Refresh bar */
+.refresh-bar-wrap{
+  display:flex;align-items:center;gap:8px;padding:10px 0 2px;
+}
+.refresh-bar-lbl{font-size:9px;color:var(--txt2);letter-spacing:0.1em;min-width:90px;text-transform:uppercase}
+.refresh-bar-track{flex:1;height:3px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+#refreshBarFill{height:100%;width:100%;background:var(--btc);border-radius:3px;transition:width 1s linear}
+.refresh-bar-time{font-size:9px;color:var(--btc);min-width:32px;text-align:right;font-weight:600}
 
-        .header-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 10px;
-            color: var(--text-muted);
-            letter-spacing: 0.1em;
-            padding-top: 4px;
-        }
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--up);
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,230,118,0.4); }
-            50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(0,230,118,0); }
-        }
+/* Divider */
+.div{height:1px;background:var(--border);margin:14px 0}
 
-        /* ── CARDS ── */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 22px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-        }
+/* ── CONTRARIAN CLOCK ── */
+.clock-outer{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0 4px}
+.gauge-wrap{position:relative;width:100%;max-width:280px;margin:0 auto}
+#gaugeSvg{width:100%;overflow:visible;display:block}
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-        }
+.gauge-center-val{
+  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+  text-align:center;pointer-events:none;white-space:nowrap;
+}
+.gauge-score{
+  font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1;display:block;
+}
+.gauge-mkt-lbl{
+  font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  display:block;margin-top:1px;opacity:0.7;
+}
 
-        .section-label {
-            font-size: 9px;
-            font-weight: 500;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.gauge-labels{
+  display:flex;justify-content:space-between;
+  width:100%;max-width:280px;margin:6px auto 0;
+  font-size:8px;letter-spacing:0.12em;color:var(--txt2);text-transform:uppercase;
+}
 
-        .section-label .label-right {
-            color: var(--accent);
-            letter-spacing: 0.1em;
-        }
+/* Contrarian box */
+.contrarian-box{
+  background:var(--surf2);border:1px solid var(--border);
+  border-radius:16px;padding:16px;width:100%;margin-top:16px;
+}
+.contrarian-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;
+}
+.contrarian-tag{
+  font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--txt2);
+  background:rgba(255,255,255,0.04);border-radius:4px;padding:3px 7px;
+}
+.contrarian-icon{font-size:18px}
+.contrarian-signal{
+  font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:0.05em;
+  line-height:1;margin-bottom:8px;
+}
+.contrarian-desc{
+  font-size:11px;color:var(--txt3);line-height:1.6;
+}
+.contrarian-divider{height:1px;background:var(--border);margin:10px 0}
+.contrarian-logic{
+  font-size:9px;color:var(--txt2);letter-spacing:0.08em;line-height:1.5;
+}
 
-        /* ── PRICE CARD ── */
-        .price-hero {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 20px;
-        }
+/* NEWS */
+.news-item{
+  padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+  cursor:pointer;transition:all 0.2s;position:relative;
+}
+.news-item:last-child{border-bottom:none}
+.news-item:hover{padding-left:12px}
+.news-item::before{
+  content:'';position:absolute;left:0;top:50%;
+  transform:translateY(-50%) scaleY(0);
+  width:2px;height:55%;background:var(--btc);border-radius:2px;
+  transition:transform 0.2s;
+}
+.news-item:hover::before{transform:translateY(-50%) scaleY(1)}
+.news-tag-pill{
+  display:inline-block;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--btc);background:var(--btc-lo);border-radius:4px;
+  padding:2px 6px;margin-bottom:6px;
+}
+.news-title{font-size:13px;font-weight:500;line-height:1.45;color:var(--txt);margin-bottom:5px}
+.news-foot{display:flex;align-items:center;gap:6px}
+.news-src{font-size:9px;color:var(--txt2);letter-spacing:0.05em}
+.news-dot{width:3px;height:3px;border-radius:50%;background:var(--txt2);flex-shrink:0}
+.news-time{font-size:9px;color:var(--txt2)}
 
-        .price-value {
-            font-family: 'Syne', sans-serif;
-            font-size: 46px;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            line-height: 1;
-            color: var(--text);
-        }
+/* FAB */
+.fab-ring{position:fixed;bottom:22px;right:14px;z-index:998;width:62px;height:62px;pointer-events:none}
+#ringCircle{
+  fill:none;stroke:rgba(247,147,26,0.3);stroke-width:2.2;
+  stroke-dasharray:176;stroke-dashoffset:0;
+  stroke-linecap:round;
+  transform:rotate(-90deg);transform-origin:center;
+  transition:stroke-dashoffset 1s linear;
+}
+.fab{
+  position:fixed;bottom:26px;right:18px;z-index:999;
+  width:54px;height:54px;border-radius:17px;border:none;cursor:pointer;
+  background:var(--btc);color:#000;font-size:20px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 28px rgba(247,147,26,0.55),0 2px 8px rgba(0,0,0,0.4);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.fab:active{transform:scale(0.9)}
+.spinning{animation:spin 0.7s ease-in-out}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-        .price-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .badge-up { background: rgba(0,230,118,0.1); color: var(--up); border: 1px solid rgba(0,230,118,0.2); }
-        .badge-dn { background: rgba(255,61,87,0.1); color: var(--down); border: 1px solid rgba(255,61,87,0.2); }
-
-        .price-timestamp {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        /* STATS GRID */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 10px;
-            text-align: center;
-        }
-
-        .stat-val {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-
-        .stat-lbl {
-            font-size: 8px;
-            letter-spacing: 0.15em;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        /* CHART */
-        #chartWrap {
-            height: 110px;
-            position: relative;
-            margin: 0 -4px;
-        }
-
-        #priceChart { width: 100% !important; height: 100% !important; display: block; }
-
-        /* ── SENTIMENT CARD ── */
-        .sentiment-display {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-
-        .sentiment-score {
-            font-family: 'Syne', sans-serif;
-            font-size: 58px;
-            font-weight: 800;
-            line-height: 1;
-            color: var(--accent);
-        }
-
-        .sentiment-label {
-            font-size: 10px;
-            letter-spacing: 0.2em;
-            color: var(--accent);
-            text-transform: uppercase;
-            padding-bottom: 6px;
-        }
-
-        .sentiment-desc {
-            font-size: 10px;
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .bar-track {
-            height: 6px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 6px;
-            overflow: visible;
-            position: relative;
-        }
-
-        #sentFill {
-            position: absolute;
-            height: 100%;
-            width: 0%;
-            border-radius: 6px;
-            background: linear-gradient(90deg, var(--down) 0%, #FFB347 50%, var(--up) 100%);
-            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        /* Marker */
-        #sentMarker {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--accent);
-            border: 2px solid var(--bg);
-            box-shadow: 0 0 10px var(--accent-glow);
-            transition: left 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .bar-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 8px;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-        }
-
-        /* ── NEWS CARD ── */
-        .news-item {
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .news-item:last-child { border-bottom: none; }
-        .news-item:hover { padding-left: 10px; }
-
-        .news-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%) scaleY(0);
-            width: 2px;
-            height: 60%;
-            background: var(--accent);
-            border-radius: 2px;
-            transition: transform 0.2s;
-        }
-        .news-item:hover::before { transform: translateY(-50%) scaleY(1); }
-
-        .news-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            line-height: 1.4;
-            color: var(--text);
-            margin-bottom: 6px;
-        }
-
-        .news-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .news-source {
-            font-size: 9px;
-            color: var(--accent);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-        }
-
-        .news-time {
-            font-size: 9px;
-            color: var(--text-muted);
-        }
-
-        /* ── REFRESH BTN ── */
-        .refresh-btn {
-            position: fixed;
-            bottom: 28px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 8px 30px rgba(247,147,26,0.5), 0 2px 8px rgba(0,0,0,0.3);
-            z-index: 100;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .refresh-btn:active {
-            transform: scale(0.9);
-            box-shadow: 0 4px 15px rgba(247,147,26,0.4);
-        }
-
-        .spinning { animation: spin 0.8s ease-in-out; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ── SKELETON LOADER ── */
-        .skeleton {
-            background: linear-gradient(90deg, var(--surface-2) 25%, rgba(50,50,50,0.5) 50%, var(--surface-2) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
-        }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* ── FADE IN ── */
-        .fade-in {
-            animation: fadeUp 0.5s ease forwards;
-            opacity: 0;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── ERROR STATE ── */
-        .error-msg {
-            font-size: 11px;
-            color: var(--down);
-            text-align: center;
-            padding: 12px;
-        }
-
-        /* ── DIVIDER ── */
-        .card-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 16px 0;
-        }
-
-        /* ── VOLUME BAR ── */
-        .vol-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 4px;
-        }
-        .vol-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; min-width: 28px; }
-        .vol-bar-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
-        #volFill { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; transition: width 1s ease; }
-        .vol-val { font-size: 9px; color: var(--text-dim); min-width: 48px; text-align: right; }
-    </style>
+/* Fade in */
+.fin{animation:fadeup 0.45s ease both}
+@keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
 </head>
 <body>
 
-<button class="refresh-btn" id="refreshBtn" onclick="refreshAll()" title="Actualizar datos">⚡</button>
+<svg class="fab-ring" viewBox="0 0 62 62">
+  <circle id="ringCircle" cx="31" cy="31" r="28"/>
+</svg>
+<button class="fab" id="fab" onclick="manualRefresh()" title="Actualizar">⚡</button>
 
 <div id="app">
 
-    <!-- HEADER -->
-    <header class="header">
-        <div style="display:flex;align-items:center;gap:12px;">
-            <div class="logo-mark">₿</div>
-            <div class="logo-text">
-                <div class="logo-name">QUANTUM</div>
-                <div class="logo-sub">Bitcoin Intelligence</div>
-            </div>
-        </div>
-        <div class="header-status">
-            <div class="status-dot"></div>
-            <span id="lastUpdate">LIVE</span>
-        </div>
-    </header>
-
-    <!-- PRICE CARD -->
-    <div class="card fade-in" style="animation-delay:0.05s">
-        <div class="section-label">
-            Spot Price — USD
-            <span class="label-right" id="priceChangeSmall">–</span>
-        </div>
-        <div class="price-hero">
-            <div class="price-value" id="btcPrice">$ –,–––.––</div>
-            <div class="price-row">
-                <div class="price-badge badge" id="priceChange">– %</div>
-                <div class="price-timestamp" id="updateTime">cargando…</div>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-val" id="high24">––</div>
-                <div class="stat-lbl">24H High</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-val" id="low24">––</div>
-                <div class="stat-lbl">24H Low</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-val" id="mktCap">––</div>
-                <div class="stat-lbl">Mkt Cap</div>
-            </div>
-        </div>
-
-        <!-- Volume -->
-        <div class="vol-row">
-            <div class="vol-label">VOL</div>
-            <div class="vol-bar-bg"><div id="volFill"></div></div>
-            <div class="vol-val" id="vol24">––</div>
-        </div>
-
-        <div class="card-divider"></div>
-
-        <div id="chartWrap"><canvas id="priceChart"></canvas></div>
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-left">
+      <div class="btc-icon">₿</div>
+      <div>
+        <div class="hdr-title">BTC QUANTUM</div>
+        <div class="hdr-sub">Intelligence · Contrarian</div>
+      </div>
     </div>
-
-    <!-- SENTIMENT CARD -->
-    <div class="card fade-in" style="animation-delay:0.15s">
-        <div class="section-label">Market Sentiment</div>
-        <div class="sentiment-display">
-            <div class="sentiment-score" id="gaugeVal">––</div>
-            <div class="sentiment-label" id="gaugeLabel">CARGANDO…</div>
-        </div>
-        <div class="sentiment-desc" id="gaugeDesc">Índice Fear & Greed basado en volatilidad, volumen y datos sociales.</div>
-
-        <div class="bar-track">
-            <div id="sentFill"></div>
-            <div id="sentMarker" style="left:0%"></div>
-        </div>
-        <div class="bar-labels">
-            <span>Fear</span>
-            <span>Neutral</span>
-            <span>Greed</span>
-        </div>
+    <div class="live-pill">
+      <div class="live-dot"></div>
+      <span id="liveTime">LIVE</span>
     </div>
+  </header>
 
-    <!-- NEWS CARD -->
-    <div class="card fade-in" style="animation-delay:0.25s">
-        <div class="section-label">Intelligence Feed</div>
-        <div id="newsList">
-            <div style="padding:8px 0; color:var(--text-muted); font-size:11px; text-align:center;">Cargando noticias…</div>
-        </div>
+  <!-- PRICE CARD -->
+  <div class="card fin" style="animation-delay:.05s">
+    <div class="clabel">Precio BTC / USD <span class="clabel-r" id="hdrChange">—</span></div>
+    <div class="price-big" id="btcPrice">$ —</div>
+    <div class="price-row">
+      <div class="badge" id="changeBadge">— %</div>
+      <div class="price-time" id="priceTime">cargando…</div>
     </div>
+    <div class="stats3">
+      <div class="sbox"><div class="sbox-v" id="high24">—</div><div class="sbox-l">Máx 24H</div></div>
+      <div class="sbox"><div class="sbox-v" id="low24">—</div><div class="sbox-l">Mín 24H</div></div>
+      <div class="sbox"><div class="sbox-v" id="mktCap">—</div><div class="sbox-l">Mkt Cap</div></div>
+    </div>
+    <div class="vol-row">
+      <div class="vol-lbl">Vol</div>
+      <div class="vol-track"><div id="volFill"></div></div>
+      <div class="vol-val" id="vol24">—</div>
+    </div>
+    <div id="chartWrap"><canvas id="priceChart"></canvas></div>
+    <div class="refresh-bar-wrap">
+      <div class="refresh-bar-lbl">Próx. actualización</div>
+      <div class="refresh-bar-track"><div id="refreshBarFill"></div></div>
+      <div class="refresh-bar-time" id="refreshCountdown">10:00</div>
+    </div>
+  </div>
+
+  <!-- CONTRARIAN CLOCK CARD -->
+  <div class="card fin" style="animation-delay:.12s">
+    <div class="clabel">Reloj Contrarian <span class="clabel-r" id="fngRaw">F&amp;G: —</span></div>
+
+    <div class="clock-outer">
+      <!-- Semicircle SVG gauge -->
+      <div class="gauge-wrap">
+        <svg id="gaugeSvg" viewBox="0 0 280 155">
+          <!-- Background track -->
+          <path id="gaugeTrack" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="20" stroke-linecap="round"/>
+          <!-- Fear zone (red) -->
+          <path id="gaugeFear"    fill="none" stroke="#FF3B5C" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
+          <!-- Neutral zone (orange) -->
+          <path id="gaugeNeutral" fill="none" stroke="#F7931A" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
+          <!-- Greed zone (green) -->
+          <path id="gaugeGreed"   fill="none" stroke="#00E5A0" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
+          <!-- Active fill arc -->
+          <path id="gaugeActive"  fill="none" stroke="#F7931A" stroke-width="20" stroke-linecap="round" opacity="0"/>
+          <!-- Tick marks -->
+          <g id="ticks" opacity="0.4"></g>
+          <!-- Needle -->
+          <line id="gaugeNeedle" x1="140" y1="140" x2="140" y2="46"
+            stroke="white" stroke-width="2.5" stroke-linecap="round"
+            style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
+          <!-- Needle glow -->
+          <line id="gaugeNeedleGlow" x1="140" y1="140" x2="140" y2="60"
+            stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round"
+            style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
+          <!-- Center hub -->
+          <circle cx="140" cy="140" r="8"  fill="rgba(255,255,255,0.1)"/>
+          <circle cx="140" cy="140" r="5"  fill="white"/>
+          <circle cx="140" cy="140" r="2.5" fill="var(--bg)"/>
+          <!-- Labels on arc -->
+          <text x="22"  y="138" fill="rgba(255,59,92,0.7)"  font-size="7" font-family="Outfit,sans-serif" letter-spacing="0.5" text-anchor="middle">MIEDO</text>
+          <text x="140" y="24"  fill="rgba(247,147,26,0.7)" font-size="7" font-family="Outfit,sans-serif" letter-spacing="0.5" text-anchor="middle">NEUTRAL</text>
+          <text x="258" y="138" fill="rgba(0,229,160,0.7)"  font-size="7" font-family="Outfit,sans-serif" letter-spacing="0.5" text-anchor="middle">CODICIA</text>
+        </svg>
+        <!-- Center values overlaid -->
+        <div class="gauge-center-val">
+          <span class="gauge-score" id="gaugeScore" style="color:var(--btc)">—</span>
+          <span class="gauge-mkt-lbl" id="gaugeMktLbl" style="color:var(--btc)">CARGANDO</span>
+        </div>
+      </div>
+
+      <!-- CONTRARIAN SIGNAL BOX -->
+      <div class="contrarian-box">
+        <div class="contrarian-header">
+          <div class="contrarian-tag">⚡ Señal Contrarian</div>
+          <div class="contrarian-icon" id="contrarianIcon">—</div>
+        </div>
+        <div class="contrarian-signal" id="contrarianSignal" style="color:var(--up)">CARGANDO</div>
+        <div class="contrarian-desc" id="contrarianDesc">Analizando sentimiento del mercado…</div>
+        <div class="contrarian-divider"></div>
+        <div class="contrarian-logic">
+          💡 La estrategia contrarian invierte la señal del rebaño — cuando todos temen, compran. Cuando todos codician, venden.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS CARD -->
+  <div class="card fin" style="animation-delay:.2s">
+    <div class="clabel">Noticias Bitcoin <span class="clabel-r" style="font-size:8px">Español</span></div>
+    <div id="newsList">
+      <div style="padding:8px;color:var(--txt2);font-size:11px;text-align:center">Cargando noticias…</div>
+    </div>
+  </div>
 
 </div>
 
 <script>
-    let priceHistory = [];
-    let maxVol = 50e9; // referencia de volumen para el bar
+/* ══ STATE ══ */
+let priceHistory  = [];
+const REFRESH_S   = 600; // 10 min
+let secsLeft      = REFRESH_S;
+let cInterval     = null;
 
-    /* ── FORMAT HELPERS ── */
-    const fmt = (n, dec=2) => n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-    const fmtShort = (n) => {
-        if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
-        if (n >= 1e9) return '$' + (n/1e9).toFixed(1) + 'B';
-        return '$' + fmt(n, 0);
+/* ══ FORMAT ══ */
+const fmtUSD  = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtK    = n => n >= 100000 ? '$'+(n/1000).toFixed(1)+'K' : fmtUSD(n);
+const fmtShrt = n => {
+  if(n>=1e12) return '$'+(n/1e12).toFixed(2)+'T';
+  if(n>=1e9)  return '$'+(n/1e9).toFixed(1)+'B';
+  if(n>=1e6)  return '$'+(n/1e6).toFixed(0)+'M';
+  return '$'+n.toLocaleString('en-US',{maximumFractionDigits:0});
+};
+
+/* ══ FETCH PRICE ══ */
+async function fetchPrice() {
+  try {
+    const [pRes, cRes] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true'),
+      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly')
+    ]);
+    const pd = await pRes.json();
+    const cd = await cRes.json();
+    const btc = pd.bitcoin;
+    const ch  = btc.usd_24h_change;
+    const up  = ch >= 0;
+    const chStr = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '%';
+
+    document.getElementById('btcPrice').textContent = fmtUSD(btc.usd);
+
+    const hch = document.getElementById('hdrChange');
+    hch.textContent = chStr;
+    hch.style.color = up ? 'var(--up)' : 'var(--dn)';
+
+    const bd = document.getElementById('changeBadge');
+    bd.textContent  = chStr;
+    bd.className    = 'badge ' + (up ? 'badge-up' : 'badge-dn');
+
+    document.getElementById('mktCap').textContent = fmtShrt(btc.usd_market_cap);
+    document.getElementById('vol24').textContent  = fmtShrt(btc.usd_24h_vol);
+    document.getElementById('volFill').style.width = Math.min((btc.usd_24h_vol/60e9)*100, 100) + '%';
+
+    priceHistory = cd.prices.map(p => p[1]);
+    document.getElementById('high24').textContent = fmtK(Math.max(...priceHistory));
+    document.getElementById('low24').textContent  = fmtK(Math.min(...priceHistory));
+
+    drawChart();
+
+    const now = new Date();
+    const t = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('liveTime').textContent = t;
+    document.getElementById('priceTime').textContent = 'Act. ' + t;
+  } catch(e){ console.error('price', e); }
+}
+
+/* ══ DRAW CHART ══ */
+function drawChart() {
+  if(priceHistory.length < 2) return;
+  const cv = document.getElementById('priceChart');
+  const cx = cv.getContext('2d');
+  const wr = document.getElementById('chartWrap');
+  const dp = window.devicePixelRatio || 1;
+  cv.width  = wr.clientWidth * dp;
+  cv.height = wr.clientHeight * dp;
+  cx.scale(dp, dp);
+
+  const W = wr.clientWidth, H = wr.clientHeight;
+  const pad = {t:12, b:8, l:4, r:70};
+  const w = W - pad.l - pad.r;
+  const h = H - pad.t - pad.b;
+  const mn = Math.min(...priceHistory);
+  const mx = Math.max(...priceHistory);
+  const rng = (mx - mn) || 1;
+
+  const pts = priceHistory.map((p,i)=>({
+    x: pad.l + (i/(priceHistory.length-1)) * w,
+    y: pad.t + h - ((p-mn)/rng) * h
+  }));
+
+  cx.clearRect(0,0,W,H);
+
+  // Gradient fill
+  const grd = cx.createLinearGradient(0, pad.t, 0, H);
+  grd.addColorStop(0,'rgba(247,147,26,0.2)');
+  grd.addColorStop(0.65,'rgba(247,147,26,0.03)');
+  grd.addColorStop(1,'transparent');
+  cx.beginPath();
+  pts.forEach((p,i) => i===0 ? cx.moveTo(p.x,p.y) : cx.lineTo(p.x,p.y));
+  cx.lineTo(pts[pts.length-1].x, H);
+  cx.lineTo(pts[0].x, H);
+  cx.closePath();
+  cx.fillStyle = grd;
+  cx.fill();
+
+  // Price line
+  cx.beginPath();
+  pts.forEach((p,i) => i===0 ? cx.moveTo(p.x,p.y) : cx.lineTo(p.x,p.y));
+  cx.strokeStyle = '#F7931A';
+  cx.lineWidth   = 2.5;
+  cx.lineJoin    = 'round';
+  cx.lineCap     = 'round';
+  cx.stroke();
+
+  const last = pts[pts.length-1];
+
+  // Dashed horizontal line at current price
+  cx.setLineDash([3,5]);
+  cx.strokeStyle = 'rgba(247,147,26,0.35)';
+  cx.lineWidth = 1;
+  cx.beginPath();
+  cx.moveTo(pad.l, last.y);
+  cx.lineTo(W - 4, last.y);
+  cx.stroke();
+  cx.setLineDash([]);
+
+  // Price label box on right
+  const priceTxt = fmtUSD(priceHistory[priceHistory.length-1]);
+  cx.font = '600 9px Outfit';
+  const tw = cx.measureText(priceTxt).width;
+  const bx = W - pad.r + 6;
+  const by = last.y - 9;
+  const bw = tw + 10;
+  const bh = 16;
+  cx.fillStyle = 'rgba(247,147,26,0.18)';
+  cx.beginPath();
+  cx.roundRect(bx, by, bw, bh, 4);
+  cx.fill();
+  cx.strokeStyle = 'rgba(247,147,26,0.45)';
+  cx.lineWidth = 0.8;
+  cx.stroke();
+  cx.fillStyle = '#F7931A';
+  cx.textAlign = 'left';
+  cx.fillText(priceTxt, bx + 5, by + 11);
+
+  // Glow dot at last point
+  cx.beginPath();
+  cx.arc(last.x, last.y, 7, 0, Math.PI*2);
+  cx.fillStyle = 'rgba(247,147,26,0.2)';
+  cx.fill();
+  cx.beginPath();
+  cx.arc(last.x, last.y, 4, 0, Math.PI*2);
+  cx.fillStyle = '#F7931A';
+  cx.fill();
+  cx.beginPath();
+  cx.arc(last.x, last.y, 1.8, 0, Math.PI*2);
+  cx.fillStyle = '#fff';
+  cx.fill();
+}
+
+/* ══ GAUGE SETUP ══ */
+const CX = 140, CY = 140, R = 100;
+
+function polar(deg, radius) {
+  const r = deg * Math.PI / 180;
+  return { x: CX + radius * Math.cos(r), y: CY + radius * Math.sin(r) };
+}
+
+function arc(startD, endD, r2) {
+  r2 = r2 || R;
+  const s = polar(startD, r2);
+  const e = polar(endD,   r2);
+  const lg = Math.abs(endD - startD) > 180 ? 1 : 0;
+  // sweep = 1 for counter-clockwise visually (since 180→0 goes right)
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r2} ${r2} 0 ${lg} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+}
+
+function setupGauge() {
+  // Full track 180→0 (semicircle from left to right)
+  document.getElementById('gaugeTrack').setAttribute('d', arc(180, 0));
+  // Zones: fear=180→108, neutral=108→72, greed=72→0
+  document.getElementById('gaugeFear').setAttribute('d',    arc(180, 108));
+  document.getElementById('gaugeNeutral').setAttribute('d', arc(108,  72));
+  document.getElementById('gaugeGreed').setAttribute('d',   arc(72,    0));
+
+  // Tick marks
+  const ticks = document.getElementById('ticks');
+  [0,25,50,75,100].forEach(v => {
+    const deg = 180 - v * 1.8;
+    const i = polar(deg, R - 14);
+    const o = polar(deg, R + 14);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', i.x); line.setAttribute('y1', i.y);
+    line.setAttribute('x2', o.x); line.setAttribute('y2', o.y);
+    line.setAttribute('stroke','rgba(255,255,255,0.5)');
+    line.setAttribute('stroke-width','1.5');
+    ticks.appendChild(line);
+  });
+}
+
+function setNeedle(val) {
+  const deg = 180 - val * 1.8; // 0→180deg (left), 100→0deg (right)
+  const rotation = deg - 90;   // needle points up at 0deg rotation
+  document.getElementById('gaugeNeedle').style.transform = `rotate(${rotation}deg)`;
+  document.getElementById('gaugeNeedleGlow').style.transform = `rotate(${rotation}deg)`;
+}
+
+/* ══ CONTRARIAN LOGIC ══ */
+function getContrarian(val) {
+  const v = parseInt(val);
+  if(v <= 15) return {
+    signal: 'COMPRAR FUERTE',
+    color:  'var(--up)',
+    icon:   '🟢',
+    desc:   'Miedo Extremo. El pánico del mercado está en máximos. Los contrarian ven esto como una oportunidad de acumulación de alta convicción.'
+  };
+  if(v <= 35) return {
+    signal: 'CONSIDERAR COMPRA',
+    color:  '#5CF0BC',
+    icon:   '🟩',
+    desc:   'El miedo domina el sentimiento. Históricamente, estas zonas han precedido a recuperaciones significativas. Evalúa entrar gradualmente.'
+  };
+  if(v <= 45) return {
+    signal: 'VIGILAR — LIGERO SESGO COMPRADOR',
+    color:  '#A0D4B0',
+    icon:   '🔵',
+    desc:   'Sentimiento negativo leve. Sin señal contundente. El contrarian mantiene posición o acumula pequeño si tiene liquidez disponible.'
+  };
+  if(v <= 55) return {
+    signal: 'NEUTRAL — SIN SEÑAL CLARA',
+    color:  'var(--btc)',
+    icon:   '⚪',
+    desc:   'El mercado está equilibrado. No hay extremo aprovechable. El contrarian espera pacientemente a que el sentimiento llegue a un extremo.'
+  };
+  if(v <= 65) return {
+    signal: 'VIGILAR — LIGERO SESGO VENDEDOR',
+    color:  '#FFB86C',
+    icon:   '🟡',
+    desc:   'El optimismo crece. No es momento de comprar, pero tampoco de vender agresivamente. Reduce exposición nueva y ajusta stops.'
+  };
+  if(v <= 80) return {
+    signal: 'CONSIDERAR VENTA / TOMAR GANANCIAS',
+    color:  '#FF8C42',
+    icon:   '🟠',
+    desc:   'Codicia creciente. El mercado sobreestima el rally. El contrarian empieza a reducir posiciones y registrar ganancias parciales.'
+  };
+  return {
+    signal: 'VENDER / REDUCIR EXPOSICIÓN',
+    color:  'var(--dn)',
+    icon:   '🔴',
+    desc:   'Codicia Extrema. Todos quieren comprar. La euforia está en máximos — el riesgo de corrección severa es alto. Los contrarian salen o se ponen cortos.'
+  };
+}
+
+/* ══ FETCH SENTIMENT ══ */
+async function fetchSentiment() {
+  try {
+    const res  = await fetch('https://api.alternative.me/fng/?limit=1');
+    const data = await res.json();
+    const item = data.data[0];
+    const val  = parseInt(item.value);
+
+    document.getElementById('fngRaw').textContent = 'F&G: ' + val;
+    document.getElementById('gaugeScore').textContent = val;
+
+    const esLabels = {
+      'Extreme Fear':  'MIEDO EXTREMO',
+      'Fear':          'MIEDO',
+      'Neutral':       'NEUTRAL',
+      'Greed':         'CODICIA',
+      'Extreme Greed': 'CODICIA EXTREMA'
     };
-    const fmtPrice = (n) => '$' + fmt(n, 2);
+    const lbl = esLabels[item.value_classification] || item.value_classification.toUpperCase();
+    document.getElementById('gaugeMktLbl').textContent = lbl;
 
-    /* ── FETCH PRICE ── */
-    async function fetchData() {
-        try {
-            const [pRes, cRes] = await Promise.all([
-                fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true'),
-                fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly')
-            ]);
+    // Zone color for score display
+    let zc = 'var(--btc)';
+    if(val <= 40)      zc = 'var(--dn)';
+    else if(val <= 60) zc = 'var(--btc)';
+    else               zc = 'var(--up)';
+    document.getElementById('gaugeScore').style.color   = zc;
+    document.getElementById('gaugeMktLbl').style.color  = zc;
 
-            const [pData, cData] = await Promise.all([pRes.json(), cRes.json()]);
-            const btc = pData.bitcoin;
+    setNeedle(val);
 
-            // Price
-            document.getElementById('btcPrice').textContent = fmtPrice(btc.usd);
+    // Contrarian (INVERTED signal)
+    const c = getContrarian(val);
+    document.getElementById('contrarianSignal').textContent = c.signal;
+    document.getElementById('contrarianSignal').style.color = c.color;
+    document.getElementById('contrarianIcon').textContent   = c.icon;
+    document.getElementById('contrarianDesc').textContent   = c.desc;
+  } catch(e) { console.error('sentiment', e); }
+}
 
-            // Change badge
-            const change = btc.usd_24h_change;
-            const arrow = change >= 0 ? '▲' : '▼';
-            const changeStr = arrow + ' ' + Math.abs(change).toFixed(2) + '%';
-            const chEl = document.getElementById('priceChange');
-            chEl.textContent = changeStr;
-            chEl.className = 'price-badge badge ' + (change >= 0 ? 'badge-up' : 'badge-dn');
-            document.getElementById('priceChangeSmall').textContent = changeStr;
+/* ══ FETCH NEWS — Spanish sources ══ */
+async function fetchNews() {
+  const list = document.getElementById('newsList');
+  const feeds = [
+    { url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fes.cointelegraph.com%2Frss%2Ftag%2Fbitcoin&count=6', name: 'Cointelegraph ES' },
+    { url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.criptonoticias.com%2Ffeed%2F&count=6',            name: 'CriptoNoticias'  },
+    { url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fambcrypto.com%2Ffeed%2F&count=6',                      name: 'AMBCrypto'       }
+  ];
 
-            // Market cap
-            document.getElementById('mktCap').textContent = fmtShort(btc.usd_market_cap);
+  let items = null, sourceName = '';
+  for(const f of feeds) {
+    try {
+      const r = await fetch(f.url);
+      const d = await r.json();
+      if(d.items && d.items.length) { items = d.items; sourceName = f.name; break; }
+    } catch(e){ /* next */ }
+  }
 
-            // Volume bar
-            const vol = btc.usd_24h_vol;
-            document.getElementById('vol24').textContent = fmtShort(vol);
-            const volPct = Math.min((vol / maxVol) * 100, 100);
-            document.getElementById('volFill').style.width = volPct + '%';
+  if(!items) {
+    list.innerHTML = '<div style="padding:10px;color:var(--txt2);font-size:11px;text-align:center">No se pudieron cargar las noticias.</div>';
+    return;
+  }
 
-            // Chart history
-            priceHistory = cData.prices.map(p => p[1]);
+  list.innerHTML = items.slice(0,5).map(item => {
+    const d = new Date(item.pubDate);
+    const ts = isNaN(d) ? '' : d.toLocaleString('es-MX',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
+    const title = (item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const src   = (item.author||sourceName||'Fuente').replace(/<[^>]*>/g,'').trim().slice(0,28);
+    return `<div class="news-item" onclick="window.open('${encodeURI(item.link)}','_blank','noopener')">
+      <div class="news-tag-pill">Bitcoin</div>
+      <div class="news-title">${title}</div>
+      <div class="news-foot">
+        <span class="news-src">${src || sourceName}</span>
+        <div class="news-dot"></div>
+        <span class="news-time">${ts}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-            // High / Low
-            document.getElementById('high24').textContent = fmtPrice(Math.max(...priceHistory));
-            document.getElementById('low24').textContent = fmtPrice(Math.min(...priceHistory));
+/* ══ REFRESH ══ */
+async function refreshAll() {
+  const btn = document.getElementById('fab');
+  btn.classList.add('spinning');
+  await Promise.allSettled([fetchPrice(), fetchSentiment(), fetchNews()]);
+  setTimeout(() => btn.classList.remove('spinning'), 650);
+  secsLeft = REFRESH_S;
+  renderCountdown();
+}
 
-            drawChart();
+function manualRefresh() {
+  clearInterval(cInterval);
+  refreshAll();
+  startCountdown();
+}
 
-            // Timestamp
-            const now = new Date();
-            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('updateTime').textContent = 'Actualizado ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+/* ══ COUNTDOWN ══ */
+function renderCountdown() {
+  const pct = (secsLeft / REFRESH_S) * 100;
+  document.getElementById('refreshBarFill').style.width = pct + '%';
+  const m = Math.floor(secsLeft/60);
+  const s = secsLeft % 60;
+  document.getElementById('refreshCountdown').textContent = m + ':' + String(s).padStart(2,'0');
+  // Ring
+  const offset = 176 - (pct/100)*176;
+  document.getElementById('ringCircle').style.strokeDashoffset = offset;
+}
 
-        } catch(e) {
-            console.error('Price fetch error:', e);
-            document.getElementById('btcPrice').textContent = 'Sin datos';
-        }
-    }
+function startCountdown() {
+  cInterval = setInterval(() => {
+    secsLeft--;
+    if(secsLeft <= 0) refreshAll();
+    else renderCountdown();
+  }, 1000);
+}
 
-    /* ── DRAW CHART ── */
-    function drawChart() {
-        if (priceHistory.length < 2) return;
-        const canvas = document.getElementById('priceChart');
-        const ctx = canvas.getContext('2d');
-        const wrap = document.getElementById('chartWrap');
-
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = wrap.clientWidth * dpr;
-        canvas.height = wrap.clientHeight * dpr;
-        ctx.scale(dpr, dpr);
-
-        const W = wrap.clientWidth;
-        const H = wrap.clientHeight;
-        const padding = { top: 8, bottom: 4, left: 2, right: 2 };
-        const w = W - padding.left - padding.right;
-        const h = H - padding.top - padding.bottom;
-
-        const min = Math.min(...priceHistory);
-        const max = Math.max(...priceHistory);
-        const range = max - min || 1;
-
-        const pts = priceHistory.map((p, i) => ({
-            x: padding.left + (i / (priceHistory.length - 1)) * w,
-            y: padding.top + h - ((p - min) / range) * h
-        }));
-
-        ctx.clearRect(0, 0, W, H);
-
-        // Gradient fill
-        const gradFill = ctx.createLinearGradient(0, 0, 0, H);
-        gradFill.addColorStop(0, 'rgba(247,147,26,0.2)');
-        gradFill.addColorStop(0.7, 'rgba(247,147,26,0.03)');
-        gradFill.addColorStop(1, 'transparent');
-
-        ctx.beginPath();
-        pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
-        ctx.lineTo(pts[pts.length-1].x, H);
-        ctx.lineTo(pts[0].x, H);
-        ctx.closePath();
-        ctx.fillStyle = gradFill;
-        ctx.fill();
-
-        // Line
-        ctx.beginPath();
-        pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
-        ctx.strokeStyle = '#F7931A';
-        ctx.lineWidth = 2.5;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-        ctx.stroke();
-
-        // Last price dot
-        const last = pts[pts.length - 1];
-        ctx.beginPath();
-        ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#F7931A';
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(last.x, last.y, 7, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(247,147,26,0.25)';
-        ctx.fill();
-    }
-
-    /* ── FETCH SENTIMENT ── */
-    async function fetchSentiment() {
-        try {
-            const res = await fetch('https://api.alternative.me/fng/?limit=1');
-            const data = await res.json();
-            const item = data.data[0];
-            const val = parseInt(item.value);
-
-            document.getElementById('gaugeVal').textContent = val;
-
-            const labels = {
-                'Extreme Fear': 'MIEDO EXTREMO',
-                'Fear': 'MIEDO',
-                'Neutral': 'NEUTRAL',
-                'Greed': 'CODICIA',
-                'Extreme Greed': 'CODICIA EXTREMA'
-            };
-            document.getElementById('gaugeLabel').textContent = labels[item.value_classification] || item.value_classification.toUpperCase();
-
-            const descriptions = {
-                'Extreme Fear': 'Inversores en pánico. Históricamente una oportunidad de compra.',
-                'Fear': 'El mercado está temeroso. Precaución recomendada.',
-                'Neutral': 'El mercado está equilibrado entre optimistas y pesimistas.',
-                'Greed': 'El optimismo predomina. Evalúa tu exposición.',
-                'Extreme Greed': 'Euforia en el mercado. Señal de posible sobrecompra.'
-            };
-            document.getElementById('gaugeDesc').textContent = descriptions[item.value_classification] || '';
-
-            document.getElementById('sentFill').style.width = val + '%';
-            document.getElementById('sentMarker').style.left = val + '%';
-
-        } catch(e) {
-            console.error('Sentiment fetch error:', e);
-        }
-    }
-
-    /* ── FETCH NEWS ── */
-    async function fetchNews() {
-        const list = document.getElementById('newsList');
-        try {
-            const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://cointelegraph.com/rss/tag/bitcoin&api_key=&count=5');
-            const data = await res.json();
-            if (!data.items || !data.items.length) throw new Error('No items');
-
-            list.innerHTML = data.items.slice(0, 5).map(item => {
-                const time = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const safeTitle = item.title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                const safeLink = encodeURI(item.link);
-                return `
-                    <div class="news-item" onclick="window.open('${safeLink}', '_blank', 'noopener')">
-                        <div class="news-title">${safeTitle}</div>
-                        <div class="news-meta">
-                            <span class="news-source">Cointelegraph</span>
-                            <span class="news-time">${time}</span>
-                        </div>
-                    </div>`;
-            }).join('');
-        } catch(e) {
-            list.innerHTML = '<div class="error-msg">No se pudieron cargar las noticias.</div>';
-        }
-    }
-
-    /* ── REFRESH ALL ── */
-    function refreshAll() {
-        const btn = document.getElementById('refreshBtn');
-        btn.classList.add('spinning');
-        Promise.all([fetchData(), fetchSentiment(), fetchNews()])
-            .finally(() => setTimeout(() => btn.classList.remove('spinning'), 700));
-    }
-
-    /* ── INIT ── */
-    window.addEventListener('load', () => {
-        refreshAll();
-        // Auto-refresh every 90 seconds
-        setInterval(refreshAll, 90000);
-        // Redraw chart on resize
-        window.addEventListener('resize', () => { if (priceHistory.length) drawChart(); });
-    });
+/* ══ INIT ══ */
+window.addEventListener('load', () => {
+  setupGauge();
+  refreshAll();
+  startCountdown();
+  window.addEventListener('resize', () => { if(priceHistory.length) drawChart(); });
+});
 </script>
 </body>
 </html>
