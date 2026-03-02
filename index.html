@@ -4,258 +4,739 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>₿ BTC Quantum Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* FUENTES Y VARIABLES */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
-
         :root {
-            --accent: #ff9500;
-            --accent-glow: rgba(255, 149, 0, 0.25);
-            --bg: #030305;
-            --card-bg: rgba(25, 25, 35, 0.7);
-            --text-main: #ffffff;
-            --text-dim: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
-            --up: #00ff88;
-            --down: #ff4444;
+            --accent: #F7931A;
+            --accent-dim: rgba(247, 147, 26, 0.15);
+            --accent-glow: rgba(247, 147, 26, 0.4);
+            --bg: #080808;
+            --surface: rgba(18, 18, 18, 0.85);
+            --surface-2: rgba(30, 30, 30, 0.6);
+            --border: rgba(255, 255, 255, 0.07);
+            --border-accent: rgba(247, 147, 26, 0.3);
+            --text: #F0EDE8;
+            --text-muted: #5a5a5a;
+            --text-dim: #888;
+            --up: #00E676;
+            --down: #FF3D57;
+            --radius: 20px;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            width: 100%; min-height: 100vh;
             background-color: var(--bg);
-            background-image: radial-gradient(circle at 0% 0%, rgba(255, 149, 0, 0.12) 0%, transparent 40%);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            background-image:
+                radial-gradient(ellipse 60% 50% at 100% 0%, rgba(247,147,26,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 0% 100%, rgba(247,147,26,0.04) 0%, transparent 60%);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        #app { max-width: 480px; margin: 0 auto; padding: 15px; display: flex; flex-direction: column; gap: 18px; padding-bottom: 80px; }
-
-        /* ESTILOS DE CABECERA */
-        .header { text-align: left; padding: 25px 0 5px; }
-        .logo { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .logo span { color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
-        .logo-sub { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 3px; margin-top: 4px; font-weight: 600; }
-
-        /* TARJETAS GLASSMORPHISM */
-        .card { 
-            background: var(--card-bg); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            border: 1px solid var(--border); 
-            border-radius: 28px; 
-            padding: 24px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        
-        .card-lbl { 
-            font-family: 'Space Grotesk', sans-serif; 
-            font-size: 11px; 
-            font-weight: 600; 
-            color: var(--text-dim); 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            margin-bottom: 15px; 
-            display: flex; 
-            justify-content: space-between; 
+        /* Noise overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
         }
 
-        /* PRECIO Y STATS */
-        .price-val { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -2px; color: #fff; margin-bottom: 5px;}
-        .price-badge { display: inline-flex; padding: 4px 12px; border-radius: 100px; font-size: 13px; font-weight: 700; margin-bottom: 15px;}
-        .badge-up { background: rgba(0, 255, 136, 0.1); color: var(--up); border: 1px solid rgba(0, 255, 136, 0.2); }
-        .badge-dn { background: rgba(255, 68, 68, 0.1); color: var(--down); border: 1px solid rgba(255, 68, 68, 0.2); }
-
-        .price-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .pstat { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03); text-align: center; }
-        .pstat-val { font-size: 11px; font-weight: 700; color: #f1f5f9; font-family: 'Space Grotesk'; }
-        .pstat-lbl { font-size: 8px; color: var(--text-dim); margin-top: 3px; font-weight: 600; }
-
-        /* GRÁFICO */
-        #chartWrap { height: 120px; width: 100%; position: relative; margin-top: 10px; }
-        #priceChart { width: 100% !important; height: 100% !important; }
-
-        /* SENTIMIENTO */
-        .sent-val { font-family: 'Space Grotesk'; font-size: 52px; font-weight: 700; margin-bottom: 5px; color: var(--accent); }
-        .sent-bar-bg { height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; margin: 20px 0; position: relative; overflow: hidden; }
-        #sentFill { position: absolute; height: 100%; width: 0%; background: var(--accent); transition: width 1.5s ease-in-out; box-shadow: 0 0 15px var(--accent); }
-
-        /* NOTICIAS */
-        .news-item { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; }
-        .news-item:hover { opacity: 0.8; }
-        .news-title { font-family: 'Space Grotesk'; font-size: 14px; font-weight: 500; line-height: 1.4; color: #e2e8f0; margin-bottom: 5px; }
-        .news-src { font-size: 10px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* BOTÓN FLOTANTE */
-        .refresh-btn { 
-            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 22px; 
-            background: var(--accent); color: #000; border: none; font-size: 24px; cursor: pointer; 
-            box-shadow: 0 10px 25px rgba(255, 149, 0, 0.4); z-index: 100; transition: transform 0.2s;
+        #app {
+            position: relative;
+            z-index: 1;
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 20px 16px 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
-        .refresh-btn:active { transform: scale(0.9); }
+
+        /* ── HEADER ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 24px 0 8px;
+        }
+
+        .logo-mark {
+            width: 42px;
+            height: 42px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-glow);
+            flex-shrink: 0;
+        }
+
+        .logo-text { display: flex; flex-direction: column; gap: 2px; }
+        .logo-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 0.05em;
+            color: var(--text);
+        }
+        .logo-sub {
+            font-size: 9px;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            padding-top: 4px;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--up);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,230,118,0.4); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(0,230,118,0); }
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        .section-label {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-label .label-right {
+            color: var(--accent);
+            letter-spacing: 0.1em;
+        }
+
+        /* ── PRICE CARD ── */
+        .price-hero {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .price-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 46px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            color: var(--text);
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-up { background: rgba(0,230,118,0.1); color: var(--up); border: 1px solid rgba(0,230,118,0.2); }
+        .badge-dn { background: rgba(255,61,87,0.1); color: var(--down); border: 1px solid rgba(255,61,87,0.2); }
+
+        .price-timestamp {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .stat-lbl {
+            font-size: 8px;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* CHART */
+        #chartWrap {
+            height: 110px;
+            position: relative;
+            margin: 0 -4px;
+        }
+
+        #priceChart { width: 100% !important; height: 100% !important; display: block; }
+
+        /* ── SENTIMENT CARD ── */
+        .sentiment-display {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .sentiment-score {
+            font-family: 'Syne', sans-serif;
+            font-size: 58px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--accent);
+        }
+
+        .sentiment-label {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            text-transform: uppercase;
+            padding-bottom: 6px;
+        }
+
+        .sentiment-desc {
+            font-size: 10px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .bar-track {
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            overflow: visible;
+            position: relative;
+        }
+
+        #sentFill {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--down) 0%, #FFB347 50%, var(--up) 100%);
+            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Marker */
+        #sentMarker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg);
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: left 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .bar-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 8px;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        /* ── NEWS CARD ── */
+        .news-item {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .news-item:last-child { border-bottom: none; }
+        .news-item:hover { padding-left: 10px; }
+
+        .news-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) scaleY(0);
+            width: 2px;
+            height: 60%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: transform 0.2s;
+        }
+        .news-item:hover::before { transform: translateY(-50%) scaleY(1); }
+
+        .news-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .news-source {
+            font-size: 9px;
+            color: var(--accent);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .news-time {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        /* ── REFRESH BTN ── */
+        .refresh-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(247,147,26,0.5), 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 4px 15px rgba(247,147,26,0.4);
+        }
+
         .spinning { animation: spin 0.8s ease-in-out; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── SKELETON LOADER ── */
+        .skeleton {
+            background: linear-gradient(90deg, var(--surface-2) 25%, rgba(50,50,50,0.5) 50%, var(--surface-2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ── FADE IN ── */
+        .fade-in {
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── ERROR STATE ── */
+        .error-msg {
+            font-size: 11px;
+            color: var(--down);
+            text-align: center;
+            padding: 12px;
+        }
+
+        /* ── DIVIDER ── */
+        .card-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 16px 0;
+        }
+
+        /* ── VOLUME BAR ── */
+        .vol-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .vol-label { font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; min-width: 28px; }
+        .vol-bar-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+        #volFill { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; transition: width 1s ease; }
+        .vol-val { font-size: 9px; color: var(--text-dim); min-width: 48px; text-align: right; }
     </style>
 </head>
 <body>
 
-<button class="refresh-btn" id="refreshBtn" onclick="refreshAll()">⚡</button>
+<button class="refresh-btn" id="refreshBtn" onclick="refreshAll()" title="Actualizar datos">⚡</button>
 
 <div id="app">
+
+    <!-- HEADER -->
     <header class="header">
-        <div class="logo"><span>₿</span> BTC QUANTUM</div>
-        <div class="logo-sub">Intelligence Ecosystem</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div class="logo-mark">₿</div>
+            <div class="logo-text">
+                <div class="logo-name">QUANTUM</div>
+                <div class="logo-sub">Bitcoin Intelligence</div>
+            </div>
+        </div>
+        <div class="header-status">
+            <div class="status-dot"></div>
+            <span id="lastUpdate">LIVE</span>
+        </div>
     </header>
 
-    <div class="card">
-        <div class="card-lbl">Spot Price <span id="lastUpdate" style="color:var(--accent)">00:00</span></div>
-        <div class="price-val" id="btcPrice">$ --,---.--</div>
-        <div class="price-badge" id="priceChange">--%</div>
-        <div class="price-stats">
-            <div class="pstat"><div class="pstat-val" id="high24">--</div><div class="pstat-lbl">HIGH</div></div>
-            <div class="pstat"><div class="pstat-val" id="low24">--</div><div class="pstat-lbl">LOW</div></div>
-            <div class="pstat"><div class="pstat-val" id="mktCap">--</div><div class="pstat-lbl">M. CAP</div></div>
+    <!-- PRICE CARD -->
+    <div class="card fade-in" style="animation-delay:0.05s">
+        <div class="section-label">
+            Spot Price — USD
+            <span class="label-right" id="priceChangeSmall">–</span>
         </div>
+        <div class="price-hero">
+            <div class="price-value" id="btcPrice">$ –,–––.––</div>
+            <div class="price-row">
+                <div class="price-badge badge" id="priceChange">– %</div>
+                <div class="price-timestamp" id="updateTime">cargando…</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-val" id="high24">––</div>
+                <div class="stat-lbl">24H High</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" id="low24">––</div>
+                <div class="stat-lbl">24H Low</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val" id="mktCap">––</div>
+                <div class="stat-lbl">Mkt Cap</div>
+            </div>
+        </div>
+
+        <!-- Volume -->
+        <div class="vol-row">
+            <div class="vol-label">VOL</div>
+            <div class="vol-bar-bg"><div id="volFill"></div></div>
+            <div class="vol-val" id="vol24">––</div>
+        </div>
+
+        <div class="card-divider"></div>
+
         <div id="chartWrap"><canvas id="priceChart"></canvas></div>
     </div>
 
-    <div class="card" style="text-align:center">
-        <div class="card-lbl">Market Sentiment</div>
-        <div class="sent-val" id="gaugeVal">--</div>
-        <div id="gaugeLabel" style="font-size:11px; letter-spacing:2px; font-weight:700; color:var(--accent)">ANALYZING NETWORK...</div>
-        <div class="sent-bar-bg"><div id="sentFill"></div></div>
-        <div id="gaugeDesc" style="font-size:11px; color:var(--text-dim)">Fear & Greed Index sourced from volatility and social trends.</div>
-    </div>
+    <!-- SENTIMENT CARD -->
+    <div class="card fade-in" style="animation-delay:0.15s">
+        <div class="section-label">Market Sentiment</div>
+        <div class="sentiment-display">
+            <div class="sentiment-score" id="gaugeVal">––</div>
+            <div class="sentiment-label" id="gaugeLabel">CARGANDO…</div>
+        </div>
+        <div class="sentiment-desc" id="gaugeDesc">Índice Fear & Greed basado en volatilidad, volumen y datos sociales.</div>
 
-    <div class="card">
-        <div class="card-lbl">Intelligence Feed</div>
-        <div id="newsList">
-            <div style="padding:10px; color:var(--text-dim); font-size:12px;">Waiting for data...</div>
+        <div class="bar-track">
+            <div id="sentFill"></div>
+            <div id="sentMarker" style="left:0%"></div>
+        </div>
+        <div class="bar-labels">
+            <span>Fear</span>
+            <span>Neutral</span>
+            <span>Greed</span>
         </div>
     </div>
+
+    <!-- NEWS CARD -->
+    <div class="card fade-in" style="animation-delay:0.25s">
+        <div class="section-label">Intelligence Feed</div>
+        <div id="newsList">
+            <div style="padding:8px 0; color:var(--text-muted); font-size:11px; text-align:center;">Cargando noticias…</div>
+        </div>
+    </div>
+
 </div>
 
 <script>
     let priceHistory = [];
+    let maxVol = 50e9; // referencia de volumen para el bar
 
+    /* ── FORMAT HELPERS ── */
+    const fmt = (n, dec=2) => n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    const fmtShort = (n) => {
+        if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+        if (n >= 1e9) return '$' + (n/1e9).toFixed(1) + 'B';
+        return '$' + fmt(n, 0);
+    };
+    const fmtPrice = (n) => '$' + fmt(n, 2);
+
+    /* ── FETCH PRICE ── */
     async function fetchData() {
         try {
-            // Precio y Stats
-            const pRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_vol=false&include_24hr_change=true&include_market_cap=true');
-            const pData = await pRes.json();
-            
-            // Historial para el gráfico
-            const cRes = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly');
-            const cData = await cRes.json();
-            
+            const [pRes, cRes] = await Promise.all([
+                fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true'),
+                fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly')
+            ]);
+
+            const [pData, cData] = await Promise.all([pRes.json(), cRes.json()]);
             const btc = pData.bitcoin;
-            document.getElementById('btcPrice').innerText = '$' + btc.usd.toLocaleString(undefined, {minimumFractionDigits: 2});
-            
+
+            // Price
+            document.getElementById('btcPrice').textContent = fmtPrice(btc.usd);
+
+            // Change badge
             const change = btc.usd_24h_change;
+            const arrow = change >= 0 ? '▲' : '▼';
+            const changeStr = arrow + ' ' + Math.abs(change).toFixed(2) + '%';
             const chEl = document.getElementById('priceChange');
-            chEl.innerText = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-            chEl.className = 'price-badge ' + (change >= 0 ? 'badge-up' : 'badge-dn');
-            
-            document.getElementById('mktCap').innerText = '$' + (btc.usd_market_cap / 1e12).toFixed(2) + 'T';
-            
+            chEl.textContent = changeStr;
+            chEl.className = 'price-badge badge ' + (change >= 0 ? 'badge-up' : 'badge-dn');
+            document.getElementById('priceChangeSmall').textContent = changeStr;
+
+            // Market cap
+            document.getElementById('mktCap').textContent = fmtShort(btc.usd_market_cap);
+
+            // Volume bar
+            const vol = btc.usd_24h_vol;
+            document.getElementById('vol24').textContent = fmtShort(vol);
+            const volPct = Math.min((vol / maxVol) * 100, 100);
+            document.getElementById('volFill').style.width = volPct + '%';
+
+            // Chart history
             priceHistory = cData.prices.map(p => p[1]);
-            
-            // Actualizar High/Low basados en las últimas 24h del chart
-            document.getElementById('high24').innerText = '$' + Math.max(...priceHistory).toLocaleString(undefined, {maximumFractionDigits:0});
-            document.getElementById('low24').innerText = '$' + Math.min(...priceHistory).toLocaleString(undefined, {maximumFractionDigits:0});
-            
+
+            // High / Low
+            document.getElementById('high24').textContent = fmtPrice(Math.max(...priceHistory));
+            document.getElementById('low24').textContent = fmtPrice(Math.min(...priceHistory));
+
             drawChart();
-            document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        } catch(e) { console.error("Error Fetching Price:", e); }
+
+            // Timestamp
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('updateTime').textContent = 'Actualizado ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        } catch(e) {
+            console.error('Price fetch error:', e);
+            document.getElementById('btcPrice').textContent = 'Sin datos';
+        }
     }
 
+    /* ── DRAW CHART ── */
     function drawChart() {
+        if (priceHistory.length < 2) return;
         const canvas = document.getElementById('priceChart');
         const ctx = canvas.getContext('2d');
-        const container = document.getElementById('chartWrap');
-        
-        // Ajuste de resolución para pantallas de alta densidad (S24 Ultra)
+        const wrap = document.getElementById('chartWrap');
+
         const dpr = window.devicePixelRatio || 1;
-        canvas.width = container.clientWidth * dpr;
-        canvas.height = container.clientHeight * dpr;
+        canvas.width = wrap.clientWidth * dpr;
+        canvas.height = wrap.clientHeight * dpr;
         ctx.scale(dpr, dpr);
-        
-        const w = container.clientWidth;
-        const h = container.clientHeight;
+
+        const W = wrap.clientWidth;
+        const H = wrap.clientHeight;
+        const padding = { top: 8, bottom: 4, left: 2, right: 2 };
+        const w = W - padding.left - padding.right;
+        const h = H - padding.top - padding.bottom;
+
         const min = Math.min(...priceHistory);
         const max = Math.max(...priceHistory);
-        const range = max - min;
-        
-        ctx.clearRect(0,0,w,h);
-        
-        // Dibujar línea principal
+        const range = max - min || 1;
+
+        const pts = priceHistory.map((p, i) => ({
+            x: padding.left + (i / (priceHistory.length - 1)) * w,
+            y: padding.top + h - ((p - min) / range) * h
+        }));
+
+        ctx.clearRect(0, 0, W, H);
+
+        // Gradient fill
+        const gradFill = ctx.createLinearGradient(0, 0, 0, H);
+        gradFill.addColorStop(0, 'rgba(247,147,26,0.2)');
+        gradFill.addColorStop(0.7, 'rgba(247,147,26,0.03)');
+        gradFill.addColorStop(1, 'transparent');
+
         ctx.beginPath();
-        ctx.strokeStyle = '#ff9500';
-        ctx.lineWidth = 3;
+        pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+        ctx.lineTo(pts[pts.length-1].x, H);
+        ctx.lineTo(pts[0].x, H);
+        ctx.closePath();
+        ctx.fillStyle = gradFill;
+        ctx.fill();
+
+        // Line
+        ctx.beginPath();
+        pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+        ctx.strokeStyle = '#F7931A';
+        ctx.lineWidth = 2.5;
         ctx.lineJoin = 'round';
-        
-        priceHistory.forEach((p, i) => {
-            const x = (i / (priceHistory.length - 1)) * w;
-            const y = h - ((p - min) / range) * (h * 0.75) - (h * 0.15);
-            if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
+        ctx.lineCap = 'round';
         ctx.stroke();
-        
-        // Dibujar gradiente bajo la línea
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, 'rgba(255, 149, 0, 0.15)');
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
+
+        // Last price dot
+        const last = pts[pts.length - 1];
+        ctx.beginPath();
+        ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#F7931A';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(last.x, last.y, 7, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(247,147,26,0.25)';
         ctx.fill();
     }
 
+    /* ── FETCH SENTIMENT ── */
     async function fetchSentiment() {
         try {
             const res = await fetch('https://api.alternative.me/fng/?limit=1');
             const data = await res.json();
-            const val = data.data[0].value;
-            document.getElementById('gaugeVal').innerText = val;
-            document.getElementById('gaugeLabel').innerText = data.data[0].value_classification.toUpperCase();
+            const item = data.data[0];
+            const val = parseInt(item.value);
+
+            document.getElementById('gaugeVal').textContent = val;
+
+            const labels = {
+                'Extreme Fear': 'MIEDO EXTREMO',
+                'Fear': 'MIEDO',
+                'Neutral': 'NEUTRAL',
+                'Greed': 'CODICIA',
+                'Extreme Greed': 'CODICIA EXTREMA'
+            };
+            document.getElementById('gaugeLabel').textContent = labels[item.value_classification] || item.value_classification.toUpperCase();
+
+            const descriptions = {
+                'Extreme Fear': 'Inversores en pánico. Históricamente una oportunidad de compra.',
+                'Fear': 'El mercado está temeroso. Precaución recomendada.',
+                'Neutral': 'El mercado está equilibrado entre optimistas y pesimistas.',
+                'Greed': 'El optimismo predomina. Evalúa tu exposición.',
+                'Extreme Greed': 'Euforia en el mercado. Señal de posible sobrecompra.'
+            };
+            document.getElementById('gaugeDesc').textContent = descriptions[item.value_classification] || '';
+
             document.getElementById('sentFill').style.width = val + '%';
-        } catch(e) { console.error("Error Sentiment:", e); }
+            document.getElementById('sentMarker').style.left = val + '%';
+
+        } catch(e) {
+            console.error('Sentiment fetch error:', e);
+        }
     }
 
+    /* ── FETCH NEWS ── */
     async function fetchNews() {
+        const list = document.getElementById('newsList');
         try {
-            // Usamos un proxy de noticias estable
-            const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://cointelegraph.com/rss/tag/bitcoin');
+            const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://cointelegraph.com/rss/tag/bitcoin&api_key=&count=5');
             const data = await res.json();
-            const list = document.getElementById('newsList');
-            list.innerHTML = data.items.slice(0, 4).map(item => `
-                <div class="news-item" onclick="window.open('${item.link}', '_blank')">
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-src">COINTELEGRAPH • ${new Date(item.pubDate).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                </div>
-            `).join('');
-        } catch(e) { console.error("Error News:", e); }
+            if (!data.items || !data.items.length) throw new Error('No items');
+
+            list.innerHTML = data.items.slice(0, 5).map(item => {
+                const time = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const safeTitle = item.title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const safeLink = encodeURI(item.link);
+                return `
+                    <div class="news-item" onclick="window.open('${safeLink}', '_blank', 'noopener')">
+                        <div class="news-title">${safeTitle}</div>
+                        <div class="news-meta">
+                            <span class="news-source">Cointelegraph</span>
+                            <span class="news-time">${time}</span>
+                        </div>
+                    </div>`;
+            }).join('');
+        } catch(e) {
+            list.innerHTML = '<div class="error-msg">No se pudieron cargar las noticias.</div>';
+        }
     }
 
+    /* ── REFRESH ALL ── */
     function refreshAll() {
         const btn = document.getElementById('refreshBtn');
         btn.classList.add('spinning');
-        fetchData();
-        fetchSentiment();
-        fetchNews();
-        setTimeout(() => btn.classList.remove('spinning'), 800);
+        Promise.all([fetchData(), fetchSentiment(), fetchNews()])
+            .finally(() => setTimeout(() => btn.classList.remove('spinning'), 700));
     }
 
-    // Iniciar app
-    window.onload = () => {
+    /* ── INIT ── */
+    window.addEventListener('load', () => {
         refreshAll();
-        // Redibujar gráfico si se cambia el tamaño de la ventana (para DeX)
-        window.addEventListener('resize', () => {
-            if(priceHistory.length > 0) drawChart();
-        });
-    };
+        // Auto-refresh every 90 seconds
+        setInterval(refreshAll, 90000);
+        // Redraw chart on resize
+        window.addEventListener('resize', () => { if (priceHistory.length) drawChart(); });
+    });
 </script>
 </body>
 </html>
