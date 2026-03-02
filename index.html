@@ -3,643 +3,618 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🦣 Mammoth Run</title>
+<title>₿ PredictionPool — Predice BTC · Gana USDT</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;touch-action:none}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;color:#fff}
-#wrap{position:relative;width:100vw;height:100vh;display:flex;flex-direction:column}
-#hud{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 10px;background:rgba(0,0,0,.8);border-bottom:2px solid rgba(255,140,0,.4);z-index:20}
-.hi{text-align:center}
-.hl{font-family:'Cinzel',serif;font-size:8px;color:#c8860a;letter-spacing:1px;text-transform:uppercase}
-.hv{font-family:'Cinzel',serif;font-size:14px;font-weight:700}
-.gold{color:#ffd700;text-shadow:0 0 8px #ffd700}
-.green{color:#7fff00;text-shadow:0 0 6px #7fff00}
-.red{color:#ff4400}
-.white{color:#fff}
-#cv-wrap{position:relative;flex:1;overflow:hidden}
-canvas#c{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
-#pb{flex-shrink:0;padding:5px 12px 7px;background:rgba(0,0,0,.8);border-top:2px solid rgba(255,140,0,.4);z-index:20}
-.ph{display:flex;justify-content:space-between;font-size:9px;color:#c8860a;font-family:'Cinzel',serif;margin-bottom:3px}
-.pt{height:8px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;border:1px solid rgba(255,140,0,.2)}
-.pf{height:100%;background:linear-gradient(90deg,#8b0000,#ff8800,#ffd700);box-shadow:0 0 8px #ff8800}
+html,body{width:100%;min-height:100%;background:#020008;color:#fff;font-family:'Exo 2',sans-serif;overflow-x:hidden}
 
-/* SCREENS — posicionadas sobre el canvas */
-.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;z-index:100;background:rgba(0,0,0,.92);backdrop-filter:blur(8px)}
-.scr.h{display:none}
-.scr-inner{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:8px}
-.st{font-family:'Cinzel',serif;font-size:20px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#cc4400,#ff8800,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.3}
-.ss{font-size:10px;color:#c8860a;letter-spacing:2px;font-family:'Cinzel',serif}
-.ib{background:rgba(139,69,0,.12);border:1px solid rgba(255,140,0,.25);border-radius:10px;padding:10px 14px;width:100%}
-.ir{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid rgba(255,140,0,.08)}
-.ir:last-child{border-bottom:none}
-.ir .l{color:#a0784a}
-.ir .v{font-weight:600}
-.wb{background:rgba(255,140,0,.06);border:1px solid rgba(255,140,0,.35);border-radius:8px;padding:8px 12px;width:100%}
-.wl{font-size:8px;color:#ffd700;letter-spacing:2px;font-family:'Cinzel',serif;margin-bottom:3px}
-.wa{font-size:10px;color:#fff;word-break:break-all;font-family:monospace}
-.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.btn{padding:12px 24px;border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .15s;min-width:120px;position:relative;z-index:110}
-.bp{background:linear-gradient(135deg,#8b0000,#cc4400,#ff6600);color:#fff;box-shadow:0 4px 20px rgba(255,80,0,.5)}
-.bp:active{transform:scale(.96)}
-.bs{background:rgba(100,50,0,.3);border:1px solid rgba(255,140,0,.4);color:#ffa040}
-.bs:active{transform:scale(.96)}
-.ch{display:flex;gap:10px;justify-content:center}
-.kh{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#7a5a30}
-.k{background:rgba(139,69,0,.2);border:1px solid rgba(255,140,0,.3);border-radius:5px;padding:4px 8px;font-size:12px;min-width:30px;text-align:center;color:#ffa040}
-#combo{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-family:'Cinzel',serif;font-size:28px;font-weight:900;pointer-events:none;opacity:0;transition:opacity .15s;z-index:50;text-align:center;width:100%}
+/* BG */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,100,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,100,.03) 1px,transparent 1px);background-size:40px 40px}
+.bg-glow1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,100,.06),transparent 70%);top:-200px;left:-200px}
+.bg-glow2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,140,0,.05),transparent 70%);bottom:-100px;right:-100px}
+
+/* LAYOUT */
+#app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px;min-height:100vh;display:flex;flex-direction:column;gap:14px}
+
+/* HEADER */
+#header{text-align:center;padding:8px 0}
+.logo{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#00ff88,#00ccff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:10px;color:#666;letter-spacing:4px;margin-top:2px}
+
+/* CARDS */
+.card{background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+.card::before{content:'';position:absolute;inset:0;border-radius:16px;padding:1px;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent,rgba(255,255,255,.05));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.card-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:3px;color:#666;text-transform:uppercase;margin-bottom:10px}
+
+/* BTC PRICE CARD */
+#priceCard{border-color:rgba(255,215,0,.15);background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(255,140,0,.03))}
+.price-main{display:flex;align-items:flex-end;gap:12px;margin-bottom:8px}
+.price-value{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,.4);line-height:1}
+.price-change{font-size:14px;font-weight:700;padding:3px 10px;border-radius:20px;align-self:center}
+.price-change.up{background:rgba(0,255,100,.12);color:#00ff88;border:1px solid rgba(0,255,100,.2)}
+.price-change.down{background:rgba(255,60,0,.12);color:#ff4444;border:1px solid rgba(255,60,0,.2)}
+.price-meta{display:flex;gap:16px;font-size:11px;color:#666}
+.price-meta span{display:flex;align-items:center;gap:4px}
+
+/* MINI CHART */
+#chartWrap{height:60px;margin:10px 0;position:relative}
+#miniChart{width:100%;height:100%}
+
+/* TIMER CARD */
+#timerCard{border-color:rgba(0,200,255,.15);background:linear-gradient(135deg,rgba(0,200,255,.05),rgba(0,100,200,.03));text-align:center}
+.round-badge{display:inline-block;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:20px;padding:3px 14px;font-size:10px;color:#0af;font-family:'Orbitron',monospace;letter-spacing:2px;margin-bottom:10px}
+.timer-display{display:flex;justify-content:center;gap:8px;margin:8px 0}
+.timer-unit{display:flex;flex-direction:column;align-items:center;gap:2px}
+.timer-num{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fff;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:8px;padding:6px 12px;min-width:52px;text-align:center;line-height:1}
+.timer-label{font-size:8px;color:#555;letter-spacing:2px}
+.timer-sep{font-family:'Orbitron',monospace;font-size:24px;color:#333;align-self:center;margin-top:-8px}
+.round-info{font-size:11px;color:#555;margin-top:8px}
+
+/* PREDICTION CARD */
+#predCard{border-color:rgba(255,255,255,.1)}
+.pred-title{text-align:center;font-size:14px;color:#aaa;margin-bottom:14px}
+.pred-title strong{color:#fff}
+.pred-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.pred-btn{padding:18px 10px;border:none;border-radius:12px;font-family:'Orbitron',monospace;font-size:13px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden}
+.pred-btn .pred-icon{font-size:28px;line-height:1}
+.pred-btn .pred-text{font-size:11px;letter-spacing:2px}
+.pred-btn .pred-pct{font-size:10px;opacity:.7;font-weight:400;font-family:'Exo 2',sans-serif}
+.btn-up{background:linear-gradient(135deg,rgba(0,255,100,.12),rgba(0,200,80,.06));border:1px solid rgba(0,255,100,.25);color:#00ff88}
+.btn-up:hover,.btn-up.selected{background:linear-gradient(135deg,rgba(0,255,100,.25),rgba(0,200,80,.15));border-color:rgba(0,255,100,.5);box-shadow:0 0 20px rgba(0,255,100,.2),inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(-2px)}
+.btn-down{background:linear-gradient(135deg,rgba(255,60,0,.12),rgba(200,0,0,.06));border:1px solid rgba(255,60,60,.25);color:#ff4444}
+.btn-down:hover,.btn-down.selected{background:linear-gradient(135deg,rgba(255,60,0,.25),rgba(200,0,0,.15));border-color:rgba(255,60,60,.5);box-shadow:0 0 20px rgba(255,60,0,.2),inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(-2px)}
+.pred-btn.selected::after{content:'✓ SELECCIONADO';position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.1);font-size:8px;letter-spacing:2px;padding:3px;text-align:center;color:inherit;font-family:'Orbitron',monospace}
+
+/* DONATE STEP */
+#donateStep{display:none;margin-top:4px}
+.donate-amount{display:flex;justify-content:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.amt-btn{padding:8px 16px;border-radius:8px;border:1px solid rgba(255,215,0,.2);background:rgba(255,215,0,.05);color:#ffd700;font-family:'Orbitron',monospace;font-size:11px;cursor:pointer;transition:all .15s}
+.amt-btn.active,.amt-btn:hover{background:rgba(255,215,0,.15);border-color:rgba(255,215,0,.4);box-shadow:0 0 12px rgba(255,215,0,.15)}
+.wallet-display{background:rgba(0,0,0,.3);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:12px;margin-bottom:12px}
+.wallet-lbl{font-size:8px;color:#ffd700;letter-spacing:2px;font-family:'Orbitron',monospace;margin-bottom:6px;opacity:.8}
+.wallet-addr{font-family:monospace;font-size:11px;color:#ffe0a0;word-break:break-all;line-height:1.5}
+.copy-btn{display:block;width:100%;margin-top:8px;padding:7px;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:6px;color:#ffd700;font-size:10px;letter-spacing:2px;cursor:pointer;font-family:'Orbitron',monospace;transition:all .15s}
+.copy-btn:active{background:rgba(255,215,0,.2)}
+.confirm-btn{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#00cc66,#00aa44);color:#fff;font-family:'Orbitron',monospace;font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 20px rgba(0,200,100,.3);transition:all .15s}
+.confirm-btn:active{transform:scale(.97)}
+.confirm-note{font-size:9px;color:#555;text-align:center;margin-top:6px;line-height:1.5}
+
+/* CONFIRMED STATE */
+#confirmedState{display:none;text-align:center;padding:10px 0}
+.confirmed-icon{font-size:48px;margin-bottom:8px}
+.confirmed-title{font-family:'Orbitron',monospace;font-size:14px;color:#00ff88;letter-spacing:2px;margin-bottom:6px}
+.confirmed-detail{font-size:12px;color:#666;line-height:1.7}
+.confirmed-pred{display:inline-block;padding:4px 16px;border-radius:20px;font-weight:700;margin:8px 0;font-size:13px}
+.confirmed-pred.up{background:rgba(0,255,100,.12);color:#00ff88;border:1px solid rgba(0,255,100,.2)}
+.confirmed-pred.down{background:rgba(255,60,0,.12);color:#ff4444;border:1px solid rgba(255,60,0,.2)}
+
+/* POOL CARD */
+#poolCard{border-color:rgba(255,140,0,.15);background:linear-gradient(135deg,rgba(255,140,0,.05),rgba(255,60,0,.02))}
+.pool-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.pool-stat{text-align:center;background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;border:1px solid rgba(255,255,255,.05)}
+.pool-stat-val{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;margin-bottom:2px}
+.pool-stat-lbl{font-size:9px;color:#555;letter-spacing:1px}
+.pool-bar-wrap{margin-bottom:6px}
+.pool-bar-header{display:flex;justify-content:space-between;font-size:10px;color:#666;margin-bottom:5px;font-family:'Orbitron',monospace}
+.pool-bar-track{height:10px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;border:1px solid rgba(255,140,0,.15);position:relative}
+.pool-bar-fill{height:100%;background:linear-gradient(90deg,#cc2200,#ff6600,#ffaa00,#ffd700);border-radius:5px;box-shadow:0 0 10px rgba(255,140,0,.4);transition:width 1s ease;position:relative}
+.pool-bar-fill::after{content:'🔥';position:absolute;right:-2px;top:-6px;font-size:14px}
+.pool-votes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.vote-bar{border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center}
+.vote-bar.up-bar{background:rgba(0,255,100,.07);border:1px solid rgba(0,255,100,.15)}
+.vote-bar.down-bar{background:rgba(255,60,0,.07);border:1px solid rgba(255,60,0,.15)}
+.vote-count{font-family:'Orbitron',monospace;font-size:16px;font-weight:700}
+.vote-count.up{color:#00ff88}.vote-count.down{color:#ff4444}
+.vote-pct{font-size:10px;color:#555}
+
+/* HISTORY CARD */
+#histCard{border-color:rgba(255,255,255,.06)}
+.hist-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.hist-item:last-child{border-bottom:none}
+.hist-round{font-family:'Orbitron',monospace;font-size:9px;color:#444;min-width:48px}
+.hist-result{padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;font-family:'Orbitron',monospace}
+.hist-result.up{background:rgba(0,255,100,.1);color:#00ff88}
+.hist-result.down{background:rgba(255,60,0,.1);color:#ff4444}
+.hist-info{flex:1;font-size:10px;color:#555}
+.hist-prize{font-size:10px;color:#ffd700;font-family:'Orbitron',monospace}
+
+/* HOW IT WORKS */
+#howCard{border-color:rgba(255,255,255,.06)}
+.step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.step:last-child{margin-bottom:0}
+.step-num{font-family:'Orbitron',monospace;font-size:11px;font-weight:900;color:#0af;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-text{font-size:12px;color:#888;line-height:1.6}
+.step-text strong{color:#ccc}
+
+/* FOOTER */
+#footer{text-align:center;padding:8px;font-size:10px;color:#333;font-family:'Orbitron',monospace;letter-spacing:2px}
+
+/* TOAST */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);border:1px solid rgba(0,255,100,.3);color:#00ff88;padding:10px 20px;border-radius:8px;font-size:12px;font-family:'Orbitron',monospace;letter-spacing:1px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
+
+/* LIVE DOT */
+.live-dot{display:inline-block;width:6px;height:6px;background:#00ff88;border-radius:50%;margin-right:4px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* RESPONSIVE */
+@media(max-width:380px){.price-value{font-size:26px}.timer-num{font-size:22px;min-width:44px}.pred-btn{padding:14px 8px}}
 </style>
 </head>
 <body>
-<div id="wrap">
-  <div id="hud">
-    <div class="hi"><div class="hl">Distancia</div><div class="hv white" id="hs">0m</div></div>
-    <div class="hi"><div class="hl">Multiplicador</div><div class="hv gold" id="hm">x1.0</div></div>
-    <div class="hi"><div class="hl">Donacion</div><div class="hv green" id="hd">$3.00</div></div>
-    <div class="hi"><div class="hl">Vidas</div><div class="hv red" id="hl">3</div></div>
+<div id="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-glow1"></div>
+  <div class="bg-glow2"></div>
+</div>
+
+<div id="toast"></div>
+
+<div id="app">
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="logo">₿ PREDICTION POOL</div>
+    <div class="logo-sub"><span class="live-dot"></span>PREDICE BTC · DONA · GANA USDT</div>
   </div>
 
-  <div id="cv-wrap">
-    <canvas id="c"></canvas>
-    <div id="combo">ESQUIVADO!</div>
-
-    <!-- START -->
-    <div class="scr" id="s0">
-      <div class="scr-inner">
-        <div class="st">MAMMOTH RUN</div>
-        <div class="ss">SURVIVE · EVOLVE · MULTIPLY</div>
-        <div class="ib">
-          <div class="ir"><span class="l">Personaje</span><span class="v" style="color:#ffa040">Mamut Prehistorico</span></div>
-          <div class="ir"><span class="l">Donacion base</span><span class="v gold">$3 USD</span></div>
-          <div class="ir"><span class="l">Distancia multiplica</span><span class="v green">tu donacion</span></div>
-          <div class="ir"><span class="l">Pool para ganar</span><span class="v" style="color:#ff8800">100 USDT</span></div>
-          <div class="ir"><span class="l">Premio ganador</span><span class="v gold">10 USDT (10%)</span></div>
-        </div>
-        <div class="wb">
-          <div class="wl">WALLET DONACION — USDT TRC-20</div>
-          <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-        </div>
-        <div class="ch">
-          <div class="kh"><div class="k">TAP ARRIBA</div><span>Saltar</span></div>
-          <div class="kh"><div class="k">TAP ABAJO</div><span>Agachar</span></div>
-        </div>
-        <div class="btns">
-          <button class="btn bp" id="btnStart">CORRER!</button>
-          <button class="btn bs" id="btnDonate">DONAR</button>
-        </div>
-      </div>
+  <!-- BTC PRICE -->
+  <div class="card" id="priceCard">
+    <div class="card-label">₿ Bitcoin precio en vivo</div>
+    <div class="price-main">
+      <div class="price-value" id="btcPrice">$--,---</div>
+      <div class="price-change up" id="priceChange">+0.00%</div>
     </div>
-
-    <!-- GAME OVER -->
-    <div class="scr h" id="s1">
-      <div class="scr-inner">
-        <div class="st">EXTINCION</div>
-        <div class="ss">El meteorito gano esta vez</div>
-        <div class="ib">
-          <div class="ir"><span class="l">Distancia</span><span class="v white" id="gos">0m</span></div>
-          <div class="ir"><span class="l">Multiplicador max</span><span class="v gold" id="gom">x1.0</span></div>
-          <div class="ir"><span class="l">Donacion generada</span><span class="v green" id="god">$3.00</span></div>
-          <div class="ir"><span class="l">Meteoritos esquivados</span><span class="v" style="color:#ff8800" id="goe">0</span></div>
-        </div>
-        <div class="wb">
-          <div class="wl">WALLET DONACION — USDT TRC-20</div>
-          <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-        </div>
-        <div class="btns">
-          <button class="btn bp" id="btnRetry">RENACER</button>
-          <button class="btn bs" id="btnHome">INICIO</button>
-        </div>
-      </div>
+    <div class="price-meta">
+      <span>📊 24h High: <strong id="high24">--</strong></span>
+      <span>📉 24h Low: <strong id="low24">--</strong></span>
+      <span>🔄 Vol: <strong id="vol24">--</strong></span>
     </div>
-
-    <!-- DONATE -->
-    <div class="scr h" id="s2">
-      <div class="scr-inner">
-        <div class="st">DONAR</div>
-        <div class="ss">Unete al pool · Gana 10 USDT</div>
-        <div class="ib">
-          <div class="ir"><span class="l">Red</span><span class="v" style="color:#0af">TRON TRC-20</span></div>
-          <div class="ir"><span class="l">Token</span><span class="v">USDT</span></div>
-          <div class="ir"><span class="l">Minimo</span><span class="v gold">$3 USD</span></div>
-          <div class="ir"><span class="l">Pool objetivo</span><span class="v" style="color:#ff8800">100 USDT</span></div>
-          <div class="ir"><span class="l">Premio</span><span class="v gold">10 USDT al top scorer</span></div>
-        </div>
-        <div class="wb">
-          <div class="wl">WALLET DESTINO</div>
-          <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-        </div>
-        <div class="btns">
-          <button class="btn bp" id="btnPlayFromDonate">JUGAR</button>
-          <button class="btn bs" id="btnBack">VOLVER</button>
-        </div>
-      </div>
+    <div id="chartWrap">
+      <canvas id="miniChart"></canvas>
     </div>
   </div>
 
-  <div id="pb">
-    <div class="ph"><span>POOL ACUMULADO</span><span>~47.5 / 100 USDT</span></div>
-    <div class="pt"><div class="pf" style="width:47.5%"></div></div>
+  <!-- TIMER -->
+  <div class="card" id="timerCard">
+    <div class="round-badge">RONDA #<span id="roundNum">14</span></div>
+    <div class="card-label">⏱ Cierre de predicciones en</div>
+    <div class="timer-display">
+      <div class="timer-unit">
+        <div class="timer-num" id="tH">--</div>
+        <div class="timer-label">HORAS</div>
+      </div>
+      <div class="timer-sep">:</div>
+      <div class="timer-unit">
+        <div class="timer-num" id="tM">--</div>
+        <div class="timer-label">MIN</div>
+      </div>
+      <div class="timer-sep">:</div>
+      <div class="timer-unit">
+        <div class="timer-num" id="tS">--</div>
+        <div class="timer-label">SEG</div>
+      </div>
+    </div>
+    <div class="round-info" id="roundInfo">Resultado se revela al completar 24h</div>
   </div>
+
+  <!-- PREDICTION -->
+  <div class="card" id="predCard">
+    <div class="card-label">🎯 Tu predicción</div>
+    <div class="pred-title">¿Dónde estará BTC en <strong>24 horas</strong>?</div>
+    <div class="pred-btns">
+      <button class="pred-btn btn-up" id="btnUp" onclick="selectPred('up')">
+        <span class="pred-icon">📈</span>
+        <span class="pred-text">SUBE</span>
+        <span class="pred-pct" id="upPct">62% predicen esto</span>
+      </button>
+      <button class="pred-btn btn-down" id="btnDown" onclick="selectPred('down')">
+        <span class="pred-icon">📉</span>
+        <span class="pred-text">BAJA</span>
+        <span class="pred-pct" id="downPct">38% predicen esto</span>
+      </button>
+    </div>
+
+    <!-- DONATE STEP -->
+    <div id="donateStep">
+      <div class="card-label" style="margin-bottom:8px">💳 Selecciona tu donación</div>
+      <div class="donate-amount">
+        <button class="amt-btn active" onclick="selectAmt(this,3)">$3 USDT</button>
+        <button class="amt-btn" onclick="selectAmt(this,5)">$5 USDT</button>
+        <button class="amt-btn" onclick="selectAmt(this,10)">$10 USDT</button>
+        <button class="amt-btn" onclick="selectAmt(this,20)">$20 USDT</button>
+      </div>
+      <div class="wallet-display">
+        <div class="wallet-lbl">🔗 Envía USDT TRC-20 a esta wallet</div>
+        <div class="wallet-addr" id="walletAddr">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+        <button class="copy-btn" onclick="copyWallet()">📋 COPIAR WALLET</button>
+      </div>
+      <button class="confirm-btn" onclick="confirmParticipation()">✅ YA ENVIÉ MI DONACIÓN</button>
+      <div class="confirm-note">⚠️ Tu predicción queda registrada al confirmar.<br>El resultado se anuncia al cierre de la ronda.</div>
+    </div>
+
+    <!-- CONFIRMED -->
+    <div id="confirmedState">
+      <div class="confirmed-icon">🎉</div>
+      <div class="confirmed-title">¡PARTICIPANDO!</div>
+      <div class="confirmed-detail">Tu predicción:</div>
+      <div class="confirmed-pred up" id="confirmedPred">📈 SUBE</div>
+      <div class="confirmed-detail" id="confirmedAmt">Donación: $3 USDT</div>
+      <div class="confirmed-detail" style="margin-top:8px;font-size:11px">Espera el resultado al cierre de la ronda.<br>Si aciertas, recibirás tu parte del premio.</div>
+    </div>
+  </div>
+
+  <!-- POOL -->
+  <div class="card" id="poolCard">
+    <div class="card-label">💰 Pool acumulado — Ronda actual</div>
+    <div class="pool-stats">
+      <div class="pool-stat">
+        <div class="pool-stat-val" style="color:#ffd700" id="poolTotal">$87</div>
+        <div class="pool-stat-lbl">POOL USDT</div>
+      </div>
+      <div class="pool-stat">
+        <div class="pool-stat-val" style="color:#0af" id="poolParticipants">29</div>
+        <div class="pool-stat-lbl">JUGADORES</div>
+      </div>
+      <div class="pool-stat">
+        <div class="pool-stat-val" style="color:#00ff88" id="poolPrize">$8.7</div>
+        <div class="pool-stat-lbl">PREMIO EST.</div>
+      </div>
+    </div>
+    <div class="pool-bar-wrap">
+      <div class="pool-bar-header">
+        <span>Progreso al objetivo</span>
+        <span id="poolPct">87 / 100 USDT</span>
+      </div>
+      <div class="pool-bar-track">
+        <div class="pool-bar-fill" id="poolBarFill" style="width:87%"></div>
+      </div>
+    </div>
+    <div class="pool-votes">
+      <div class="vote-bar up-bar">
+        <div>
+          <div class="vote-count up" id="upVotes">18</div>
+          <div class="vote-pct" id="upVotePct">62% SUBE</div>
+        </div>
+        <div style="font-size:22px">📈</div>
+      </div>
+      <div class="vote-bar down-bar">
+        <div>
+          <div class="vote-count down" id="downVotes">11</div>
+          <div class="vote-pct" id="downVotePct">38% BAJA</div>
+        </div>
+        <div style="font-size:22px">📉</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card" id="histCard">
+    <div class="card-label">📋 Historial de rondas</div>
+    <div id="histList">
+      <div class="hist-item">
+        <div class="hist-round">Ronda #13</div>
+        <div class="hist-result up">📈 SUBIÓ</div>
+        <div class="hist-info">31 jugadores · $93 pool</div>
+        <div class="hist-prize">+$0.48</div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-round">Ronda #12</div>
+        <div class="hist-result down">📉 BAJÓ</div>
+        <div class="hist-info">24 jugadores · $72 pool</div>
+        <div class="hist-prize">+$0.75</div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-round">Ronda #11</div>
+        <div class="hist-result up">📈 SUBIÓ</div>
+        <div class="hist-info">38 jugadores · $114 pool</div>
+        <div class="hist-prize">+$0.42</div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-round">Ronda #10</div>
+        <div class="hist-result down">📉 BAJÓ</div>
+        <div class="hist-info">19 jugadores · $57 pool</div>
+        <div class="hist-prize">+$0.95</div>
+      </div>
+      <div class="hist-item">
+        <div class="hist-round">Ronda #9</div>
+        <div class="hist-result up">📈 SUBIÓ</div>
+        <div class="hist-info">44 jugadores · $132 pool</div>
+        <div class="hist-prize">+$0.38</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="card" id="howCard">
+    <div class="card-label">❓ Cómo funciona</div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text"><strong>Predice</strong> si BTC sube o baja en las próximas 24 horas</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Dona mínimo $3 USDT</strong> (TRC-20) a la wallet del pool para participar</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text"><strong>Si aciertas</strong>, ganas tu parte del 10% del pool acumulado</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text"><strong>El resultado</strong> se anuncia al cerrar cada ronda de 24h. Los ganadores reciben USDT directamente a su wallet</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-text"><strong>El 90% del pool</strong> se acumula para la siguiente ronda, haciendo el premio cada vez mayor</div>
+    </div>
+  </div>
+
+  <div id="footer">© PREDICTION POOL · USDT TRC-20 · POWERED BY BTC</div>
 </div>
 
 <script>
-// ── Canvas resize ─────────────────────────────
-const cv = document.getElementById('c');
-const ctx = cv.getContext('2d');
-let W, H, GROUND;
+// ── CONFIG ────────────────────────────────────
+const WALLET = 'TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS';
+const POOL_TARGET = 100;
+let selectedPred = null;
+let selectedAmt = 3;
+let hasConfirmed = false;
+let btcPrice = 0;
+let priceHistory = [];
+let upVotes = 18, downVotes = 11;
 
-function resize() {
-  const wrap = document.getElementById('cv-wrap');
-  W = wrap.clientWidth;
-  H = wrap.clientHeight;
-  cv.width = W;
-  cv.height = H;
-  GROUND = H - 80;
-}
-resize();
-window.addEventListener('resize', () => { resize(); });
+// ── FETCH BTC PRICE ───────────────────────────
+async function fetchBTCPrice() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_high_low_24h=true');
+    const data = await res.json();
+    const btc = data.bitcoin;
+    btcPrice = btc.usd;
+    const change = btc.usd_24h_change;
 
-// ── Buttons (sin onclick, con addEventListener) ──
-document.getElementById('btnStart').addEventListener('click', startGame);
-document.getElementById('btnDonate').addEventListener('click', () => { hideAll(); document.getElementById('s2').classList.remove('h'); });
-document.getElementById('btnRetry').addEventListener('click', startGame);
-document.getElementById('btnHome').addEventListener('click', showStart);
-document.getElementById('btnPlayFromDonate').addEventListener('click', startGame);
-document.getElementById('btnBack').addEventListener('click', showStart);
+    document.getElementById('btcPrice').textContent = '$' + btcPrice.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-// ── State ─────────────────────────────────────
-let state = 'menu';
-let score = 0, multi = 1, lives = 3, donation = 3;
-let gTime = 0, maxMulti = 1, bestDon = 3, dodged = 0;
-let animId, lt = 0, diff = 1, gSpeed = 1;
-let meteors = [], parts = [], bgTrees = [], dustPuffs = [];
-let spT = 0, dfT = 0;
-const keys = {};
-let touchStartY = null, touchCurY = null;
+    const changeEl = document.getElementById('priceChange');
+    changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+    changeEl.className = 'price-change ' + (change >= 0 ? 'up' : 'down');
 
-// ── Mammoth ────────────────────────────────────
-let M = {};
-function resetM() {
-  M = { x: 0, y: 0, vy: 0, onGround: true, legAnim: 0, trunkAnim: 0, inv: 0, shake: 0 };
-}
-resetM();
+    if (btc.usd_24h_high) document.getElementById('high24').textContent = '$' + btc.usd_24h_high.toLocaleString('en-US', {maximumFractionDigits:0});
+    if (btc.usd_24h_low) document.getElementById('low24').textContent = '$' + btc.usd_24h_low.toLocaleString('en-US', {maximumFractionDigits:0});
+    if (btc.usd_24h_vol) document.getElementById('vol24').textContent = '$' + (btc.usd_24h_vol/1e9).toFixed(1) + 'B';
 
-// ── Screens ────────────────────────────────────
-function hideAll() { ['s0','s1','s2'].forEach(id => document.getElementById(id).classList.add('h')); }
-function showStart() { state = 'menu'; cancelAnimationFrame(animId); hideAll(); document.getElementById('s0').classList.remove('h'); }
+    // Add to history for chart
+    priceHistory.push(btcPrice);
+    if (priceHistory.length > 48) priceHistory.shift();
+    drawChart();
 
-function showGO() {
-  state = 'gameover';
-  document.getElementById('gos').textContent = Math.floor(score) + 'm';
-  document.getElementById('gom').textContent = 'x' + maxMulti.toFixed(1);
-  document.getElementById('god').textContent = '$' + bestDon.toFixed(2);
-  document.getElementById('goe').textContent = dodged;
-  hideAll();
-  document.getElementById('s1').classList.remove('h');
-}
-
-// ── Start game ─────────────────────────────────
-function startGame() {
-  hideAll();
-  state = 'playing';
-  score = 0; multi = 1; lives = 3; donation = 3;
-  gTime = 0; maxMulti = 1; bestDon = 3; dodged = 0;
-  diff = 1; gSpeed = 1;
-  resetM();
-  M.x = W * 0.18;
-  M.y = GROUND;
-  meteors = []; parts = []; dustPuffs = []; spT = 0; dfT = 0;
-  // BG trees
-  bgTrees = [];
-  for (let i = 0; i < 8; i++) {
-    bgTrees.push({ x: (W / 7) * i + Math.random() * 60, h: H * 0.15 + Math.random() * H * 0.15, type: Math.floor(Math.random() * 3), spd: 0.6 + Math.random() * 0.5 });
-  }
-  updateHUD();
-  lt = performance.now();
-  cancelAnimationFrame(animId);
-  loop(performance.now());
-}
-
-// ── Loop ───────────────────────────────────────
-function loop(ts) {
-  if (state !== 'playing') return;
-  const dt = Math.min((ts - lt) / 1000, 0.05);
-  lt = ts;
-  update(dt);
-  render();
-  animId = requestAnimationFrame(loop);
-}
-
-// ── Update ─────────────────────────────────────
-function update(dt) {
-  gTime += dt; dfT += dt; spT += dt;
-  M.legAnim += dt * 7 * gSpeed;
-  M.trunkAnim += dt * 2.5;
-  if (M.shake > 0) M.shake -= dt * 10;
-
-  if (dfT > 4) { diff = 1 + gTime / 12; gSpeed = 1 + gTime / 22; dfT = 0; }
-
-  score += dt * 55 * gSpeed;
-  multi = Math.round((1 + gTime * 0.06 * diff) * 10) / 10;
-  if (multi > maxMulti) maxMulti = multi;
-  donation = Math.round(3 * multi * 100) / 100;
-  if (donation > bestDon) bestDon = donation;
-
-  // Jump input
-  const wantJump = keys['ArrowUp'] || keys['w'] || keys['W'] || keys[' '] ||
-    (touchCurY !== null && touchCurY < H * 0.5);
-  const wantDuck = keys['ArrowDown'] || keys['s'] || keys['S'] ||
-    (touchCurY !== null && touchCurY > H * 0.65);
-
-  if (wantJump && M.onGround && M.inv <= 0) {
-    M.vy = -H * 1.1;
-    M.onGround = false;
-    spawnDust(M.x, GROUND);
-  }
-
-  // Gravity
-  M.vy += H * 2.8 * dt;
-  M.y += M.vy * dt;
-  if (M.y >= GROUND) { M.y = GROUND; M.vy = 0; M.onGround = true; }
-  if (M.inv > 0) M.inv -= dt;
-
-  // Trees scroll
-  bgTrees.forEach(t => {
-    t.x -= t.spd * gSpeed * W * 0.18 * dt;
-    if (t.x < -80) t.x = W + Math.random() * 100;
-  });
-
-  // Spawn meteors
-  if (spT > Math.max(0.45, 1.7 / diff)) {
-    spT = 0;
-    spawnMeteor();
-  }
-
-  // Update meteors
-  meteors = meteors.filter(m => {
-    m.x += m.vx * dt;
-    m.y += m.vy * dt;
-    m.rot += m.rs * dt;
-    m.tail.unshift({ x: m.x, y: m.y });
-    if (m.tail.length > 14) m.tail.pop();
-    if (m.y > H + 60 || m.x < -120) {
-      if (!m.hit) { dodged++; showCombo(); }
-      return false;
-    }
-    return true;
-  });
-
-  // Particles
-  dustPuffs = dustPuffs.filter(d => { d.x += d.vx * dt; d.y += d.vy * dt; d.life -= dt; d.r += dt * 12; return d.life > 0; });
-  parts = parts.filter(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 350 * dt; p.life -= dt; p.r *= 0.95; return p.life > 0; });
-
-  // Collision
-  if (M.inv <= 0) {
-    const mw = W * 0.07, mh = wantDuck ? H * 0.1 : H * 0.14;
-    const mx1 = M.x - mw, mx2 = M.x + mw;
-    const my1 = M.y - mh * 2, my2 = M.y;
-    for (const m of meteors) {
-      if (!m.hit && m.x > mx1 && m.x < mx2 && m.y > my1 && m.y < my2) {
-        m.hit = true;
-        hitPlayer(m.x, m.y);
-        break;
+  } catch(e) {
+    document.getElementById('btcPrice').textContent = '$---';
+    // Fallback demo data
+    if (priceHistory.length === 0) {
+      let base = 67000;
+      for (let i = 0; i < 24; i++) {
+        base += (Math.random() - 0.48) * 400;
+        priceHistory.push(base);
       }
+      drawChart();
     }
   }
-  updateHUD();
 }
 
-function hitPlayer(x, y) {
-  lives--;
-  M.inv = 2.2;
-  M.shake = 1;
-  spawnBoom(x, y);
-  spawnBoom(M.x, M.y - H * 0.08);
-  if (lives <= 0) { lives = 0; state = 'dying'; updateHUD(); setTimeout(showGO, 800); }
-}
-
-function spawnMeteor() {
-  const spd = (W * 0.55 + Math.random() * W * 0.35) * diff;
-  const angle = Math.PI * 0.62 + Math.random() * 0.28;
-  const size = W * 0.035 + Math.random() * W * 0.04;
-  meteors.push({
-    x: W + 40 + Math.random() * W * 0.2,
-    y: -40 + Math.random() * H * 0.35,
-    vx: -Math.cos(angle) * spd,
-    vy: Math.sin(angle) * spd,
-    rot: 0, rs: (Math.random() - 0.5) * 5,
-    r: size, tail: [], hit: false
-  });
-}
-
-function spawnBoom(x, y) {
-  const cols = ['#ff4400','#ff8800','#ffcc00','#cc2200','#ff6600'];
-  for (let i = 0; i < 22; i++) {
-    const a = Math.random() * Math.PI * 2, sp = W * 0.1 + Math.random() * W * 0.22;
-    parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - W * 0.1, r: W * 0.005 + Math.random() * W * 0.01, color: cols[Math.floor(Math.random() * cols.length)], life: 0.6 + Math.random() * 0.5 });
+// Fetch chart history
+async function fetchChartHistory() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=hourly');
+    const data = await res.json();
+    priceHistory = data.prices.map(p => p[1]);
+    drawChart();
+  } catch(e) {
+    // Demo data
+    let base = 67000;
+    priceHistory = [];
+    for (let i = 0; i < 24; i++) {
+      base += (Math.random() - 0.48) * 500;
+      priceHistory.push(Math.max(60000, base));
+    }
+    drawChart();
   }
 }
 
-function spawnDust(x, y) {
-  for (let i = 0; i < 8; i++) {
-    const a = Math.PI + Math.random() * Math.PI;
-    dustPuffs.push({ x, y, vx: Math.cos(a) * W * 0.06, vy: -H * 0.04, r: W * 0.008 + Math.random() * W * 0.01, life: 0.35 });
-  }
-}
+// ── MINI CHART ────────────────────────────────
+function drawChart() {
+  const canvas = document.getElementById('miniChart');
+  const wrap = document.getElementById('chartWrap');
+  canvas.width = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-let comboTO;
-function showCombo() {
-  const el = document.getElementById('combo');
-  const msgs = ['ESQUIVADO!','BRUTAL!','EPICO!','PREHISTORIC!','MAMUT POWER!','IMPARABLE!'];
-  el.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-  el.style.color = `hsl(${25 + Math.random() * 35},100%,60%)`;
-  el.style.textShadow = `0 0 20px ${el.style.color}`;
-  el.style.opacity = '1';
-  clearTimeout(comboTO);
-  comboTO = setTimeout(() => el.style.opacity = '0', 750);
-}
+  if (priceHistory.length < 2) return;
 
-// ── Render ─────────────────────────────────────
-function render() {
-  ctx.clearRect(0, 0, W, H);
+  const W = canvas.width, H = canvas.height;
+  const min = Math.min(...priceHistory) * 0.9995;
+  const max = Math.max(...priceHistory) * 1.0005;
+  const range = max - min;
 
-  // Sky
-  const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, '#080112');
-  sky.addColorStop(0.4, '#160608');
-  sky.addColorStop(1, '#1f0a02');
-  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+  const points = priceHistory.map((p, i) => ({
+    x: (i / (priceHistory.length - 1)) * W,
+    y: H - ((p - min) / range) * H * 0.85 - H * 0.07
+  }));
 
-  // Stars
-  for (let i = 0; i < 60; i++) {
-    const sx = (i * 137.5 + gTime * 3) % W;
-    const sy = (i * 97.3) % (H * 0.55);
-    const sa = 0.3 + Math.sin(gTime * 2 + i) * 0.2;
-    ctx.beginPath(); ctx.arc(sx, sy, 0.8, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,220,180,${sa})`; ctx.fill();
-  }
+  const isUp = priceHistory[priceHistory.length - 1] >= priceHistory[0];
+  const lineColor = isUp ? '#00ff88' : '#ff4444';
+  const glowColor = isUp ? 'rgba(0,255,100,' : 'rgba(255,60,0,';
 
-  // Volcano glow
-  const vg = ctx.createRadialGradient(W * 0.75, H * 0.22, 0, W * 0.75, H * 0.22, H * 0.4);
-  vg.addColorStop(0, 'rgba(255,60,0,.2)'); vg.addColorStop(1, 'transparent');
-  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, glowColor + '0.15)');
+  grad.addColorStop(1, glowColor + '0.01)');
 
-  // Volcano silhouette
   ctx.beginPath();
-  ctx.moveTo(W * 0.5, H * 0.65);
-  ctx.lineTo(W * 0.72, H * 0.08);
-  ctx.lineTo(W * 0.94, H * 0.65);
+  ctx.moveTo(points[0].x, H);
+  ctx.lineTo(points[0].x, points[0].y);
+  points.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(points[points.length - 1].x, H);
   ctx.closePath();
-  const volG = ctx.createLinearGradient(W * 0.72, H * 0.08, W * 0.72, H * 0.65);
-  volG.addColorStop(0, '#120303'); volG.addColorStop(1, '#1e0a04');
-  ctx.fillStyle = volG; ctx.fill();
+  ctx.fillStyle = grad;
+  ctx.fill();
 
-  // Lava stream
+  // Line
   ctx.beginPath();
-  ctx.moveTo(W * 0.695, H * 0.1);
-  ctx.quadraticCurveTo(W * 0.67, H * 0.35, W * 0.68, H * 0.65);
-  ctx.strokeStyle = '#cc4400'; ctx.lineWidth = 4; ctx.stroke();
+  ctx.moveTo(points[0].x, points[0].y);
+  points.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = lineColor;
+  ctx.shadowBlur = 6;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
 
-  // Embers
-  for (let i = 0; i < 6; i++) {
-    const ex = W * 0.72 + Math.sin(gTime * 1.5 + i * 1.3) * W * 0.04;
-    const ey = H * 0.08 - ((gTime * 25 + i * 40) % (H * 0.3));
-    if (ey > 0) {
-      ctx.beginPath(); ctx.arc(ex, ey, 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,${80 + i * 20},0,0.6)`; ctx.fill();
-    }
-  }
+  // Last point dot
+  const last = points[points.length - 1];
+  ctx.beginPath();
+  ctx.arc(last.x, last.y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = lineColor;
+  ctx.shadowColor = lineColor;
+  ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
 
-  // BG Trees silhouettes
-  bgTrees.forEach(t => drawTree(t.x, GROUND, t.h, t.type));
+// ── COUNTDOWN TIMER ───────────────────────────
+function updateTimer() {
+  // Target: next midnight UTC
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setUTCHours(24, 0, 0, 0);
+  const diff = tomorrow - now;
 
-  // Ground
-  const gr = ctx.createLinearGradient(0, GROUND, 0, H);
-  gr.addColorStop(0, '#2a1a06'); gr.addColorStop(0.4, '#180e04'); gr.addColorStop(1, '#0a0802');
-  ctx.fillStyle = gr; ctx.fillRect(0, GROUND, W, H - GROUND);
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
 
-  // Ground glow line
-  ctx.beginPath(); ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND);
-  ctx.strokeStyle = 'rgba(255,100,0,.35)'; ctx.lineWidth = 2; ctx.stroke();
+  document.getElementById('tH').textContent = String(h).padStart(2, '0');
+  document.getElementById('tM').textContent = String(m).padStart(2, '0');
+  document.getElementById('tS').textContent = String(s).padStart(2, '0');
 
-  // Ground cracks
-  for (let i = 0; i < 4; i++) {
-    const cx = ((i * W * 0.28 + gTime * 30) % W);
-    ctx.beginPath(); ctx.moveTo(cx, GROUND + 3); ctx.lineTo(cx + 20, GROUND + 14); ctx.lineTo(cx + 8, GROUND + 20);
-    ctx.strokeStyle = 'rgba(255,50,0,.1)'; ctx.lineWidth = 1; ctx.stroke();
-  }
-
-  // Dust
-  dustPuffs.forEach(d => {
-    ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(180,120,60,${d.life * 0.5})`; ctx.fill();
+  // Color warning when < 1 hour
+  const timerNums = document.querySelectorAll('.timer-num');
+  timerNums.forEach(el => {
+    el.style.color = h < 1 ? '#ff4444' : '#fff';
+    el.style.borderColor = h < 1 ? 'rgba(255,60,0,.3)' : 'rgba(0,200,255,.15)';
   });
+}
 
-  // Particles
-  parts.forEach(p => {
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = p.color + Math.floor(p.life * 200).toString(16).padStart(2, '0'); ctx.fill();
-  });
+// ── POOL SIMULATION ───────────────────────────
+let poolAmount = 87;
+function simulatePool() {
+  // Slowly grow pool to simulate activity
+  if (Math.random() < 0.15 && poolAmount < 99) {
+    poolAmount += Math.random() < 0.7 ? 3 : (Math.random() < 0.5 ? 5 : 10);
+    poolAmount = Math.min(poolAmount, 99);
 
-  // Meteors
-  meteors.forEach(m => {
-    m.tail.forEach((pt, i) => {
-      const t = 1 - i / m.tail.length;
-      ctx.beginPath(); ctx.arc(pt.x, pt.y, m.r * t * 0.65, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,${100 + Math.floor(t * 80)},0,${t * 0.55})`; ctx.fill();
-    });
-    const mg = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 2.5);
-    mg.addColorStop(0, 'rgba(255,120,0,.25)'); mg.addColorStop(1, 'transparent');
-    ctx.fillStyle = mg; ctx.fillRect(m.x - m.r * 3, m.y - m.r * 3, m.r * 6, m.r * 6);
-    ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.rot);
-    ctx.beginPath();
-    for (let i = 0; i < 8; i++) {
-      const a = i / 8 * Math.PI * 2, r = m.r * (0.7 + Math.sin(i * 2.1) * 0.3);
-      i === 0 ? ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r) : ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
-    }
-    ctx.closePath();
-    const rg = ctx.createRadialGradient(0, 0, 0, 0, 0, m.r);
-    rg.addColorStop(0, '#dd9940'); rg.addColorStop(0.6, '#994422'); rg.addColorStop(1, '#1a0800');
-    ctx.fillStyle = rg; ctx.fill();
-    ctx.strokeStyle = 'rgba(255,140,50,.45)'; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.restore();
-  });
+    // Add random vote
+    if (Math.random() > 0.5) upVotes++;
+    else downVotes++;
 
-  // ── Mammoth ──────────────────────────────────
-  const wantDuck = keys['ArrowDown'] || keys['s'] || keys['S'] || (touchCurY !== null && touchCurY > H * 0.65);
-  const blink = M.inv > 0 && Math.floor(M.inv * 8) % 2 === 0;
-  if (!blink) {
-    const sx = M.shake > 0 ? (Math.random() - 0.5) * 8 : 0;
-    ctx.save();
-    ctx.translate(M.x + sx, M.y);
-    if (wantDuck) ctx.scale(1, 0.65);
-    drawMammoth();
-    ctx.restore();
-  }
-
-  // High multiplier overlay
-  if (multi > 5) {
-    ctx.save();
-    ctx.globalAlpha = Math.min((multi - 5) * 0.01, 0.1);
-    ctx.fillStyle = '#ff4400';
-    ctx.fillRect(0, 0, W, H);
-    ctx.restore();
+    updatePoolUI();
   }
 }
 
-function drawTree(x, y, h, type) {
-  ctx.save();
-  if (type === 0) {
-    ctx.strokeStyle = 'rgba(8,18,3,.92)'; ctx.lineWidth = W * 0.009; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - h); ctx.stroke();
-    for (let i = 0; i < 7; i++) {
-      const a = -Math.PI * 0.5 + (i / 6 - 0.5) * 1.5;
-      ctx.beginPath(); ctx.moveTo(x, y - h);
-      ctx.quadraticCurveTo(x + Math.cos(a) * h * 0.35, y - h + Math.sin(a) * h * 0.18, x + Math.cos(a) * h * 0.65, y - h + Math.sin(a) * h * 0.38);
-      ctx.strokeStyle = 'rgba(6,20,2,.95)'; ctx.lineWidth = W * 0.005; ctx.stroke();
-    }
-  } else if (type === 1) {
-    ctx.strokeStyle = 'rgba(14,7,3,.92)'; ctx.lineWidth = W * 0.012; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 4, y - h); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x - 2, y - h * 0.55); ctx.lineTo(x + h * 0.28, y - h * 0.75); ctx.lineWidth = W * 0.006; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x - 2, y - h * 0.75); ctx.lineTo(x - h * 0.22, y - h * 0.9); ctx.stroke();
-  } else {
-    for (let i = 0; i < 5; i++) {
-      const a = -Math.PI * 0.65 + i / 4 * Math.PI * 0.55;
-      ctx.beginPath(); ctx.moveTo(x, y);
-      ctx.quadraticCurveTo(x + Math.cos(a) * h * 0.45, y - h * 0.45, x + Math.cos(a) * h * 0.75, y - h);
-      ctx.strokeStyle = 'rgba(4,16,2,.95)'; ctx.lineWidth = W * 0.005 - i * 0.4; ctx.lineCap = 'round'; ctx.stroke();
-    }
-  }
-  ctx.restore();
+function updatePoolUI() {
+  const total = upVotes + downVotes;
+  const upPct = Math.round(upVotes / total * 100);
+  const downPct = 100 - upPct;
+
+  document.getElementById('poolTotal').textContent = '$' + Math.floor(poolAmount);
+  document.getElementById('poolParticipants').textContent = upVotes + downVotes;
+  document.getElementById('poolPrize').textContent = '$' + (poolAmount * 0.1).toFixed(1);
+  document.getElementById('poolPct').textContent = Math.floor(poolAmount) + ' / 100 USDT';
+  document.getElementById('poolBarFill').style.width = Math.min(poolAmount, 100) + '%';
+  document.getElementById('upVotes').textContent = upVotes;
+  document.getElementById('downVotes').textContent = downVotes;
+  document.getElementById('upVotePct').textContent = upPct + '% SUBE';
+  document.getElementById('downVotePct').textContent = downPct + '% BAJA';
+  document.getElementById('upPct').textContent = upPct + '% predicen esto';
+  document.getElementById('downPct').textContent = downPct + '% predicen esto';
 }
 
-function drawMammoth() {
-  const t = M.legAnim, tr = M.trunkAnim;
-  const sc = Math.min(W, H) / 500;
-  const s = sc * 1.1;
+// ── PREDICTION SELECTION ──────────────────────
+function selectPred(dir) {
+  if (hasConfirmed) return;
+  selectedPred = dir;
 
-  ctx.save(); ctx.scale(s, s);
+  document.getElementById('btnUp').classList.toggle('selected', dir === 'up');
+  document.getElementById('btnDown').classList.toggle('selected', dir === 'down');
+  document.getElementById('donateStep').style.display = 'block';
 
-  const bH = 42, bW = 58, bY = -bH * 1.35;
+  // Smooth scroll to donate step
+  setTimeout(() => {
+    document.getElementById('donateStep').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
 
-  // Shadow
-  ctx.beginPath(); ctx.ellipse(0, -2, 28, 7, 0, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fill();
+function selectAmt(btn, amt) {
+  selectedAmt = amt;
+  document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
 
-  // Legs
-  const legX = [-16, -6, 6, 16];
-  const legSwing = [Math.sin(t), Math.sin(t + Math.PI), Math.sin(t + 0.5), Math.sin(t + Math.PI + 0.5)];
-  legX.forEach((lx, i) => {
-    const sw = legSwing[i] * 10;
-    ctx.beginPath();
-    ctx.moveTo(lx, bY + bH);
-    ctx.lineTo(lx + sw, bY + bH + 22);
-    ctx.lineTo(lx + sw + 4, bY + bH + 34);
-    ctx.strokeStyle = '#5a3a18'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.stroke();
-    ctx.beginPath(); ctx.ellipse(lx + sw + 4, bY + bH + 34, 7, 4, 0, 0, Math.PI * 2);
-    ctx.fillStyle = '#3a2510'; ctx.fill();
+function copyWallet() {
+  navigator.clipboard.writeText(WALLET).then(() => {
+    showToast('✅ Wallet copiada!');
+  }).catch(() => {
+    showToast('📋 ' + WALLET.slice(0, 20) + '...');
   });
-
-  // Body
-  ctx.beginPath(); ctx.ellipse(0, bY + bH * 0.5, bW * 0.5, bH * 0.5, 0, 0, Math.PI * 2);
-  const bg = ctx.createRadialGradient(-10, bY + bH * 0.3, 4, -10, bY + bH * 0.3, 52);
-  bg.addColorStop(0, '#9b7040'); bg.addColorStop(0.5, '#7a5228'); bg.addColorStop(1, '#3a2510');
-  ctx.fillStyle = bg; ctx.fill();
-
-  // Fur details
-  for (let i = 0; i < 10; i++) {
-    ctx.beginPath();
-    ctx.moveTo(-26 + i * 6, bY + bH * 0.2 + Math.sin(i) * 8);
-    ctx.lineTo(-24 + i * 6, bY + bH * 0.2 + Math.sin(i) * 8 + 9);
-    ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = 2; ctx.stroke();
-  }
-
-  // Head
-  const hx = -18, hy = bY - 16;
-  ctx.beginPath(); ctx.ellipse(hx, hy, 20, 19, -0.15, 0, Math.PI * 2);
-  ctx.fillStyle = '#8a6030'; ctx.fill();
-
-  // Ear
-  ctx.beginPath(); ctx.ellipse(hx + 8, hy - 7, 9, 13, 0.25, 0, Math.PI * 2);
-  ctx.fillStyle = '#6b4420'; ctx.fill();
-  ctx.beginPath(); ctx.ellipse(hx + 8, hy - 7, 5, 9, 0.25, 0, Math.PI * 2);
-  ctx.fillStyle = '#9a6838'; ctx.fill();
-
-  // Tusks
-  ctx.beginPath();
-  ctx.moveTo(hx - 11, hy + 7);
-  ctx.quadraticCurveTo(hx - 28, hy + 17, hx - 33, hy + 5);
-  ctx.strokeStyle = '#f0e0c0'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(hx - 9, hy + 9);
-  ctx.quadraticCurveTo(hx - 24, hy + 21, hx - 28, hy + 13);
-  ctx.strokeStyle = '#e0d0a8'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
-
-  // Eye
-  ctx.beginPath(); ctx.arc(hx - 7, hy - 4, 4, 0, Math.PI * 2); ctx.fillStyle = '#1a0f08'; ctx.fill();
-  ctx.beginPath(); ctx.arc(hx - 6, hy - 5, 1.5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-
-  // Trunk
-  const td = Math.sin(tr) * 7;
-  ctx.beginPath();
-  ctx.moveTo(hx - 13, hy + 4);
-  ctx.quadraticCurveTo(hx - 28, hy + 18 + td, hx - 20, hy + 30 + td);
-  ctx.quadraticCurveTo(hx - 12, hy + 36 + td, hx - 6, hy + 28 + td);
-  ctx.strokeStyle = '#8a6030'; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.stroke();
-  ctx.strokeStyle = '#6a4218'; ctx.lineWidth = 7; ctx.stroke();
-
-  // Hair tufts
-  for (let i = 0; i < 5; i++) {
-    ctx.beginPath();
-    ctx.moveTo(hx - 4 + i * 3, hy - 15);
-    ctx.lineTo(hx - 7 + i * 3 + Math.sin(tr + i) * 2, hy - 24 - i * 0.5);
-    ctx.strokeStyle = '#5a3818'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
-  }
-
-  // Tail
-  ctx.beginPath();
-  ctx.moveTo(24, bY + bH * 0.3);
-  ctx.quadraticCurveTo(36, bY + bH * 0.15 + Math.sin(t) * 5, 38, bY + bH * 0.05);
-  ctx.strokeStyle = '#6b4820'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.stroke();
-  ctx.beginPath(); ctx.arc(38, bY + bH * 0.05, 4, 0, Math.PI * 2); ctx.fillStyle = '#4a3010'; ctx.fill();
-
-  ctx.restore();
 }
 
-// ── HUD ───────────────────────────────────────
-function updateHUD() {
-  document.getElementById('hs').textContent = Math.floor(score) + 'm';
-  document.getElementById('hm').textContent = 'x' + multi.toFixed(1);
-  document.getElementById('hd').textContent = '$' + donation.toFixed(2);
-  document.getElementById('hl').textContent = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, 3 - lives));
+function confirmParticipation() {
+  if (!selectedPred) { showToast('⚠️ Selecciona SUBE o BAJA primero'); return; }
+  hasConfirmed = true;
+
+  // Update pool
+  poolAmount += selectedAmt;
+  if (selectedPred === 'up') upVotes++;
+  else downVotes++;
+  updatePoolUI();
+
+  // Show confirmed state
+  document.getElementById('donateStep').style.display = 'none';
+  const confState = document.getElementById('confirmedState');
+  confState.style.display = 'block';
+
+  const predEl = document.getElementById('confirmedPred');
+  predEl.textContent = selectedPred === 'up' ? '📈 SUBE' : '📉 BAJA';
+  predEl.className = 'confirmed-pred ' + selectedPred;
+  document.getElementById('confirmedAmt').textContent = 'Donación: $' + selectedAmt + ' USDT';
+
+  showToast('🎉 ¡Predicción registrada!');
 }
 
-// ── Input ─────────────────────────────────────
-window.addEventListener('keydown', e => {
-  keys[e.key] = true;
-  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+// ── TOAST ─────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──────────────────────────────────────
+fetchChartHistory();
+fetchBTCPrice();
+updateTimer();
+updatePoolUI();
+
+setInterval(fetchBTCPrice, 30000);   // Update price every 30s
+setInterval(updateTimer, 1000);       // Timer every second
+setInterval(simulatePool, 8000);      // Simulate pool activity
+
+window.addEventListener('resize', () => {
+  setTimeout(drawChart, 100);
 });
-window.addEventListener('keyup', e => keys[e.key] = false);
-
-const cvWrap = document.getElementById('cv-wrap');
-cvWrap.addEventListener('touchstart', e => {
-  if (state !== 'playing') return;
-  e.preventDefault();
-  const r = cv.getBoundingClientRect();
-  touchStartY = (e.touches[0].clientY - r.top) * (H / r.height);
-  touchCurY = touchStartY;
-}, { passive: false });
-
-cvWrap.addEventListener('touchmove', e => {
-  if (state !== 'playing') return;
-  e.preventDefault();
-  const r = cv.getBoundingClientRect();
-  touchCurY = (e.touches[0].clientY - r.top) * (H / r.height);
-}, { passive: false });
-
-cvWrap.addEventListener('touchend', () => { touchCurY = null; touchStartY = null; });
 </script>
 </body>
 </html>
