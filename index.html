@@ -1,0 +1,418 @@
+!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 RocketDodge — Fly & Multiply</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:'Exo 2',sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#bg{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,#0a0a2e,#000008);z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:tw linear infinite}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:1}}
+#app{position:relative;z-index:10;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center}
+#hud{width:100%;display:flex;justify-content:space-between;padding:8px 16px;background:rgba(0,0,0,.65);border-bottom:1px solid rgba(0,200,255,.2);backdrop-filter:blur(6px)}
+.hi{text-align:center}
+.hl{font-family:'Orbitron',monospace;font-size:8px;color:#0af;letter-spacing:2px;opacity:.7}
+.hv{font-family:'Orbitron',monospace;font-size:15px;font-weight:700}
+.gold{color:#ffd700;text-shadow:0 0 8px #ffd700bb}
+.green{color:#00ff88;text-shadow:0 0 8px #00ff88bb}
+.red{color:#ff6644}
+#cw{position:relative;width:520px;height:520px}
+canvas{display:block;width:520px;height:520px}
+#pb{width:100%;padding:7px 16px;background:rgba(0,0,0,.65);border-top:1px solid rgba(0,200,255,.2)}
+.ph{display:flex;justify-content:space-between;margin-bottom:3px;font-size:9px;color:#888;font-family:'Orbitron',monospace}
+.pt{height:7px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;border:1px solid rgba(0,200,255,.15)}
+.pf{height:100%;background:linear-gradient(90deg,#0af,#0f8,#ffd700);box-shadow:0 0 6px #0af9}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,8,.93);backdrop-filter:blur(12px);z-index:50;padding:20px;text-align:center;gap:0}
+.scr.h{display:none}
+.st{font-family:'Orbitron',monospace;font-size:24px;font-weight:900;letter-spacing:4px;margin-bottom:5px;background:linear-gradient(135deg,#0af 0%,#0f8 50%,#ffd700 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ss{font-size:10px;color:#888;letter-spacing:2px;margin-bottom:16px}
+.ib{background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.18);border-radius:10px;padding:12px 16px;margin-bottom:12px;width:100%}
+.ir{display:flex;justify-content:space-between;padding:3px 0;font-size:12px}
+.ir .l{color:#777}
+.ir .v{font-weight:600}
+.wb{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.3);border-radius:8px;padding:9px 13px;margin-bottom:12px;width:100%}
+.wl{font-size:8px;color:#ffd700;letter-spacing:2px;font-family:'Orbitron',monospace;margin-bottom:3px}
+.wa{font-size:10px;color:#ffffffcc;word-break:break-all;font-family:monospace}
+.btn{padding:12px 32px;border:none;border-radius:40px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .15s;margin:4px}
+.bp{background:linear-gradient(135deg,#0af,#0055ff);color:#fff;box-shadow:0 0 20px #0af5}
+.bp:hover{transform:translateY(-2px);box-shadow:0 0 30px #0af9}
+.bs{background:transparent;border:1px solid rgba(0,200,255,.35);color:#0af}
+.bs:hover{background:rgba(0,200,255,.07)}
+.ch{display:flex;gap:14px;margin-bottom:16px}
+.kh{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:#555}
+.k{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:5px;padding:5px 9px;font-size:13px;min-width:32px;text-align:center}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="app">
+  <div id="hud">
+    <div class="hi"><div class="hl">Score</div><div class="hv" id="hs">0</div></div>
+    <div class="hi"><div class="hl">Multiplicador</div><div class="hv gold" id="hm">×1.0</div></div>
+    <div class="hi"><div class="hl">Donación</div><div class="hv green" id="hd">$3.00</div></div>
+    <div class="hi"><div class="hl">Vidas</div><div class="hv red" id="hl">❤️❤️❤️</div></div>
+  </div>
+  <div id="cw">
+    <canvas id="c" width="520" height="520"></canvas>
+
+    <!-- START -->
+    <div class="scr" id="s0">
+      <div class="st">ROCKET DODGE</div>
+      <div class="ss">FLY · DODGE · MULTIPLY · WIN</div>
+      <div class="ib">
+        <div class="ir"><span class="l">💸 Donación base</span><span class="v gold">$3 USD</span></div>
+        <div class="ir"><span class="l">📈 Score multiplica</span><span class="v" style="color:#0af">tu donación</span></div>
+        <div class="ir"><span class="l">🏆 Pool para ganar</span><span class="v green">100 USDT</span></div>
+        <div class="ir"><span class="l">🎁 Premio ganador</span><span class="v gold">10 USDT (10%)</span></div>
+      </div>
+      <div class="wb">
+        <div class="wl">🔗 Wallet donación — USDT TRC-20</div>
+        <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+      </div>
+      <div class="ch">
+        <div class="kh"><div class="k">↑↓←→</div><span>Mover</span></div>
+        <div class="kh"><div class="k">WASD</div><span>Mover</span></div>
+        <div class="kh"><div class="k">🖱️</div><span>Mouse/Touch</span></div>
+      </div>
+      <div>
+        <button class="btn bp" onclick="startGame()">🚀 LANZAR</button>
+        <button class="btn bs" onclick="showD()">💳 DONAR</button>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="scr h" id="s1">
+      <div class="st" id="got">GAME OVER</div>
+      <div class="ss">El cosmos te venció esta vez</div>
+      <div class="ib">
+        <div class="ir"><span class="l">Score final</span><span class="v" id="gos">0</span></div>
+        <div class="ir"><span class="l">Multiplicador máx</span><span class="v gold" id="gom">×1.0</span></div>
+        <div class="ir"><span class="l">Donación generada</span><span class="v green" id="god">$3.00</span></div>
+        <div class="ir"><span class="l">Tiempo sobrevivido</span><span class="v" style="color:#0af" id="got2">0s</span></div>
+      </div>
+      <div class="wb">
+        <div class="wl">💰 Envía tu donación — USDT TRC-20</div>
+        <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+      </div>
+      <div>
+        <button class="btn bp" onclick="startGame()">🔄 REINTENTAR</button>
+        <button class="btn bs" onclick="showS()">🏠 INICIO</button>
+      </div>
+    </div>
+
+    <!-- DONATE -->
+    <div class="scr h" id="s2">
+      <div class="st">DONAR</div>
+      <div class="ss">Únete al pool · Gana 10 USDT</div>
+      <div class="ib">
+        <div class="ir"><span class="l">Red</span><span class="v" style="color:#0af">TRON (TRC-20)</span></div>
+        <div class="ir"><span class="l">Token</span><span class="v">USDT</span></div>
+        <div class="ir"><span class="l">Monto mínimo</span><span class="v gold">$3 USD</span></div>
+        <div class="ir"><span class="l">Pool objetivo</span><span class="v green">100 USDT</span></div>
+        <div class="ir"><span class="l">Premio al top scorer</span><span class="v gold">10 USDT</span></div>
+      </div>
+      <div class="wb">
+        <div class="wl">🔗 Wallet destino</div>
+        <div class="wa">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+      </div>
+      <div>
+        <button class="btn bp" onclick="hideAll();startGame()">▶ JUGAR</button>
+        <button class="btn bs" onclick="showS()">← VOLVER</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pb">
+    <div class="ph"><span>POOL ACUMULADO</span><span id="pt">~47.5 / 100 USDT</span></div>
+    <div class="pt"><div class="pf" id="pf" style="width:47.5%"></div></div>
+  </div>
+</div>
+
+<script>
+// ── Stars background ──────────────────────────────────────
+const bgEl=document.getElementById('bg');
+for(let i=0;i<130;i++){
+  const s=document.createElement('div');s.className='star';
+  const z=Math.random()*2+.4;
+  s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*5}s`;
+  bgEl.appendChild(s);
+}
+
+// ── Canvas setup ──────────────────────────────────────────
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),W=520,H=520;
+
+// ── State ─────────────────────────────────────────────────
+let state='menu',score=0,multi=1,lives=3,donation=3,gTime=0,maxMulti=1,bestDon=3;
+let animId,lt=0,diff=1;
+let asts=[],msls=[],bgs=[],parts=[];
+let spT=0,msT=0,scT=0,dfT=0;
+const keys={};
+let touch=null;
+const R={x:90,y:H/2,vx:0,vy:0,spd:290,trail:[],inv:0,fl:0};
+
+// ── Screen helpers ────────────────────────────────────────
+function hideAll(){['s0','s1','s2'].forEach(id=>document.getElementById(id).classList.add('h'))}
+function showS(){state='menu';cancelAnimationFrame(animId);hideAll();document.getElementById('s0').classList.remove('h');drawBG()}
+function showD(){hideAll();document.getElementById('s2').classList.remove('h')}
+function showGO(){
+  state='gameover';
+  document.getElementById('gos').textContent=Math.floor(score).toLocaleString();
+  document.getElementById('gom').textContent='×'+maxMulti.toFixed(1);
+  document.getElementById('god').textContent='$'+bestDon.toFixed(2);
+  document.getElementById('got2').textContent=Math.floor(gTime)+'s';
+  hideAll();document.getElementById('s1').classList.remove('h');
+}
+
+// ── Start ─────────────────────────────────────────────────
+function startGame(){
+  hideAll();state='playing';
+  score=0;multi=1;lives=3;donation=3;gTime=0;maxMulti=1;bestDon=3;diff=1;
+  Object.assign(R,{x:90,y:H/2,vx:0,vy:0,trail:[],inv:0,fl:0});
+  asts=[];msls=[];parts=[];spT=0;msT=0;scT=0;dfT=0;
+  bgs=Array.from({length:75},()=>({x:Math.random()*W,y:Math.random()*H,spd:Math.random()*90+20,r:Math.random()*1.5+.3,a:Math.random()*.5+.2}));
+  updateHUD();lt=performance.now();cancelAnimationFrame(animId);loop(performance.now());
+}
+
+// ── Loop ──────────────────────────────────────────────────
+function loop(ts){
+  if(state!=='playing')return;
+  const dt=Math.min((ts-lt)/1000,.05);lt=ts;
+  update(dt);render();
+  animId=requestAnimationFrame(loop);
+}
+
+// ── Update ────────────────────────────────────────────────
+function update(dt){
+  gTime+=dt;dfT+=dt;scT+=dt;spT+=dt;msT+=dt;R.fl+=dt*15;
+  if(dfT>3){diff=1+gTime/14;dfT=0}
+  multi=Math.round((1+gTime*.09*diff)*10)/10;
+  if(multi>maxMulti)maxMulti=multi;
+  donation=Math.round(3*multi*100)/100;
+  if(donation>bestDon)bestDon=donation;
+  if(scT>.1){score+=Math.floor(12*multi*diff);scT=0}
+  if(R.inv>0)R.inv-=dt;
+
+  // Move
+  let dx=0,dy=0;
+  if(keys['ArrowUp']||keys['w']||keys['W'])dy=-1;
+  if(keys['ArrowDown']||keys['s']||keys['S'])dy=1;
+  if(keys['ArrowLeft']||keys['a']||keys['A'])dx=-1;
+  if(keys['ArrowRight']||keys['d']||keys['D'])dx=1;
+  if(touch){const tx=touch.x-R.x,ty=touch.y-R.y,d=Math.hypot(tx,ty);if(d>8){dx=tx/d;dy=ty/d}}
+  if(dx&&dy){dx*=.707;dy*=.707}
+  R.vx+=(dx*R.spd-R.vx)*.18;R.vy+=(dy*R.spd-R.vy)*.18;
+  R.x+=R.vx*dt;R.y+=R.vy*dt;
+  R.x=Math.max(18,Math.min(W-18,R.x));R.y=Math.max(28,Math.min(H-28,R.y));
+  R.trail.unshift({x:R.x,y:R.y+22});if(R.trail.length>22)R.trail.pop();
+
+  // BG stars
+  bgs.forEach(s=>{s.x-=s.spd*dt;if(s.x<0){s.x=W;s.y=Math.random()*H}});
+
+  // Spawn asteroids
+  if(spT>Math.max(.25,1.1/diff)){
+    spT=0;
+    const cnt=Math.floor(diff*.8)+1;
+    for(let i=0;i<cnt;i++)spawnA();
+  }
+  // Spawn missiles
+  if(msT>Math.max(1.2,3.8/diff)){msT=0;spawnM()}
+
+  // Update asteroids
+  asts=asts.filter(a=>{a.x+=a.vx*dt;a.y+=a.vy*dt;a.rot+=a.rs*dt;return a.x>-80&&a.x<W+80&&a.y>-80&&a.y<H+80});
+
+  // Update missiles (homing)
+  msls=msls.filter(m=>{
+    const ex=R.x-m.x,ey=R.y-m.y;
+    if(Math.hypot(ex,ey)>5){
+      let da=Math.atan2(ey,ex)-m.ang;
+      while(da>Math.PI)da-=Math.PI*2;while(da<-Math.PI)da+=Math.PI*2;
+      m.ang+=da*.045*diff;
+    }
+    m.vx=Math.cos(m.ang)*m.spd;m.vy=Math.sin(m.ang)*m.spd;
+    m.x+=m.vx*dt;m.y+=m.vy*dt;
+    m.tr.unshift({x:m.x,y:m.y});if(m.tr.length>12)m.tr.pop();
+    return m.x>-130&&m.x<W+130&&m.y>-130&&m.y<H+130;
+  });
+
+  // Particles
+  parts=parts.filter(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;p.r*=.96;return p.life>0});
+
+  // Collisions
+  if(R.inv<=0){
+    for(const a of asts){
+      if(Math.hypot(R.x-a.x,R.y-a.y)<a.r+13){hit();boom(a.x,a.y,'#886655');asts=asts.filter(x=>x!==a);break}
+    }
+    for(const m of msls){
+      if(Math.hypot(R.x-m.x,R.y-m.y)<15){hit();boom(m.x,m.y,'#ff4400');msls=msls.filter(x=>x!==m);break}
+    }
+  }
+  updateHUD();
+}
+
+function hit(){
+  lives--;R.inv=2.2;boom(R.x,R.y,'#ff8800',22);
+  if(lives<=0){lives=0;state='dying';updateHUD();setTimeout(showGO,700)}
+}
+
+function spawnA(){
+  const sd=Math.random(),sp=(90+Math.random()*110)*diff;
+  let x,y,vx,vy;
+  if(sd<.6){x=W+32;y=Math.random()*H;vx=-sp;vy=(Math.random()-.5)*sp*.5}
+  else if(sd<.8){x=Math.random()*W;y=-32;vx=(Math.random()-.5)*sp*.3;vy=sp*.85}
+  else{x=Math.random()*W;y=H+32;vx=(Math.random()-.5)*sp*.3;vy=-sp*.85}
+  const n=7+Math.floor(Math.random()*4),pts=[];
+  for(let i=0;i<n;i++){const a=i/n*Math.PI*2,r=.65+Math.random()*.35;pts.push({x:Math.cos(a)*r,y:Math.sin(a)*r})}
+  asts.push({x,y,vx,vy,r:13+Math.random()*15,rot:0,rs:(Math.random()-.5)*3.5,pts});
+}
+
+function spawnM(){
+  const y=Math.random()*H*.8+H*.1,sp=(130+Math.random()*70)*diff;
+  msls.push({x:W+12,y,vx:0,vy:0,ang:Math.atan2(R.y-y,R.x-W),spd:sp,tr:[]});
+}
+
+function boom(x,y,col,n=14){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,sp=70+Math.random()*130;
+    parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:2+Math.random()*5,color:col,life:.55+Math.random()*.35});
+  }
+}
+
+// ── Render ────────────────────────────────────────────────
+function drawBG(){
+  ctx.clearRect(0,0,W,H);
+  const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#04041a');g.addColorStop(1,'#000008');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  for(let i=0;i<90;i++){
+    ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H,Math.random()*1.5,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${Math.random()*.6+.1})`;ctx.fill();
+  }
+}
+
+function render(){
+  // BG
+  ctx.clearRect(0,0,W,H);
+  const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#03031a');g.addColorStop(1,'#000008');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+
+  // Parallax stars
+  bgs.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.a})`;ctx.fill()});
+
+  // Particles
+  parts.forEach(p=>{
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.color+Math.floor(p.life*255).toString(16).padStart(2,'0');ctx.fill();
+  });
+
+  // Rocket trail / flame
+  R.trail.forEach((pt,i)=>{
+    const t=1-i/R.trail.length,r=7*t;
+    const cols=['#ffffff','#ffee00','#ff8800','#ff3300'];
+    const c=cols[Math.min(Math.floor(i/R.trail.length*cols.length),cols.length-1)];
+    ctx.beginPath();ctx.arc(pt.x,pt.y,r,0,Math.PI*2);
+    ctx.fillStyle=c+Math.floor(t*160).toString(16).padStart(2,'0');ctx.fill();
+  });
+
+  // Rocket body
+  const blink=R.inv>0&&Math.floor(R.inv*8)%2===0;
+  if(!blink){
+    ctx.save();ctx.translate(R.x,R.y);
+
+    // Glow aura
+    const glow=ctx.createRadialGradient(0,0,5,0,0,30);
+    glow.addColorStop(0,'rgba(0,180,255,.15)');glow.addColorStop(1,'transparent');
+    ctx.fillStyle=glow;ctx.fillRect(-30,-30,60,60);
+
+    // Body shape
+    ctx.beginPath();ctx.moveTo(0,-26);ctx.lineTo(11,12);ctx.lineTo(6,18);ctx.lineTo(-6,18);ctx.lineTo(-11,12);ctx.closePath();
+    const rg=ctx.createLinearGradient(0,-26,0,18);
+    rg.addColorStop(0,'#ddf0ff');rg.addColorStop(.4,'#88bbff');rg.addColorStop(1,'#2255cc');
+    ctx.fillStyle=rg;ctx.fill();
+    ctx.strokeStyle='rgba(100,220,255,.5)';ctx.lineWidth=1;ctx.stroke();
+
+    // Fins
+    ctx.beginPath();ctx.moveTo(-11,10);ctx.lineTo(-20,22);ctx.lineTo(-6,18);ctx.closePath();ctx.fillStyle='#1a3a99';ctx.fill();
+    ctx.beginPath();ctx.moveTo(11,10);ctx.lineTo(20,22);ctx.lineTo(6,18);ctx.closePath();ctx.fillStyle='#1a3a99';ctx.fill();
+
+    // Window
+    ctx.beginPath();ctx.arc(0,-6,5.5,0,Math.PI*2);
+    const wg=ctx.createRadialGradient(0,-6,0,0,-6,5.5);
+    wg.addColorStop(0,'#aaffff');wg.addColorStop(1,'#0088aacc');
+    ctx.fillStyle=wg;ctx.fill();ctx.strokeStyle='#00eeff';ctx.lineWidth=1;ctx.stroke();
+
+    // Engine flame
+    const fh=9+Math.sin(R.fl)*5;
+    const fg=ctx.createLinearGradient(0,18,0,18+fh+10);
+    fg.addColorStop(0,'#fff');fg.addColorStop(.15,'#ffee00');fg.addColorStop(.5,'#ff5500');fg.addColorStop(1,'transparent');
+    ctx.beginPath();ctx.moveTo(-6,18);ctx.quadraticCurveTo(-9,18+fh*.6,0,18+fh+10);ctx.quadraticCurveTo(9,18+fh*.6,6,18);
+    ctx.fillStyle=fg;ctx.fill();
+
+    ctx.restore();
+  }
+
+  // Asteroids
+  asts.forEach(a=>{
+    ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.rot);
+    ctx.beginPath();ctx.moveTo(a.pts[0].x*a.r,a.pts[0].y*a.r);
+    a.pts.forEach(p=>ctx.lineTo(p.x*a.r,p.y*a.r));ctx.closePath();
+    const ag=ctx.createRadialGradient(0,0,0,0,0,a.r);
+    ag.addColorStop(0,'#998877');ag.addColorStop(1,'#332211');
+    ctx.fillStyle=ag;ctx.fill();ctx.strokeStyle='#bbaa88';ctx.lineWidth=1;ctx.stroke();
+    ctx.restore();
+  });
+
+  // Missiles
+  msls.forEach(m=>{
+    // Trail glow
+    m.tr.forEach((pt,i)=>{
+      const t=1-i/m.tr.length;
+      ctx.beginPath();ctx.arc(pt.x,pt.y,3*t,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,80,0,${t*.7})`;ctx.fill();
+    });
+    ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.ang);
+    // Body
+    ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(-9,5);ctx.lineTo(-9,-5);ctx.closePath();
+    ctx.fillStyle='#bb2200';ctx.fill();
+    // Nose
+    const ng=ctx.createRadialGradient(18,0,0,18,0,5);
+    ng.addColorStop(0,'#ffaa00');ng.addColorStop(1,'#ff3300');
+    ctx.beginPath();ctx.arc(18,0,4,0,Math.PI*2);ctx.fillStyle=ng;ctx.fill();
+    // Fins
+    ctx.beginPath();ctx.moveTo(-5,3);ctx.lineTo(-12,9);ctx.lineTo(-9,5);ctx.closePath();ctx.fillStyle='#991100';ctx.fill();
+    ctx.beginPath();ctx.moveTo(-5,-3);ctx.lineTo(-12,-9);ctx.lineTo(-9,-5);ctx.closePath();ctx.fillStyle='#991100';ctx.fill();
+    ctx.restore();
+  });
+
+  // Golden glow overlay when multiplier is high
+  if(multi>3){
+    ctx.save();ctx.globalAlpha=Math.min((multi-3)*.015,0.12);
+    ctx.fillStyle='#ffd700';ctx.fillRect(0,0,W,H);ctx.restore();
+  }
+}
+
+// ── HUD ───────────────────────────────────────────────────
+function updateHUD(){
+  document.getElementById('hs').textContent=Math.floor(score).toLocaleString();
+  document.getElementById('hm').textContent='×'+multi.toFixed(1);
+  document.getElementById('hd').textContent='$'+donation.toFixed(2);
+  document.getElementById('hl').textContent='❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(Math.max(0,3-lives));
+}
+
+// ── Input ─────────────────────────────────────────────────
+window.addEventListener('keydown',e=>{keys[e.key]=true;e.key.startsWith('Arrow')&&e.preventDefault()});
+window.addEventListener('keyup',e=>keys[e.key]=false);
+
+const getPos=(e,r)=>{const sx=520/r.width,sy=520/r.height;return{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy}};
+cv.addEventListener('mousemove',e=>{if(state==='playing')touch=getPos(e,cv.getBoundingClientRect())});
+cv.addEventListener('touchstart',e=>{e.preventDefault();touch=getPos(e.touches[0],cv.getBoundingClientRect())},{passive:false});
+cv.addEventListener('touchmove',e=>{e.preventDefault();touch=getPos(e.touches[0],cv.getBoundingClientRect())},{passive:false});
+cv.addEventListener('touchend',()=>touch=null);
+cv.addEventListener('mouseleave',()=>touch=null);
+
+// ── Init ──────────────────────────────────────────────────
+drawBG();
+</script>
+</body>
+</html>
