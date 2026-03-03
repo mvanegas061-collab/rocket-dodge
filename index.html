@@ -96,6 +96,24 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .news-dot{width:3px;height:3px;border-radius:50%;background:var(--txt2);flex-shrink:0}
 .news-time{font-size:9px;color:var(--txt2)}
 
+/* NEWS SKELETON */
+.news-skeleton{padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.skel-line{height:10px;border-radius:6px;background:rgba(255,255,255,0.06);margin-bottom:7px;animation:shimmer 1.5s infinite}
+.skel-line.short{width:55%}
+.skel-line.pill{width:60px;height:8px;border-radius:4px;margin-bottom:8px}
+@keyframes shimmer{0%,100%{opacity:0.5}50%{opacity:1}}
+
+/* AI BADGE */
+.ai-badge{display:inline-flex;align-items:center;gap:4px;font-size:8px;letter-spacing:0.12em;color:var(--btc);background:var(--btc-lo);border:1px solid rgba(247,147,26,0.2);border-radius:4px;padding:2px 7px;text-transform:uppercase}
+
+/* DONATION */
+.wallet-box{background:var(--surf2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:4px;text-align:center}
+.wallet-lbl{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px}
+.wallet-addr{font-size:9px;color:var(--txt3);font-family:monospace;word-break:break-all;margin-bottom:12px;line-height:1.6}
+.copy-btn{width:100%;padding:11px;border-radius:12px;border:none;background:var(--btc);color:#000;font-family:'Outfit',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.15em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity 0.2s}
+.copy-btn:active{opacity:0.8}
+.copy-toast{display:none;margin-top:8px;font-size:10px;color:var(--up);letter-spacing:0.1em}
+
 /* FAB */
 .fab-ring{position:fixed;bottom:22px;right:14px;z-index:998;width:62px;height:62px;pointer-events:none}
 #ringCircle{fill:none;stroke:rgba(247,147,26,0.3);stroke-width:2.2;stroke-dasharray:176;stroke-dashoffset:0;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s linear}
@@ -139,252 +157,175 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="sbox"><div class="sbox-v" id="mktCap">—</div><div class="sbox-l">Mkt Cap</div></div>
     </div>
     <div class="vol-row">
-      <div class="vol-lbl">Vol</div>
+      <span class="vol-lbl">VOL</span>
       <div class="vol-track"><div id="volFill"></div></div>
-      <div class="vol-val" id="vol24">—</div>
+      <span class="vol-val" id="vol24">—</span>
     </div>
     <div id="chartWrap"><canvas id="priceChart"></canvas></div>
     <div class="refresh-bar-wrap">
-      <div class="refresh-bar-lbl">Próx. actualización</div>
+      <span class="refresh-bar-lbl">Próx. actualización</span>
       <div class="refresh-bar-track"><div id="refreshBarFill"></div></div>
-      <div class="refresh-bar-time" id="refreshCountdown">10:00</div>
+      <span class="refresh-bar-time" id="refreshCountdown">2:00</span>
     </div>
   </div>
 
-  <!-- CONTRARIAN -->
+  <!-- SENTIMENT -->
   <div class="card fin" style="animation-delay:.12s">
-    <div class="clabel">Reloj Contrarian <span class="clabel-r" id="fngRaw">F&amp;G: —</span></div>
+    <div class="clabel">Fear &amp; Greed Index <span class="clabel-r" id="fngRaw">—</span></div>
     <div class="clock-outer">
       <div class="gauge-wrap">
-        <svg id="gaugeSvg" viewBox="0 0 280 155">
-          <path id="gaugeTrack"   fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="20" stroke-linecap="round"/>
-          <path id="gaugeFear"    fill="none" stroke="#FF3B5C" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
-          <path id="gaugeNeutral" fill="none" stroke="#F7931A" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
-          <path id="gaugeGreed"   fill="none" stroke="#00E5A0" stroke-width="20" stroke-linecap="butt" opacity="0.3"/>
-          <g id="ticks" opacity="0.4"></g>
-          <line id="gaugeNeedleGlow" x1="140" y1="140" x2="140" y2="60" stroke="rgba(255,255,255,0.15)" stroke-width="6" stroke-linecap="round" style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
-          <line id="gaugeNeedle" x1="140" y1="140" x2="140" y2="46" stroke="white" stroke-width="2.5" stroke-linecap="round" style="transform-origin:140px 140px;transition:transform 1.5s cubic-bezier(.34,1.56,.64,1)"/>
-          <circle cx="140" cy="140" r="8" fill="rgba(255,255,255,0.1)"/>
-          <circle cx="140" cy="140" r="5" fill="white"/>
-          <circle cx="140" cy="140" r="2.5" fill="var(--bg)"/>
-          <text x="22"  y="138" fill="rgba(255,59,92,0.7)"  font-size="7" font-family="Outfit,sans-serif" text-anchor="middle">MIEDO</text>
-          <text x="140" y="24"  fill="rgba(247,147,26,0.7)" font-size="7" font-family="Outfit,sans-serif" text-anchor="middle">NEUTRAL</text>
-          <text x="258" y="138" fill="rgba(0,229,160,0.7)"  font-size="7" font-family="Outfit,sans-serif" text-anchor="middle">CODICIA</text>
+        <svg id="gaugeSvg" viewBox="0 0 200 110">
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FF3B5C"/>
+              <stop offset="25%" stop-color="#FF8C42"/>
+              <stop offset="50%" stop-color="#F7931A"/>
+              <stop offset="75%" stop-color="#FFD580"/>
+              <stop offset="100%" stop-color="#00E5A0"/>
+            </linearGradient>
+          </defs>
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" stroke-linecap="round"/>
+          <path id="gaugeArc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+          <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="28" stroke="white" stroke-width="2.5" stroke-linecap="round" transform="rotate(0,100,100)" opacity="0.9"/>
+          <circle cx="100" cy="100" r="5" fill="white" opacity="0.9"/>
         </svg>
         <div class="gauge-center-val">
-          <span class="gauge-score" id="gaugeScore" style="color:var(--btc)">—</span>
-          <span class="gauge-mkt-lbl" id="gaugeMktLbl" style="color:var(--btc)">CARGANDO</span>
+          <span class="gauge-score" id="gaugeScore">—</span>
+          <span class="gauge-mkt-lbl" id="gaugeMktLbl">cargando</span>
         </div>
       </div>
-      <div class="gauge-labels">
-        <span>MIEDO EXT.</span><span style="text-align:center">NEUTRAL</span><span style="text-align:right">CODICIA EXT.</span>
-      </div>
+      <div class="gauge-labels"><span>MIEDO EXT.</span><span>NEUTRAL</span><span>CODICIA EXT.</span></div>
       <div class="contrarian-box">
         <div class="contrarian-header">
-          <div class="contrarian-tag">⚡ Señal Contrarian</div>
-          <div class="contrarian-icon" id="contrarianIcon">—</div>
+          <span class="contrarian-tag">Señal Contrarian</span>
+          <span class="contrarian-icon" id="contrarianIcon">⚪</span>
         </div>
-        <div class="contrarian-signal" id="contrarianSignal" style="color:var(--up)">CARGANDO</div>
-        <div class="contrarian-desc" id="contrarianDesc">Analizando sentimiento…</div>
+        <div class="contrarian-signal" id="contrarianSignal">ANALIZANDO…</div>
+        <div class="contrarian-desc" id="contrarianDesc">Calculando señal según el índice de sentimiento del mercado.</div>
         <div class="contrarian-divider"></div>
-        <div class="contrarian-logic">💡 La estrategia contrarian invierte la señal del rebaño — cuando todos temen, compran. Cuando todos codician, venden.</div>
+        <div class="contrarian-logic">La estrategia contrarian compra cuando el mercado tiene miedo extremo y vende cuando hay codicia extrema.</div>
       </div>
     </div>
   </div>
 
   <!-- NEWS -->
-  <div class="card fin" style="animation-delay:.2s">
-    <div class="clabel">Noticias Bitcoin <span class="clabel-r" style="font-size:8px">Español</span></div>
-    <div id="newsList"><div style="padding:8px;color:var(--txt2);font-size:11px;text-align:center">Cargando noticias…</div></div>
+  <div class="card fin" style="animation-delay:.19s">
+    <div class="clabel">Noticias Bitcoin <span class="ai-badge" id="newsSourceBadge">⚡ IA</span></div>
+    <div id="newsList">
+      <!-- skeleton -->
+      <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+      <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+      <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+    </div>
   </div>
 
-  <!-- DONACIÓN -->
-  <div class="card fin" style="animation-delay:.28s;background:linear-gradient(135deg,rgba(16,16,22,0.95),rgba(22,18,12,0.95));border-color:rgba(247,147,26,0.18)">
-    <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(247,147,26,0.4),transparent)"></div>
-    <div class="clabel" style="margin-bottom:14px">Apoyar el proyecto <span style="font-size:11px">💚</span></div>
-    <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">
-      <div style="flex-shrink:0;width:86px;height:86px;border-radius:14px;overflow:hidden;background:#fff;padding:5px;box-shadow:0 4px 20px rgba(247,147,26,0.25)">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS&color=000000&bgcolor=ffffff&margin=0" alt="QR USDT TRC20" width="76" height="76" style="display:block;border-radius:8px;width:76px;height:76px;object-fit:cover" loading="lazy"/>
-      </div>
-      <div style="flex:1;min-width:0">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;color:var(--txt);margin-bottom:4px">USDT TRC-20</div>
-        <div style="font-size:9px;color:var(--txt2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Red TRON · Sin comisiones</div>
-        <div style="font-size:9px;color:var(--txt3);line-height:1.55">Si este dashboard te es útil, considera apoyarlo con cualquier monto. ¡Gracias! 🙏</div>
-      </div>
+  <!-- DONATION -->
+  <div class="card fin" style="animation-delay:.26s">
+    <div class="clabel">Apoya el Proyecto</div>
+    <div class="wallet-box">
+      <div class="wallet-lbl">🔶 USDT TRC-20 (Tron)</div>
+      <div class="wallet-addr" id="walletAddr">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyWallet()">
+        <span id="copyIcon">📋</span> COPIAR DIRECCIÓN
+      </button>
+      <div class="copy-toast" id="copyToast">✅ ¡Dirección copiada!</div>
     </div>
-    <div onclick="copyWallet()" style="background:rgba(247,147,26,0.07);border:1px solid rgba(247,147,26,0.2);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px">
-      <div style="flex:1;min-width:0">
-        <div style="font-size:8px;letter-spacing:0.15em;color:var(--txt2);text-transform:uppercase;margin-bottom:4px">Dirección de wallet</div>
-        <div style="font-size:11px;color:var(--btc);word-break:break-all;line-height:1.4;font-weight:500">TYzJ4hQ47aqHvg7MRmpfXhbvYkhyMXMLLS</div>
-      </div>
-      <div id="copyIcon" style="font-size:18px;flex-shrink:0">📋</div>
-    </div>
-    <button onclick="copyWallet()" id="copyBtn" style="width:100%;padding:13px;border-radius:13px;border:none;cursor:pointer;background:var(--btc);color:#000;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.1em;box-shadow:0 4px 20px rgba(247,147,26,0.35);display:flex;align-items:center;justify-content:center;gap:8px">
-      <span>📋</span> COPIAR DIRECCIÓN
-    </button>
-    <div id="copyToast" style="display:none;margin-top:10px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);border-radius:10px;padding:9px 14px;font-size:11px;color:var(--up);text-align:center">✅ Dirección copiada al portapapeles</div>
   </div>
-</div>
 
+</div><!-- /app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-/* ── STATE ── */
+/* ── CONFIG ── */
+const REFRESH_S = 120;
+let secsLeft = REFRESH_S;
+let cInterval;
 let priceHistory = [];
-const REFRESH_S  = 600;
-let secsLeft     = REFRESH_S;
-let cInterval    = null;
+let chartInst = null;
+
+/* ── CLOCK ── */
+function tickClock(){
+  const n=new Date();
+  document.getElementById('liveTime').textContent=
+    n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(tickClock,1000); tickClock();
 
 /* ── FORMAT ── */
-const fmtUSD  = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtK    = n => n >= 100000 ? '$'+(n/1000).toFixed(1)+'K' : fmtUSD(n);
-const fmtShrt = n => {
-  if(n>=1e12) return '$'+(n/1e12).toFixed(2)+'T';
-  if(n>=1e9)  return '$'+(n/1e9).toFixed(1)+'B';
-  if(n>=1e6)  return '$'+(n/1e6).toFixed(0)+'M';
-  return '$'+n.toLocaleString('en-US',{maximumFractionDigits:0});
-};
+const fmt=v=>v>=1e9?'$'+(v/1e9).toFixed(2)+'B':v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+v.toLocaleString('en-US',{maximumFractionDigits:0});
 
-/* ── FETCH PRICE — Binance (CORS libre) + CryptoCompare historial ── */
-async function fetchPrice() {
-  try {
-    const [tickerRes, histRes] = await Promise.all([
-      fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'),
-      fetch('https://min-api.cryptocompare.com/data/v2/histohour?fsym=BTC&tsym=USD&limit=23')
-    ]);
-    const ticker = await tickerRes.json();
-    const hist   = await histRes.json();
+/* ── FETCH PRICE ── */
+async function fetchPrice(){
+  try{
+    const r=await fetch('https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&community_data=false&developer_data=false');
+    const d=await r.json();
+    const p=d.market_data;
+    const price=p.current_price.usd;
+    const ch=p.price_change_percentage_24h;
+    const up=ch>=0;
 
-    const price = parseFloat(ticker.lastPrice);
-    const ch    = parseFloat(ticker.priceChangePercent);
-    const high  = parseFloat(ticker.highPrice);
-    const low   = parseFloat(ticker.lowPrice);
-    const vol   = parseFloat(ticker.quoteVolume);
-    const up    = ch >= 0;
-    const chStr = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '%';
+    document.getElementById('btcPrice').textContent='$'+price.toLocaleString('en-US',{maximumFractionDigits:0});
+    const badge=document.getElementById('changeBadge');
+    badge.textContent=(up?'▲':'▼')+Math.abs(ch).toFixed(2)+'%';
+    badge.className='badge '+(up?'badge-up':'badge-dn');
+    document.getElementById('hdrChange').textContent=(up?'+':'')+ch.toFixed(2)+'%';
+    document.getElementById('priceTime').textContent='Actualizado '+new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('high24').textContent='$'+p.high_24h.usd.toLocaleString('en-US',{maximumFractionDigits:0});
+    document.getElementById('low24').textContent='$'+p.low_24h.usd.toLocaleString('en-US',{maximumFractionDigits:0});
+    document.getElementById('mktCap').textContent=fmt(p.market_cap.usd);
+    document.getElementById('vol24').textContent=fmt(p.total_volume.usd);
 
-    document.getElementById('btcPrice').textContent  = fmtUSD(price);
-    const hch = document.getElementById('hdrChange');
-    hch.textContent = chStr; hch.style.color = up ? 'var(--up)' : 'var(--dn)';
-    const bd = document.getElementById('changeBadge');
-    bd.textContent = chStr; bd.className = 'badge '+(up?'badge-up':'badge-dn');
+    const maxVol=200e9;
+    document.getElementById('volFill').style.width=Math.min(100,(p.total_volume.usd/maxVol)*100)+'%';
 
-    document.getElementById('mktCap').textContent  = fmtShrt(price * 19_700_000);
-    document.getElementById('high24').textContent  = fmtK(high);
-    document.getElementById('low24').textContent   = fmtK(low);
-    document.getElementById('vol24').textContent   = fmtShrt(vol);
-    document.getElementById('volFill').style.width = Math.min((vol/60e9)*100,100)+'%';
-
-    if(hist.Response === 'Success') {
-      priceHistory = hist.Data.Data.map(d => d.close);
-      priceHistory[priceHistory.length-1] = price;
-    } else {
-      priceHistory = Array(24).fill(price);
-    }
+    priceHistory.push(price);
+    if(priceHistory.length>30) priceHistory.shift();
     drawChart();
-
-    const now = new Date();
-    const t = now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('liveTime').textContent  = t;
-    document.getElementById('priceTime').textContent = 'Act. '+t;
-  } catch(e) {
-    console.error('price error:',e);
-    document.getElementById('priceTime').textContent = 'Error al cargar';
-  }
+  }catch(e){console.error('price error:',e);}
 }
 
-/* ── DRAW CHART ── */
-function drawChart() {
-  if(priceHistory.length < 2) return;
-  const cv = document.getElementById('priceChart');
-  const cx = cv.getContext('2d');
-  const wr = document.getElementById('chartWrap');
-  const dp = window.devicePixelRatio || 1;
-  cv.width  = wr.clientWidth * dp;
-  cv.height = wr.clientHeight * dp;
-  cx.scale(dp,dp);
+/* ── CHART ── */
+function drawChart(){
+  const canvas=document.getElementById('priceChart');
+  const ctx=canvas.getContext('2d');
+  const up=priceHistory[priceHistory.length-1]>=priceHistory[0];
+  const col=up?'#00E5A0':'#FF3B5C';
 
-  const W=wr.clientWidth, H=wr.clientHeight;
-  const pad={t:12,b:8,l:4,r:70};
-  const w=W-pad.l-pad.r, h=H-pad.t-pad.b;
-  const mn=Math.min(...priceHistory), mx=Math.max(...priceHistory), rng=(mx-mn)||1;
-  const pts = priceHistory.map((p,i)=>({
-    x: pad.l+(i/(priceHistory.length-1))*w,
-    y: pad.t+h-((p-mn)/rng)*h
-  }));
-
-  cx.clearRect(0,0,W,H);
-
-  // Fill gradient
-  const grd = cx.createLinearGradient(0,pad.t,0,H);
-  grd.addColorStop(0,'rgba(247,147,26,0.2)');
-  grd.addColorStop(0.65,'rgba(247,147,26,0.03)');
-  grd.addColorStop(1,'transparent');
-  cx.beginPath();
-  pts.forEach((p,i)=>i===0?cx.moveTo(p.x,p.y):cx.lineTo(p.x,p.y));
-  cx.lineTo(pts[pts.length-1].x,H); cx.lineTo(pts[0].x,H); cx.closePath();
-  cx.fillStyle=grd; cx.fill();
-
-  // Line
-  cx.beginPath();
-  pts.forEach((p,i)=>i===0?cx.moveTo(p.x,p.y):cx.lineTo(p.x,p.y));
-  cx.strokeStyle='#F7931A'; cx.lineWidth=2.5; cx.lineJoin='round'; cx.lineCap='round'; cx.stroke();
-
-  const last=pts[pts.length-1];
-
-  // Dashed price line
-  cx.setLineDash([3,5]); cx.strokeStyle='rgba(247,147,26,0.35)'; cx.lineWidth=1;
-  cx.beginPath(); cx.moveTo(pad.l,last.y); cx.lineTo(W-4,last.y); cx.stroke();
-  cx.setLineDash([]);
-
-  // Price label
-  const priceTxt = fmtUSD(priceHistory[priceHistory.length-1]);
-  cx.font='600 9px Outfit';
-  const tw=cx.measureText(priceTxt).width;
-  const bx=W-pad.r+6, by=last.y-9, bw=tw+10, bh=16;
-  cx.fillStyle='rgba(247,147,26,0.18)';
-  cx.beginPath(); cx.roundRect(bx,by,bw,bh,4); cx.fill();
-  cx.strokeStyle='rgba(247,147,26,0.45)'; cx.lineWidth=0.8; cx.stroke();
-  cx.fillStyle='#F7931A'; cx.textAlign='left'; cx.fillText(priceTxt,bx+5,by+11);
-
-  // Dot
-  cx.beginPath(); cx.arc(last.x,last.y,7,0,Math.PI*2); cx.fillStyle='rgba(247,147,26,0.2)'; cx.fill();
-  cx.beginPath(); cx.arc(last.x,last.y,4,0,Math.PI*2); cx.fillStyle='#F7931A'; cx.fill();
-  cx.beginPath(); cx.arc(last.x,last.y,1.8,0,Math.PI*2); cx.fillStyle='#fff'; cx.fill();
+  if(chartInst){chartInst.destroy();}
+  chartInst=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:priceHistory.map((_,i)=>i),
+      datasets:[{
+        data:priceHistory,fill:true,
+        borderColor:col,borderWidth:2,pointRadius:0,tension:0.4,
+        backgroundColor:(ctx2=>{
+          const g=ctx2.chart.ctx.createLinearGradient(0,0,0,115);
+          g.addColorStop(0,up?'rgba(0,229,160,0.2)':'rgba(255,59,92,0.2)');
+          g.addColorStop(1,'rgba(0,0,0,0)');
+          return g;
+        })
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,animation:false,
+      plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{x:{display:false},y:{display:false}}}
+  });
 }
 
 /* ── GAUGE ── */
-const CX=140, CY=140, R=100;
-function polar(deg,r2){const r=deg*Math.PI/180;return{x:CX+r2*Math.cos(r),y:CY+r2*Math.sin(r)}}
-function arcPath(sD,eD){
-  const s=polar(sD,R),e=polar(eD,R),lg=Math.abs(eD-sD)>180?1:0;
-  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${R} ${R} 0 ${lg} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
-}
-function setupGauge(){
-  document.getElementById('gaugeTrack').setAttribute('d',arcPath(180,0));
-  document.getElementById('gaugeFear').setAttribute('d',arcPath(180,108));
-  document.getElementById('gaugeNeutral').setAttribute('d',arcPath(108,72));
-  document.getElementById('gaugeGreed').setAttribute('d',arcPath(72,0));
-  const tg=document.getElementById('ticks');
-  [0,25,50,75,100].forEach(v=>{
-    const deg=180-v*1.8;
-    const i=polar(deg,R-14),o=polar(deg,R+14);
-    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
-    l.setAttribute('x1',i.x);l.setAttribute('y1',i.y);l.setAttribute('x2',o.x);l.setAttribute('y2',o.y);
-    l.setAttribute('stroke','rgba(255,255,255,0.5)');l.setAttribute('stroke-width','1.5');
-    tg.appendChild(l);
-  });
-}
-function setNeedle(val){
-  const rot=180-val*1.8-90;
-  document.getElementById('gaugeNeedle').style.transform=`rotate(${rot}deg)`;
-  document.getElementById('gaugeNeedleGlow').style.transform=`rotate(${rot}deg)`;
+function setupGauge(){}
+function setNeedle(v){
+  const angle=-90+(v/100)*180;
+  document.getElementById('gaugeNeedle').setAttribute('transform',`rotate(${angle},100,100)`);
+  const pct=v/100;
+  document.getElementById('gaugeArc').style.strokeDashoffset=251-(pct*251);
 }
 
-/* ── CONTRARIAN ── */
-function getContrarian(val){
-  const v=parseInt(val);
-  if(v<=15) return{signal:'COMPRAR FUERTE',color:'var(--up)',icon:'🟢',desc:'Miedo Extremo. El pánico está en máximos. Zona histórica de acumulación para inversores contrarian de alta convicción.'};
-  if(v<=35) return{signal:'CONSIDERAR COMPRA',color:'#5CF0BC',icon:'🟩',desc:'El miedo domina el sentimiento. Históricamente estas zonas han precedido recuperaciones significativas. Evalúa entrar gradualmente.'};
-  if(v<=45) return{signal:'LIGERO SESGO COMPRADOR',color:'#A0D4B0',icon:'🔵',desc:'Sentimiento negativo leve. Sin señal contundente. El contrarian puede acumular pequeñas posiciones.'};
+/* ── CONTRARIAN LOGIC ── */
+function getContrarian(v){
+  if(v<=20) return{signal:'COMPRAR AGRESIVO',color:'var(--up)',icon:'🟢',desc:'Miedo Extremo. El mercado liquida posiciones por pánico. Históricamente, este es el mejor momento para acumular Bitcoin a largo plazo.'};
+  if(v<=35) return{signal:'ACUMULAR / COMPRAR',color:'#00C87A',icon:'🟢',desc:'El miedo domina el mercado. Los fundamentales no cambiaron pero el precio cayó. El contrarian ve oportunidad donde otros ven riesgo.'};
   if(v<=55) return{signal:'NEUTRAL — OBSERVAR',color:'var(--btc)',icon:'⚪',desc:'El mercado está equilibrado. No hay extremo aprovechable. Espera a que el sentimiento llegue a un extremo para actuar.'};
   if(v<=65) return{signal:'LIGERO SESGO VENDEDOR',color:'#FFB86C',icon:'🟡',desc:'El optimismo crece. No es momento de comprar. Reduce exposición nueva y ajusta stops de protección.'};
   if(v<=80) return{signal:'CONSIDERAR VENTA',color:'#FF8C42',icon:'🟠',desc:'Codicia creciente. El mercado sobreestima el rally. El contrarian empieza a reducir posiciones y tomar ganancias.'};
@@ -420,45 +361,73 @@ async function fetchSentiment(){
   }catch(e){console.error('sentiment error:',e);}
 }
 
-/* ── FETCH NEWS — múltiples fuentes en español con fallbacks ── */
+/* ── FETCH NEWS — Claude AI con web search ── */
 async function fetchNews(){
   const list=document.getElementById('newsList');
-  const feeds=[
-    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fes.cointelegraph.com%2Frss&count=6',name:'Cointelegraph ES'},
-    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fes.cointelegraph.com%2Frss%2Ftag%2Fbitcoin&count=6',name:'Cointelegraph ES'},
-    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.criptonoticias.com%2Ffeed%2F&count=6',name:'CriptoNoticias'},
-    {url:'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fbitcoin.de%2Fes%2Fblog%2Frss%2F&count=6',name:'Bitcoin.de ES'}
-  ];
 
-  let items=null, sourceName='';
-  for(const f of feeds){
-    try{
-      const r=await fetch(f.url,{signal:AbortSignal.timeout(6000)});
-      const d=await r.json();
-      if(d.items&&d.items.length>0){items=d.items;sourceName=f.name;break;}
-    }catch(e){/* try next */}
+  // Show skeleton while loading
+  list.innerHTML=`
+    <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+    <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+    <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
+  `;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        system: 'Eres un asistente de noticias Bitcoin. Busca las 5 noticias más recientes e importantes sobre Bitcoin de hoy. Responde SOLO con un JSON array válido sin markdown ni backticks, con este formato exacto: [{"title":"título en español","source":"fuente","time":"hace X horas","url":"https://..."},...]',
+        messages: [{
+          role: 'user',
+          content: 'Busca las 5 noticias más recientes sobre Bitcoin de hoy y devuelve SOLO el JSON array, sin texto adicional ni backticks.'
+        }]
+      })
+    });
+
+    const data = await response.json();
+
+    // Extract text from response (may have tool_use blocks)
+    const fullText = (data.content || [])
+      .map(b => b.type === 'text' ? b.text : '')
+      .filter(Boolean)
+      .join('\n');
+
+    // Clean and parse JSON
+    const clean = fullText.replace(/```json|```/g, '').trim();
+    const start = clean.indexOf('[');
+    const end = clean.lastIndexOf(']');
+    if (start === -1 || end === -1) throw new Error('No JSON array found');
+
+    const items = JSON.parse(clean.slice(start, end + 1));
+
+    if (!Array.isArray(items) || items.length === 0) throw new Error('Empty items');
+
+    document.getElementById('newsSourceBadge').innerHTML = '⚡ IA · Claude';
+
+    list.innerHTML = items.slice(0, 5).map(item => {
+      const title = (item.title || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const src = (item.source || 'Fuente').slice(0, 30);
+      const time = item.time || '';
+      const url = item.url || '#';
+      return `<div class="news-item" onclick="window.open('${encodeURI(url)}','_blank','noopener')">
+        <div class="news-tag-pill">Bitcoin</div>
+        <div class="news-title">${title}</div>
+        <div class="news-foot">
+          <span class="news-src">${src}</span>
+          <div class="news-dot"></div>
+          <span class="news-time">${time}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    console.error('news error:', e);
+    list.innerHTML = '<div style="padding:16px;color:var(--txt2);font-size:11px;text-align:center;line-height:1.6">No se pudieron cargar las noticias.<br>Toca ⚡ para reintentar.</div>';
   }
-
-  if(!items){
-    list.innerHTML='<div style="padding:16px;color:var(--txt2);font-size:11px;text-align:center;line-height:1.6">No se pudieron cargar las noticias en este momento.<br>Toca ⚡ para reintentar.</div>';
-    return;
-  }
-
-  list.innerHTML=items.slice(0,5).map(item=>{
-    const d=new Date(item.pubDate);
-    const ts=isNaN(d)?'':d.toLocaleString('es-MX',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
-    const title=(item.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const src=(item.author||sourceName||'Fuente').replace(/<[^>]*>/g,'').trim().slice(0,30)||sourceName;
-    return `<div class="news-item" onclick="window.open('${encodeURI(item.link)}','_blank','noopener')">
-      <div class="news-tag-pill">Bitcoin</div>
-      <div class="news-title">${title}</div>
-      <div class="news-foot">
-        <span class="news-src">${src}</span>
-        <div class="news-dot"></div>
-        <span class="news-time">${ts}</span>
-      </div>
-    </div>`;
-  }).join('');
 }
 
 /* ── DONATION ── */
