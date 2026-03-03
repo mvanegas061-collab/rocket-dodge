@@ -65,6 +65,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 #refreshBarFill{height:100%;width:100%;background:var(--btc);border-radius:3px;transition:width 1s linear}
 .refresh-bar-time{font-size:9px;color:var(--btc);min-width:32px;text-align:right;font-weight:600}
 
+/* TECHNICAL ANALYSIS */
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tech-box{background:var(--surf2);border:1px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center}
+.tech-period{font-size:7px;letter-spacing:0.12em;color:var(--txt2);text-transform:uppercase;margin-bottom:4px}
+.tech-status{font-size:10px;font-weight:600;margin-bottom:2px}
+.tech-price{font-size:9px;color:var(--txt3)}
+
 /* CONTRARIAN */
 .clock-outer{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0 4px}
 .gauge-wrap{position:relative;width:100%;max-width:280px;margin:0 auto}
@@ -82,6 +89,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .contrarian-desc{font-size:11px;color:var(--txt3);line-height:1.6}
 .contrarian-divider{height:1px;background:var(--border);margin:10px 0}
 .contrarian-logic{font-size:9px;color:var(--txt2);letter-spacing:0.08em;line-height:1.5}
+.analysis-factors{margin-top:10px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px}
+.factor-row{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--txt3);margin-bottom:5px}
+.factor-row:last-child{margin-bottom:0}
+.factor-label{letter-spacing:0.08em}
+.factor-value{font-weight:600}
 
 /* NEWS */
 .news-item{padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:all 0.2s;position:relative}
@@ -95,6 +107,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .news-src{font-size:9px;color:var(--txt2)}
 .news-dot{width:3px;height:3px;border-radius:50%;background:var(--txt2);flex-shrink:0}
 .news-time{font-size:9px;color:var(--txt2)}
+.news-sentiment{display:inline-flex;align-items:center;gap:3px;font-size:8px;padding:2px 6px;border-radius:4px;margin-left:4px}
+.news-sentiment.bullish{background:rgba(0,229,160,0.1);color:var(--up)}
+.news-sentiment.bearish{background:rgba(255,59,92,0.1);color:var(--dn)}
+.news-sentiment.neutral{background:rgba(247,147,26,0.1);color:var(--btc)}
 
 /* NEWS SKELETON */
 .news-skeleton{padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
@@ -169,9 +185,31 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
   </div>
 
+  <!-- TECHNICAL ANALYSIS -->
+  <div class="card fin" style="animation-delay:.09s">
+    <div class="clabel">Análisis Técnico Máx/Mín</div>
+    <div class="tech-grid" id="techGrid">
+      <div class="tech-box">
+        <div class="tech-period">Diario</div>
+        <div class="tech-status" id="techDaily">—</div>
+        <div class="tech-price" id="techDailyPrice">—</div>
+      </div>
+      <div class="tech-box">
+        <div class="tech-period">Semanal</div>
+        <div class="tech-status" id="techWeekly">—</div>
+        <div class="tech-price" id="techWeeklyPrice">—</div>
+      </div>
+      <div class="tech-box">
+        <div class="tech-period">Mensual</div>
+        <div class="tech-status" id="techMonthly">—</div>
+        <div class="tech-price" id="techMonthlyPrice">—</div>
+      </div>
+    </div>
+  </div>
+
   <!-- SENTIMENT -->
-  <div class="card fin" style="animation-delay:.12s">
-    <div class="clabel">Fear &amp; Greed Index <span class="clabel-r" id="fngRaw">—</span></div>
+  <div class="card fin" style="animation-delay:.15s">
+    <div class="clabel">Señal Contrarian Inteligente <span class="clabel-r" id="fngRaw">—</span></div>
     <div class="clock-outer">
       <div class="gauge-wrap">
         <svg id="gaugeSvg" viewBox="0 0 200 110">
@@ -197,20 +235,21 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="gauge-labels"><span>MIEDO EXT.</span><span>NEUTRAL</span><span>CODICIA EXT.</span></div>
       <div class="contrarian-box">
         <div class="contrarian-header">
-          <span class="contrarian-tag">Señal Contrarian</span>
+          <span class="contrarian-tag">⚡ Señal Contrarian</span>
           <span class="contrarian-icon" id="contrarianIcon">⚪</span>
         </div>
         <div class="contrarian-signal" id="contrarianSignal">ANALIZANDO…</div>
-        <div class="contrarian-desc" id="contrarianDesc">Calculando señal según el índice de sentimiento del mercado.</div>
+        <div class="contrarian-desc" id="contrarianDesc">Calculando señal según análisis técnico, sentimiento y noticias.</div>
+        <div class="analysis-factors" id="analysisFactors"></div>
         <div class="contrarian-divider"></div>
-        <div class="contrarian-logic">La estrategia contrarian compra cuando el mercado tiene miedo extremo y vende cuando hay codicia extrema.</div>
+        <div class="contrarian-logic">La estrategia analiza máximos/mínimos técnicos, sentimiento del mercado y noticias para generar señales contrarian precisas.</div>
       </div>
     </div>
   </div>
 
   <!-- NEWS -->
-  <div class="card fin" style="animation-delay:.19s">
-    <div class="clabel">Noticias Bitcoin <span class="ai-badge" id="newsSourceBadge">⚡ IA</span></div>
+  <div class="card fin" style="animation-delay:.21s">
+    <div class="clabel">Noticias Bitcoin + Sentimiento <span class="ai-badge" id="newsSourceBadge">⚡ IA</span></div>
     <div id="newsList">
       <!-- skeleton -->
       <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
@@ -220,7 +259,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   </div>
 
   <!-- DONATION -->
-  <div class="card fin" style="animation-delay:.26s">
+  <div class="card fin" style="animation-delay:.27s">
     <div class="clabel">Apoya el Proyecto</div>
     <div class="wallet-box">
       <div class="wallet-lbl">🔶 USDT TRC-20 (Tron)</div>
@@ -243,6 +282,17 @@ let cInterval;
 let priceHistory = [];
 let chartInst = null;
 
+// Technical data storage
+let technicalData = {
+  daily: { high: 0, low: 0, status: 'neutral' },
+  weekly: { high: 0, low: 0, status: 'neutral' },
+  monthly: { high: 0, low: 0, status: 'neutral' }
+};
+
+let newsSentiment = { bullish: 0, bearish: 0, neutral: 0, overall: 'neutral' };
+let currentPrice = 0;
+let fngValue = 50;
+
 /* ── CLOCK ── */
 function tickClock(){
   const n=new Date();
@@ -254,6 +304,121 @@ setInterval(tickClock,1000); tickClock();
 /* ── FORMAT ── */
 const fmt=v=>v>=1e9?'$'+(v/1e9).toFixed(2)+'B':v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+v.toLocaleString('en-US',{maximumFractionDigits:0});
 
+/* ── FETCH HISTORICAL DATA ── */
+async function fetchHistoricalData() {
+  try {
+    // Fetch daily, weekly, monthly data
+    const [daily7, weekly30, monthly90] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7').then(r => r.json()),
+      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30').then(r => r.json()),
+      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90').then(r => r.json())
+    ]);
+
+    // Calculate highs and lows
+    const dailyPrices = daily7.prices.map(p => p[1]);
+    const weeklyPrices = weekly30.prices.map(p => p[1]);
+    const monthlyPrices = monthly90.prices.map(p => p[1]);
+
+    technicalData.daily.high = Math.max(...dailyPrices);
+    technicalData.daily.low = Math.min(...dailyPrices);
+    technicalData.weekly.high = Math.max(...weeklyPrices);
+    technicalData.weekly.low = Math.min(...weeklyPrices);
+    technicalData.monthly.high = Math.max(...monthlyPrices);
+    technicalData.monthly.low = Math.min(...monthlyPrices);
+
+    updateTechnicalStatus();
+  } catch(e) {
+    console.error('historical data error:', e);
+  }
+}
+
+/* ── UPDATE TECHNICAL STATUS ── */
+function updateTechnicalStatus() {
+  if (!currentPrice) return;
+
+  // Daily
+  const dailyRange = technicalData.daily.high - technicalData.daily.low;
+  const dailyPos = (currentPrice - technicalData.daily.low) / dailyRange;
+  
+  if (currentPrice >= technicalData.daily.high * 0.995) {
+    technicalData.daily.status = 'overbought';
+  } else if (currentPrice <= technicalData.daily.low * 1.005) {
+    technicalData.daily.status = 'oversold';
+  } else if (dailyPos > 0.7) {
+    technicalData.daily.status = 'near_high';
+  } else if (dailyPos < 0.3) {
+    technicalData.daily.status = 'near_low';
+  } else {
+    technicalData.daily.status = 'neutral';
+  }
+
+  // Weekly
+  const weeklyRange = technicalData.weekly.high - technicalData.weekly.low;
+  const weeklyPos = (currentPrice - technicalData.weekly.low) / weeklyRange;
+  
+  if (currentPrice >= technicalData.weekly.high * 0.995) {
+    technicalData.weekly.status = 'overbought';
+  } else if (currentPrice <= technicalData.weekly.low * 1.005) {
+    technicalData.weekly.status = 'oversold';
+  } else if (weeklyPos > 0.7) {
+    technicalData.weekly.status = 'near_high';
+  } else if (weeklyPos < 0.3) {
+    technicalData.weekly.status = 'near_low';
+  } else {
+    technicalData.weekly.status = 'neutral';
+  }
+
+  // Monthly
+  const monthlyRange = technicalData.monthly.high - technicalData.monthly.low;
+  const monthlyPos = (currentPrice - technicalData.monthly.low) / monthlyRange;
+  
+  if (currentPrice >= technicalData.monthly.high * 0.995) {
+    technicalData.monthly.status = 'overbought';
+  } else if (currentPrice <= technicalData.monthly.low * 1.005) {
+    technicalData.monthly.status = 'oversold';
+  } else if (monthlyPos > 0.7) {
+    technicalData.monthly.status = 'near_high';
+  } else if (monthlyPos < 0.3) {
+    technicalData.monthly.status = 'near_low';
+  } else {
+    technicalData.monthly.status = 'neutral';
+  }
+
+  renderTechnicalAnalysis();
+}
+
+/* ── RENDER TECHNICAL ANALYSIS ── */
+function renderTechnicalAnalysis() {
+  const statusLabels = {
+    'overbought': { text: '🔴 Máximo', color: 'var(--dn)' },
+    'oversold': { text: '🟢 Mínimo', color: 'var(--up)' },
+    'near_high': { text: '🟡 Cerca Máx', color: '#FFB86C' },
+    'near_low': { text: '🟢 Cerca Mín', color: '#00C87A' },
+    'neutral': { text: '⚪ Neutral', color: 'var(--txt3)' }
+  };
+
+  // Daily
+  const dailyStatus = statusLabels[technicalData.daily.status];
+  document.getElementById('techDaily').textContent = dailyStatus.text;
+  document.getElementById('techDaily').style.color = dailyStatus.color;
+  document.getElementById('techDailyPrice').textContent = 
+    `H: $${(technicalData.daily.high/1000).toFixed(1)}k L: $${(technicalData.daily.low/1000).toFixed(1)}k`;
+
+  // Weekly
+  const weeklyStatus = statusLabels[technicalData.weekly.status];
+  document.getElementById('techWeekly').textContent = weeklyStatus.text;
+  document.getElementById('techWeekly').style.color = weeklyStatus.color;
+  document.getElementById('techWeeklyPrice').textContent = 
+    `H: $${(technicalData.weekly.high/1000).toFixed(1)}k L: $${(technicalData.weekly.low/1000).toFixed(1)}k`;
+
+  // Monthly
+  const monthlyStatus = statusLabels[technicalData.monthly.status];
+  document.getElementById('techMonthly').textContent = monthlyStatus.text;
+  document.getElementById('techMonthly').style.color = monthlyStatus.color;
+  document.getElementById('techMonthlyPrice').textContent = 
+    `H: $${(technicalData.monthly.high/1000).toFixed(1)}k L: $${(technicalData.monthly.low/1000).toFixed(1)}k`;
+}
+
 /* ── FETCH PRICE ── */
 async function fetchPrice(){
   try{
@@ -261,6 +426,7 @@ async function fetchPrice(){
     const d=await r.json();
     const p=d.market_data;
     const price=p.current_price.usd;
+    currentPrice = price;
     const ch=p.price_change_percentage_24h;
     const up=ch>=0;
 
@@ -281,6 +447,9 @@ async function fetchPrice(){
     priceHistory.push(price);
     if(priceHistory.length>30) priceHistory.shift();
     drawChart();
+    
+    updateTechnicalStatus();
+    calculateContrarianSignal();
   }catch(e){console.error('price error:',e);}
 }
 
@@ -322,14 +491,145 @@ function setNeedle(v){
   document.getElementById('gaugeArc').style.strokeDashoffset=251-(pct*251);
 }
 
-/* ── CONTRARIAN LOGIC ── */
-function getContrarian(v){
-  if(v<=20) return{signal:'COMPRAR AGRESIVO',color:'var(--up)',icon:'🟢',desc:'Miedo Extremo. El mercado liquida posiciones por pánico. Históricamente, este es el mejor momento para acumular Bitcoin a largo plazo.'};
-  if(v<=35) return{signal:'ACUMULAR / COMPRAR',color:'#00C87A',icon:'🟢',desc:'El miedo domina el mercado. Los fundamentales no cambiaron pero el precio cayó. El contrarian ve oportunidad donde otros ven riesgo.'};
-  if(v<=55) return{signal:'NEUTRAL — OBSERVAR',color:'var(--btc)',icon:'⚪',desc:'El mercado está equilibrado. No hay extremo aprovechable. Espera a que el sentimiento llegue a un extremo para actuar.'};
-  if(v<=65) return{signal:'LIGERO SESGO VENDEDOR',color:'#FFB86C',icon:'🟡',desc:'El optimismo crece. No es momento de comprar. Reduce exposición nueva y ajusta stops de protección.'};
-  if(v<=80) return{signal:'CONSIDERAR VENTA',color:'#FF8C42',icon:'🟠',desc:'Codicia creciente. El mercado sobreestima el rally. El contrarian empieza a reducir posiciones y tomar ganancias.'};
-  return{signal:'VENDER / REDUCIR EXPOSICIÓN',color:'var(--dn)',icon:'🔴',desc:'Codicia Extrema. Todos quieren comprar. Euforia en máximos — riesgo de corrección severa. Los contrarian salen o se ponen cortos.'};
+/* ── CALCULATE CONTRARIAN SIGNAL ── */
+function calculateContrarianSignal() {
+  if (!currentPrice || !fngValue) return;
+
+  let score = 0;
+  let factors = [];
+
+  // Factor 1: Fear & Greed (40% weight)
+  let fngScore = 0;
+  if (fngValue <= 20) {
+    fngScore = 40;
+    factors.push({ label: 'Miedo Extremo', value: '🟢 +40', positive: true });
+  } else if (fngValue <= 35) {
+    fngScore = 25;
+    factors.push({ label: 'Miedo Alto', value: '🟢 +25', positive: true });
+  } else if (fngValue <= 55) {
+    fngScore = 0;
+    factors.push({ label: 'Sentimiento Neutral', value: '⚪ 0', positive: false });
+  } else if (fngValue <= 75) {
+    fngScore = -20;
+    factors.push({ label: 'Codicia', value: '🔴 -20', positive: false });
+  } else {
+    fngScore = -40;
+    factors.push({ label: 'Codicia Extrema', value: '🔴 -40', positive: false });
+  }
+  score += fngScore;
+
+  // Factor 2: Technical Analysis (35% weight)
+  let techScore = 0;
+  let overboughtCount = 0;
+  let oversoldCount = 0;
+
+  if (technicalData.daily.status === 'overbought') overboughtCount++;
+  if (technicalData.daily.status === 'oversold') oversoldCount++;
+  if (technicalData.weekly.status === 'overbought') overboughtCount++;
+  if (technicalData.weekly.status === 'oversold') oversoldCount++;
+  if (technicalData.monthly.status === 'overbought') overboughtCount++;
+  if (technicalData.monthly.status === 'oversold') oversoldCount++;
+
+  if (overboughtCount >= 2) {
+    techScore = -35;
+    factors.push({ label: 'Técnico: En Máximos', value: '🔴 -35', positive: false });
+  } else if (oversoldCount >= 2) {
+    techScore = 35;
+    factors.push({ label: 'Técnico: En Mínimos', value: '🟢 +35', positive: true });
+  } else if (overboughtCount === 1) {
+    techScore = -15;
+    factors.push({ label: 'Técnico: Cerca Máx', value: '🟡 -15', positive: false });
+  } else if (oversoldCount === 1) {
+    techScore = 15;
+    factors.push({ label: 'Técnico: Cerca Mín', value: '🟢 +15', positive: true });
+  } else {
+    techScore = 0;
+    factors.push({ label: 'Técnico: Rango Medio', value: '⚪ 0', positive: false });
+  }
+  score += techScore;
+
+  // Factor 3: News Sentiment (25% weight)
+  let newsScore = 0;
+  if (newsSentiment.overall === 'bearish' && (overboughtCount >= 1 || fngValue > 60)) {
+    newsScore = 25;
+    factors.push({ label: 'Noticias Bajistas en Máx', value: '🟢 +25', positive: true });
+  } else if (newsSentiment.overall === 'bullish' && (oversoldCount >= 1 || fngValue < 40)) {
+    newsScore = -25;
+    factors.push({ label: 'Noticias Alcistas en Mín', value: '🔴 -25', positive: false });
+  } else if (newsSentiment.overall === 'bullish' && fngValue > 70) {
+    newsScore = -15;
+    factors.push({ label: 'Euforia en Noticias', value: '🔴 -15', positive: false });
+  } else if (newsSentiment.overall === 'bearish' && fngValue < 30) {
+    newsScore = 15;
+    factors.push({ label: 'Pánico en Noticias', value: '🟢 +15', positive: true });
+  } else {
+    newsScore = 0;
+    factors.push({ label: 'Noticias: Neutral', value: '⚪ 0', positive: false });
+  }
+  score += newsScore;
+
+  // Determine signal based on final score
+  let signal, color, icon, desc;
+  
+  if (score >= 60) {
+    signal = '🟢 COMPRAR AGRESIVO';
+    color = 'var(--up)';
+    icon = '🟢';
+    desc = 'Confluencia extrema de señales contrarian. Múltiples factores indican zona de máximo pánico y oportunidad histórica.';
+  } else if (score >= 35) {
+    signal = '🟢 ACUMULAR / COMPRAR';
+    color = '#00C87A';
+    icon = '🟢';
+    desc = 'Señal de compra clara. El precio está en zona favorable y el sentimiento es pesimista. Momento para posicionarse.';
+  } else if (score >= 10) {
+    signal = '🟢 COMPRA MODERADA';
+    color = '#4CAF90';
+    icon = '🟢';
+    desc = 'Ligero sesgo comprador. Algunos factores favorecen acumulación pero sin confluencia extrema.';
+  } else if (score >= -10) {
+    signal = '⚪ NEUTRAL — OBSERVAR';
+    color = 'var(--btc)';
+    icon = '⚪';
+    desc = 'Mercado equilibrado. No hay extremo aprovechable. Espera señales más claras antes de actuar.';
+  } else if (score >= -35) {
+    signal = '🟡 REDUCIR EXPOSICIÓN';
+    color = '#FFB86C';
+    icon = '🟡';
+    desc = 'Ligero sesgo vendedor. Considera tomar ganancias parciales y ajustar stops de protección.';
+  } else if (score >= -60) {
+    signal = '🔴 VENDER / TOMAR GANANCIAS';
+    color = '#FF8C42';
+    icon = '🟠';
+    desc = 'Señal de venta clara. Precio en zona alta con sentimiento optimista. Momento de reducir riesgo.';
+  } else {
+    signal = '🔴 VENDER AGRESIVO';
+    color = 'var(--dn)';
+    icon = '🔴';
+    desc = 'Confluencia extrema de señales bajistas. Máximos técnicos con euforia generalizada. Alto riesgo de corrección.';
+  }
+
+  // Update UI
+  document.getElementById('contrarianSignal').textContent = signal;
+  document.getElementById('contrarianSignal').style.color = color;
+  document.getElementById('contrarianIcon').textContent = icon;
+  document.getElementById('contrarianDesc').textContent = desc;
+
+  // Render factors
+  const factorsHtml = `
+    <div class="factor-row">
+      <span class="factor-label">PUNTUACIÓN TOTAL</span>
+      <span class="factor-value" style="color: ${score >= 0 ? 'var(--up)' : 'var(--dn)'}">
+        ${score >= 0 ? '+' : ''}${score}
+      </span>
+    </div>
+    ${factors.map(f => `
+      <div class="factor-row">
+        <span class="factor-label">${f.label}</span>
+        <span class="factor-value">${f.value}</span>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('analysisFactors').innerHTML = factorsHtml;
 }
 
 /* ── FETCH SENTIMENT ── */
@@ -339,6 +639,7 @@ async function fetchSentiment(){
     const data=await res.json();
     const item=data.data[0];
     const val=parseInt(item.value);
+    fngValue = val;
 
     document.getElementById('fngRaw').textContent='F&G: '+val;
     document.getElementById('gaugeScore').textContent=val;
@@ -353,19 +654,14 @@ async function fetchSentiment(){
     document.getElementById('gaugeMktLbl').style.color=zc;
     setNeedle(val);
 
-    const c=getContrarian(val);
-    document.getElementById('contrarianSignal').textContent=c.signal;
-    document.getElementById('contrarianSignal').style.color=c.color;
-    document.getElementById('contrarianIcon').textContent=c.icon;
-    document.getElementById('contrarianDesc').textContent=c.desc;
+    calculateContrarianSignal();
   }catch(e){console.error('sentiment error:',e);}
 }
 
-/* ── FETCH NEWS — Claude AI con web search ── */
+/* ── FETCH NEWS with SENTIMENT ── */
 async function fetchNews(){
   const list=document.getElementById('newsList');
 
-  // Show skeleton while loading
   list.innerHTML=`
     <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
     <div class="news-skeleton"><div class="skel-line pill"></div><div class="skel-line"></div><div class="skel-line short"></div></div>
@@ -378,25 +674,23 @@ async function fetchNews(){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 1500,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        system: 'Eres un asistente de noticias Bitcoin. Busca las 5 noticias más recientes e importantes sobre Bitcoin de hoy. Responde SOLO con un JSON array válido sin markdown ni backticks, con este formato exacto: [{"title":"título en español","source":"fuente","time":"hace X horas","url":"https://..."},...]',
+        system: 'Eres un analista de noticias Bitcoin. Busca las 5 noticias más recientes e importantes sobre Bitcoin de hoy. Analiza el sentimiento de cada noticia (bullish/bearish/neutral). Responde SOLO con un JSON array válido sin markdown ni backticks: [{"title":"título en español","source":"fuente","time":"hace X horas","url":"https://...","sentiment":"bullish|bearish|neutral"},...]',
         messages: [{
           role: 'user',
-          content: 'Busca las 5 noticias más recientes sobre Bitcoin de hoy y devuelve SOLO el JSON array, sin texto adicional ni backticks.'
+          content: 'Busca las 5 noticias más recientes sobre Bitcoin de hoy, analiza su sentimiento (alcista/bajista/neutral) y devuelve SOLO el JSON array sin texto adicional ni backticks.'
         }]
       })
     });
 
     const data = await response.json();
 
-    // Extract text from response (may have tool_use blocks)
     const fullText = (data.content || [])
       .map(b => b.type === 'text' ? b.text : '')
       .filter(Boolean)
       .join('\n');
 
-    // Clean and parse JSON
     const clean = fullText.replace(/```json|```/g, '').trim();
     const start = clean.indexOf('[');
     const end = clean.lastIndexOf(']');
@@ -406,6 +700,26 @@ async function fetchNews(){
 
     if (!Array.isArray(items) || items.length === 0) throw new Error('Empty items');
 
+    // Calculate overall sentiment
+    let bullishCount = 0, bearishCount = 0, neutralCount = 0;
+    items.forEach(item => {
+      if (item.sentiment === 'bullish') bullishCount++;
+      else if (item.sentiment === 'bearish') bearishCount++;
+      else neutralCount++;
+    });
+
+    if (bullishCount > bearishCount && bullishCount > neutralCount) {
+      newsSentiment.overall = 'bullish';
+    } else if (bearishCount > bullishCount && bearishCount > neutralCount) {
+      newsSentiment.overall = 'bearish';
+    } else {
+      newsSentiment.overall = 'neutral';
+    }
+
+    newsSentiment.bullish = bullishCount;
+    newsSentiment.bearish = bearishCount;
+    newsSentiment.neutral = neutralCount;
+
     document.getElementById('newsSourceBadge').innerHTML = '⚡ IA · Claude';
 
     list.innerHTML = items.slice(0, 5).map(item => {
@@ -413,8 +727,19 @@ async function fetchNews(){
       const src = (item.source || 'Fuente').slice(0, 30);
       const time = item.time || '';
       const url = item.url || '#';
+      const sentiment = item.sentiment || 'neutral';
+      
+      let sentimentBadge = '';
+      if (sentiment === 'bullish') {
+        sentimentBadge = '<span class="news-sentiment bullish">📈 Alcista</span>';
+      } else if (sentiment === 'bearish') {
+        sentimentBadge = '<span class="news-sentiment bearish">📉 Bajista</span>';
+      } else {
+        sentimentBadge = '<span class="news-sentiment neutral">➡️ Neutral</span>';
+      }
+
       return `<div class="news-item" onclick="window.open('${encodeURI(url)}','_blank','noopener')">
-        <div class="news-tag-pill">Bitcoin</div>
+        <div class="news-tag-pill">Bitcoin ${sentimentBadge}</div>
         <div class="news-title">${title}</div>
         <div class="news-foot">
           <span class="news-src">${src}</span>
@@ -423,6 +748,8 @@ async function fetchNews(){
         </div>
       </div>`;
     }).join('');
+
+    calculateContrarianSignal();
 
   } catch(e) {
     console.error('news error:', e);
@@ -461,7 +788,12 @@ function copyWallet(){
 async function refreshAll(){
   const btn=document.getElementById('fab');
   btn.classList.add('spinning');
-  await Promise.allSettled([fetchPrice(),fetchSentiment(),fetchNews()]);
+  await Promise.allSettled([
+    fetchHistoricalData(),
+    fetchPrice(),
+    fetchSentiment(),
+    fetchNews()
+  ]);
   setTimeout(()=>btn.classList.remove('spinning'),650);
   secsLeft=REFRESH_S;
   renderCountdown();
