@@ -4,7 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TIZORMAX · GBPJPY Dashboard</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightweight-charts/4.1.1/lightweight-charts.standalone.production.js"></script>
+<script>
+// Load LightweightCharts dynamically with fallback
+(function() {
+  var urls = [
+    'https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js',
+    'https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js'
+  ];
+  var idx = 0;
+  function tryLoad() {
+    if (idx >= urls.length) return;
+    var s = document.createElement('script');
+    s.src = urls[idx++];
+    s.onerror = tryLoad;
+    document.head.appendChild(s);
+  }
+  tryLoad();
+})();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -835,6 +852,24 @@ let refreshTimer = null;
 let countdown = CONFIG.refreshInterval;
 
 // ============================================================
+// CHART READY CHECK
+// ============================================================
+function waitForCharts(cb) {
+  if (typeof LightweightCharts !== 'undefined') { cb(); return; }
+  let tries = 0;
+  const t = setInterval(() => {
+    tries++;
+    if (typeof LightweightCharts !== 'undefined') {
+      clearInterval(t);
+      cb();
+    } else if (tries > 80) {
+      clearInterval(t);
+      setStatus('✗ Error: No se pudo cargar la librería de gráficos. Verifica tu conexión a internet.', 'err');
+    }
+  }, 100);
+}
+
+// ============================================================
 // CHART INIT
 // ============================================================
 function initChart() {
@@ -1337,6 +1372,7 @@ async function loadData() {
 
   setStatus('⏳ Conectando...', 'info');
 
+  waitForCharts(async () => {
   try {
     initChart();
 
@@ -1361,12 +1397,13 @@ async function loadData() {
     startAutoRefresh();
 
     // Save key
-    localStorage.setItem('tz_apikey', apiKey);
+    try { localStorage.setItem('tz_apikey', apiKey); } catch(e) {}
 
   } catch (e) {
     setStatus(`✗ Error: ${e.message}`, 'err');
     console.error(e);
   }
+  }); // end waitForCharts
 }
 
 async function refreshData() {
@@ -1394,6 +1431,7 @@ async function refreshData() {
 // ============================================================
 function loadDemo() {
   setStatus('◈ Modo DEMO activo — datos simulados', 'info');
+  waitForCharts(() => {
   initChart();
 
   // Generate realistic GBPJPY candles around 195
@@ -1485,11 +1523,13 @@ function startAutoRefresh() {
 // ============================================================
 window.onload = () => {
   // Restore API key
-  const saved = localStorage.getItem('tz_apikey');
-  if (saved) {
-    document.getElementById('apiKey').value = saved;
-    apiKey = saved;
-  }
+  try {
+    const saved = localStorage.getItem('tz_apikey');
+    if (saved) {
+      document.getElementById('apiKey').value = saved;
+      apiKey = saved;
+    }
+  } catch(e) {}
   renderSignals();
 };
 </script>
